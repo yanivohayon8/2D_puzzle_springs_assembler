@@ -24,12 +24,12 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
 
     typedef Eigen::Matrix<double, Eigen::Dynamic, 2, Eigen::RowMajor> MatrixX2D_r;
     std::string line;
-    int pieceId;
+    double pieceId;
     double x, y;
     char comma;  // represent ',' in file, ignored.
     std::vector<std::pair<double,double>> coords;
     int currPieceId = -1;
-    std::getline(infile, line);//skip the first line because its a header
+    std::getline(infile, line);//skip the first line because it is a header
 
 
     while (std::getline(infile, line)) {
@@ -47,8 +47,11 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
 
         if (currPieceId!=pieceId)
         {
+            //Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
+            //auto data_debug= coords.data();
             Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
-            Piece newPiece = Piece(currPieceId, rtData);
+            //rtData = rtData.rowwise() - rtData.colwise().mean(); 
+            Piece newPiece = Piece(int(currPieceId), rtData);
             olstPiece.push_back(newPiece);
             coords.clear();
         }

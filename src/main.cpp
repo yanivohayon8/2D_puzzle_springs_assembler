@@ -7,5 +7,6 @@ int main(int argc, char** argv)
 	DataLoader dataLoader(puzzleDirectory);
 	std::vector<Piece> pieces;
 	dataLoader.loadPieces(pieces);
+	pieces[0].printCoords();
 	std::cout << "Finish" << std::endl;
 }
