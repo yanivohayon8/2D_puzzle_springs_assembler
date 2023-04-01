@@ -4,7 +4,8 @@
 class Piece
 {
 public:
-	//Eigen::MatrixX2d coordinates_;
-	//Piece(coordinates);
+	int id_;
+	Eigen::MatrixX2d coordinates_;
+	Piece(int pieceId,Eigen::MatrixX2d coordinates);
 };
 
