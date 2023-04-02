@@ -13,6 +13,6 @@ int main(int argc, char** argv)
 	std::vector<EdgeMating> edgeMatings;
 	dataLoader.loadEdgeMatings(edgeMatings);
 	World world;
-	world.insert_pieces(pieces);
+	world.Init(pieces);
 	std::cout << "Finish" << std::endl;
 }

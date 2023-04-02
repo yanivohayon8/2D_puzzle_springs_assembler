@@ -45,11 +45,21 @@ b2Body* World::createBody(Piece& piece)
 }
 
 
-void World::insert_pieces(std::vector<Piece>& pieces)
+void World::Init(std::vector<Piece>& pieces)
 {
 	for (auto pieceIt = pieces.begin(); pieceIt!=pieces.end(); pieceIt++)
 	{
 		b2Body* body = this->createBody(*pieceIt);
+		pieceIt->refb2Body_ = body;
 		bodies_.push_back(body);
 	}
+
+	// TODO call connectSpringsToPieces by the pairs
+
+
+}
+
+void World::connectSpringsToPieces(const EdgeMating &edgeMating)
+{
+
 }

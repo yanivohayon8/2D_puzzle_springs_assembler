@@ -5,6 +5,9 @@ Piece::Piece(int pieceId, Eigen::MatrixX2d coordinates)
 {
 	id_ = pieceId;
 	coordinates_ = coordinates;
+	
+	cv::eigen2cv(coordinates, cvCoords_);
+	cvCoords_.convertTo(cvCoords_, CV_32F);
 }
 
 void Piece::printCoords()
@@ -26,4 +29,9 @@ std::pair<double, double> Piece::getVertexCoord(int iVertex)
 int Piece::getNumCoords()
 {
 	return coordinates_.rows();
+}
+
+double Piece::getArea()
+{
+	return cv::contourArea(cvCoords_);
 }
