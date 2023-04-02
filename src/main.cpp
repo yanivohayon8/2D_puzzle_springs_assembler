@@ -1,6 +1,7 @@
 #include <DataLoader.h>
 #include <Piece.h>
 #include <EdgeMating.h>
+#include <World.h>
 
 int main(int argc, char** argv)
 {
@@ -11,6 +12,7 @@ int main(int argc, char** argv)
 	//pieces[0].printCoords();
 	std::vector<EdgeMating> edgeMatings;
 	dataLoader.loadEdgeMatings(edgeMatings);
-
+	World world;
+	world.insert_pieces(pieces);
 	std::cout << "Finish" << std::endl;
 }

@@ -8,5 +8,7 @@ public:
 	Eigen::MatrixX2d coordinates_;
 	Piece(int pieceId,Eigen::MatrixX2d coordinates);
 	void printCoords();
+	std::pair<double, double> getVertexCoord(int iVertex);
+	int getNumCoords();
 };
 
