@@ -1,5 +1,6 @@
 #include <DataLoader.h>
 #include <Piece.h>
+#include <EdgeMating.h>
 
 int main(int argc, char** argv)
 {
@@ -7,6 +8,9 @@ int main(int argc, char** argv)
 	DataLoader dataLoader(puzzleDirectory);
 	std::vector<Piece> pieces;
 	dataLoader.loadPieces(pieces);
-	pieces[0].printCoords();
+	//pieces[0].printCoords();
+	std::vector<EdgeMating> edgeMatings;
+	dataLoader.loadEdgeMatings(edgeMatings);
+
 	std::cout << "Finish" << std::endl;
 }

@@ -14,6 +14,11 @@ DataLoader::DataLoader(std::string puzzleDirectoryPath)
 
 void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
 {
+    /*
+        Loads the computed pieces. The csv headers are the following: piece,x,y.
+        Unfortunately, the piece ids were saved in double form so we convert them into int.
+    */
+
     std::string piecesFile = puzzleDirectoryPath_ + "/pieces.csv";
     std::ifstream infile(piecesFile);
 
@@ -47,7 +52,6 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
 
         if (currPieceId!=pieceId)
         {
-            //Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
             //auto data_debug= coords.data();
             Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
             //rtData = rtData.rowwise() - rtData.colwise().mean(); 
@@ -67,4 +71,36 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
     Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
     Piece newPiece = Piece(currPieceId, rtData);
     olstPiece.push_back(newPiece);
+}
+
+void DataLoader::loadEdgeMatings(std::vector<EdgeMating>& olstMatings)
+{
+    /*
+        Loads the matings between the edges. The csv headers are piece1,edge1,piece2,edge2. All of them are int.
+    */
+    std::string piecesFile = puzzleDirectoryPath_ + "/ground_truth_rels.csv";
+    std::ifstream infile(piecesFile);
+
+    if (!infile.is_open()) {
+        std::cerr << "Failed to open file: " << piecesFile << std::endl;
+        return;
+    }
+
+    std::string line;
+    int firstPieceId, secondPieceId, firstPieceEdge, secondPieceEdge;
+    char comma;  // represent ',' in file, ignored.
+    std::getline(infile, line);//skip the first line because it is a header
+
+
+    while (std::getline(infile, line)) {
+        std::istringstream iss(line);
+
+        if (!(iss >> firstPieceId >> comma >> firstPieceEdge >> comma >> secondPieceId >> comma >> secondPieceEdge)) {
+            throw "Failed to read line: " + line;
+            continue;
+        }
+
+        EdgeMating mating(firstPieceId, firstPieceEdge, secondPieceId, secondPieceEdge);
+        olstMatings.push_back(mating);
+    }
 }
