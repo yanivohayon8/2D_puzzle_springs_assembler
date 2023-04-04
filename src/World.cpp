@@ -113,6 +113,8 @@ void World::Init(std::vector<Piece>& pieces)
 	while(pieceIt!=pieces_.end())
 	{
 		pieceIt->color_ = &(*colorIt);
+		++pieceIt;
+		++colorIt;
 	}
 }
 
@@ -126,17 +128,32 @@ void World::Simulation()
 	bool isFinished = false;
 	float damping = 0;
 
+	screen_->initDisplay();
+
 	while (!isFinished)
 	{
 		world_.Step(timeStep, velocityIterations, positionIterations);
 
-		for (auto piece = pieces_.begin(); piece  != pieces_.end(); piece ++)
+		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
 		{
-			const b2Transform &transform = piece->refb2Body_->GetTransform();
-			piece->rotate(transform.q);
-			piece->translate(transform.p);
+			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
+			pieceIt->rotate(transform.q);
+			pieceIt->translate(transform.p);
+			screen_->drawPolygon(pieceIt->coordinates_, *pieceIt->color_);
+		}
+
+		int pressedKey = screen_->updateDisplay();
+
+		switch (pressedKey)
+		{
+		case 'q':
+			isFinished = true;
+		default:
+			break;
 		}
 
 	}
+
+	screen_->finishDisplay();
 
 }
