@@ -20,6 +20,11 @@ int Screen::updateDisplay()
 	return cv::waitKey(5);
 }
 
+void Screen::clearDisplay()
+{
+	frame_ = cv::Scalar(0, 0, 0);
+}
+
 void Screen::finishDisplay()
 {
 	cv::destroyWindow(windowName_);

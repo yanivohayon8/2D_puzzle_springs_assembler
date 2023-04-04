@@ -147,6 +147,7 @@ void World::Simulation()
 			screen_->drawPolygon(pieceIt->coordinates_, pieceIt->color_);
 		}
 
+		//screen_->clearDisplay();
 		int pressedKey = screen_->updateDisplay();
 
 		switch (pressedKey)

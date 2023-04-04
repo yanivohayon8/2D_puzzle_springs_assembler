@@ -17,6 +17,7 @@ public:
 
 	void initDisplay();
 	int updateDisplay();
+	void clearDisplay();
 	void finishDisplay();
 	void drawPolygon(Eigen::MatrixX2d& coordinates, cv::Scalar& color);
 };
