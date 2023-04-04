@@ -95,9 +95,9 @@ void World::Init(std::vector<Piece>& pieces)
 	for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++) { puzzleArea += pieceIt->getArea(); };
 
 	const int dim = static_cast<int>(1.2 * std::sqrt(puzzleArea));
-	int scale = 5;
-	int height = dim * scale;
-	int width = dim * scale;
+	int scale = 1;
+	int height = 800; //  peleg's value //dim * scale;
+	int width = 1440; //  peleg's value //dim * scale;
 
 	initBounds(height,width,scale);
 
