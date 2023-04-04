@@ -113,11 +113,11 @@ void World::Init(std::vector<Piece>& pieces)
 	generateColors(colors);
 
 	auto& pieceIt = pieces_.begin();
-	auto& colorIt = colors.begin();
+	auto colorIt = colors.begin();
 
 	while(pieceIt!=pieces_.end())
 	{
-		pieceIt->color_ = &(*colorIt);
+		pieceIt->color_ = *colorIt;
 		++pieceIt;
 		++colorIt;
 	}
@@ -144,7 +144,7 @@ void World::Simulation()
 			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
 			pieceIt->rotate(transform.q);
 			pieceIt->translate(transform.p);
-			screen_->drawPolygon(pieceIt->coordinates_, *pieceIt->color_);
+			screen_->drawPolygon(pieceIt->coordinates_, pieceIt->color_);
 		}
 
 		int pressedKey = screen_->updateDisplay();

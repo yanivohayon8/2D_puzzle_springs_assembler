@@ -11,7 +11,7 @@ public:
 	Eigen::MatrixX2d coordinates_;
 	b2Body* refb2Body_;
 	cv::Mat cvCoords_;
-	cv::Scalar* color_;
+	cv::Scalar color_;
 	Piece(int pieceId,Eigen::MatrixX2d coordinates);
 	void printCoords();
 	std::pair<double, double> getVertexCoord(int iVertex);
