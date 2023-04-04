@@ -10,7 +10,8 @@ class World
 {
 public:
 	World();
-	b2World world_ = b2World(b2Vec2(0, 0));
+	//b2World world_ = b2World(b2Vec2(0, 0));
+	b2World world_ = b2World(b2Vec2(0, -10.0f));
 	std::vector<Piece> pieces_;
 	Screen* screen_;
 

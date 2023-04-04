@@ -137,6 +137,7 @@ void World::Simulation()
 
 	while (!isFinished)
 	{
+		screen_->clearDisplay();
 		world_.Step(timeStep, velocityIterations, positionIterations);
 
 		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
@@ -147,7 +148,6 @@ void World::Simulation()
 			screen_->drawPolygon(pieceIt->coordinates_, pieceIt->color_);
 		}
 
-		//screen_->clearDisplay();
 		int pressedKey = screen_->updateDisplay();
 
 		switch (pressedKey)

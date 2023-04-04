@@ -22,7 +22,8 @@ int Screen::updateDisplay()
 
 void Screen::clearDisplay()
 {
-	frame_ = cv::Scalar(0, 0, 0);
+	frame_.setTo(cv::Scalar(0, 0, 0));
+	//frame_ = cv::Mat(height_, width_, CV_8UC3);
 }
 
 void Screen::finishDisplay()
