@@ -10,3 +10,9 @@ void generateColors(std::vector<cv::Scalar>& oColors)
 		return cv::Scalar(distribution(gen), distribution(gen), distribution(gen));
 	});
 }
+
+void getScreenSize(int& oHeight, int& oWidth)
+{
+	oHeight = GetDeviceCaps(GetDC(NULL), VERTRES);
+	oWidth = GetDeviceCaps(GetDC(NULL), HORZRES);
+}

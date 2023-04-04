@@ -10,7 +10,8 @@ Screen::Screen(int height, int width, int scale)
 }
 void Screen::initDisplay()
 {
-	cv::namedWindow(windowName_);
+	cv::namedWindow(windowName_, cv::WINDOW_NORMAL);
+	cv::setWindowProperty(windowName_, cv::WND_PROP_FULLSCREEN, cv::WND_PROP_FULLSCREEN);
 }
 
 int Screen::updateDisplay()
