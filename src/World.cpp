@@ -62,19 +62,28 @@ void World::initBounds(int height, int width, int scale)
 
 	for (auto pos = bs.begin(); pos != bs.end(); pos++)
 	{
-		const auto bodyDef = [x = std::get<0>(*pos), y = std::get<1>(*pos)] {
-			b2BodyDef b;
-			b.position.Set(x, y);
-			return b;
-		}();
-		const auto shape = [w = std::get<2>(*pos), h = std::get<3>(*pos)] {
-			b2PolygonShape s;
-			s.SetAsBox(w, h);
-			return s;
-		}();
-
+		auto x = std::get<0>(*pos);
+		auto y = std::get<1>(*pos);
+		b2BodyDef  bodyDef;
+		bodyDef.type = b2_staticBody; // is this necessary? 
+		bodyDef.position.Set(x, y);
+		
+		auto w = std::get<2>(*pos);
+		auto h = std::get<3>(*pos);
+		b2PolygonShape shape;
+		shape.SetAsBox(w, h);
+		
 		auto* body = world_.CreateBody(&bodyDef);
 		body->CreateFixture(&shape, 0);
+
+		Eigen::MatrixX2d coords;
+		coords.resize(4, 2);
+		coords.row(0) << x, y;
+		coords.row(1) << x + height, y;
+		coords.row(2) << x, y + width;
+		coords.row(3) << x + height, y + width;
+			
+		boundsCoordinates_.push_back(coords);
 	}
 }
 
@@ -104,7 +113,7 @@ void World::Init(std::vector<Piece>& pieces)
 	//height = 800; //  peleg's value //dim * scale;
 	//width = 1440; //  peleg's value //dim * scale;
 
-	initBounds(height,width,scale);
+	initBounds(height-500,width-500,scale);
 
 	screen_ = new Screen(height, width, scale);
 
@@ -138,6 +147,11 @@ void World::Simulation()
 	while (!isFinished)
 	{
 		screen_->clearDisplay();
+		for (int i = 0; i < boundsCoordinates_.size(); i++)
+		{
+			screen_->drawPolygon(boundsCoordinates_[i], cv::Scalar(255,255,255));
+		}
+
 		world_.Step(timeStep, velocityIterations, positionIterations);
 
 		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)

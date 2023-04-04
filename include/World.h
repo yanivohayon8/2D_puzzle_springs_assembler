@@ -14,6 +14,7 @@ public:
 	b2World world_ = b2World(b2Vec2(0, -10.0f));
 	std::vector<Piece> pieces_;
 	Screen* screen_;
+	std::vector<Eigen::MatrixX2d> boundsCoordinates_;
 
 	void Init(std::vector<Piece> &pieces);
 	b2Body* createBody(Piece& piece);
