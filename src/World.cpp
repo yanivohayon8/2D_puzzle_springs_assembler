@@ -1,5 +1,4 @@
 #include "World.h"
-#include <numeric>
 
 World::World()
 {
@@ -52,16 +51,8 @@ void World::connectSpringsToPieces(const EdgeMating &edgeMating)
 
 }
 
-void World::initFrame()
+void World::initBounds(int height, int width, int scale)
 {
-	double puzzleArea = 0;
-	for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++) { puzzleArea += pieceIt->getArea(); };
-
-	const int dim = static_cast<int>(1.2 * std::sqrt(puzzleArea));
-	int height = dim * 5;
-	int width = dim * 5;
-	int scale = 5;
-
 	width /= scale;
 	height /= scale;
 	const std::array<std::array<float, 4>, 4> bs{ {{0, -height / 2, width, 1},
@@ -89,6 +80,7 @@ void World::initFrame()
 
 void World::Init(std::vector<Piece>& pieces)
 {
+	
 	for (auto pieceIt = pieces.begin(); pieceIt!=pieces.end(); pieceIt++)
 	{
 		b2Body* body = this->createBody(*pieceIt);
@@ -99,10 +91,52 @@ void World::Init(std::vector<Piece>& pieces)
 	// TODO call connectSpringsToPieces by the pairs
 	
 
-	initFrame();
+	double puzzleArea = 0;
+	for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++) { puzzleArea += pieceIt->getArea(); };
+
+	const int dim = static_cast<int>(1.2 * std::sqrt(puzzleArea));
+	int scale = 5;
+	int height = dim * scale;
+	int width = dim * scale;
+
+	initBounds(height,width,scale);
+
+	screen_ = new Screen(height, width, scale);
+
+	// Assign color for debuging or rendring
+	std::vector<cv::Scalar> colors(std::size(pieces_));
+	generateColors(colors);
+
+	auto& pieceIt = pieces_.begin();
+	auto& colorIt = colors.begin();
+
+	while(pieceIt!=pieces_.end())
+	{
+		pieceIt->color_ = &(*colorIt);
+	}
 }
 
 void World::Simulation()
 {
+	
+	// The following params make as parameters to the function
+	double timeStep = 1.0F / 60.0F;
+	int velocityIterations = 6;
+	int positionIterations = 2;
+	bool isFinished = false;
+	float damping = 0;
+
+	while (!isFinished)
+	{
+		world_.Step(timeStep, velocityIterations, positionIterations);
+
+		for (auto piece = pieces_.begin(); piece  != pieces_.end(); piece ++)
+		{
+			const b2Transform &transform = piece->refb2Body_->GetTransform();
+			piece->rotate(transform.q);
+			piece->translate(transform.p);
+		}
+
+	}
 
 }

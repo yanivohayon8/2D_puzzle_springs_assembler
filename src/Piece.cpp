@@ -35,3 +35,15 @@ double Piece::getArea()
 {
 	return cv::contourArea(cvCoords_);
 }
+
+void Piece::rotate(const b2Rot& rot)
+{
+	Eigen::Matrix2d rotationEigen;
+	rotationEigen << rot.c, -rot.s, rot.s, rot.c;
+	coordinates_ = coordinates_ * rotationEigen.transpose();
+}
+
+void Piece::translate(const b2Vec2& translateVector)
+{
+	coordinates_ = coordinates_.rowwise() + Eigen::RowVector2d(translateVector.x, translateVector.y);
+}
