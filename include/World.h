@@ -8,10 +8,23 @@ class World
 public:
 	World();
 	b2World world_ = b2World(b2Vec2(0, 0));
-	std::vector<b2Body*> bodies_;
+	std::vector<Piece> pieces_;
+	b2Body* screenBody_;
 	b2Body* createBody(Piece& piece);
 	void Init(std::vector<Piece> &pieces);
 	void connectSpringsToPieces(const EdgeMating& edgeMating);
-	void manual_simulation();
+	void Simulation();
+	void initFrame();
+};
+
+
+class ScreenSpecs
+{
+public:
+	// All these data members should not be double? 
+	int height_;
+	int width_;
+	int scale_;
+	ScreenSpecs(int height, int width, int scale);
 };
 
