@@ -55,21 +55,25 @@ void World::initBounds(int height, int width, int scale)
 {
 	width /= scale;
 	height /= scale;
-	const std::array<std::array<float, 4>, 4> bs{ {{0, -height / 2, width, 1},
-												  {0, height / 2, width, 1},
-												  {width / 2, 0, 1, height},
-												  {-width / 2, 0, 1, height}} };
+	//const std::vector<std::vector<float>> boundaries{{0, 0, 1, 1}};
+	const std::vector<std::vector<float>> boundaries{};
+	
+	//const std::array<std::array<float, 4>, 4> bs{ {{0, 0, width / 2, 1},
+	//											  {0, 0, height / 2, 1}}
+	//											  //{width / 2, 0, 1, height},
+	//											  //{-width / 2, 0, 1, height}}
+	//};
 
-	for (auto pos = bs.begin(); pos != bs.end(); pos++)
+	for (auto& bound = boundaries.begin(); bound != boundaries.end(); bound++)
 	{
-		auto x = std::get<0>(*pos);
-		auto y = std::get<1>(*pos);
+		auto x = bound->at(0);
+		auto y = bound->at(1);
 		b2BodyDef  bodyDef;
 		bodyDef.type = b2_staticBody; // is this necessary? 
 		bodyDef.position.Set(x, y);
 		
-		auto w = std::get<2>(*pos);
-		auto h = std::get<3>(*pos);
+		auto w = bound->at(2);
+		auto h = bound->at(3);
 		b2PolygonShape shape;
 		shape.SetAsBox(w, h);
 		
@@ -79,9 +83,9 @@ void World::initBounds(int height, int width, int scale)
 		Eigen::MatrixX2d coords;
 		coords.resize(4, 2);
 		coords.row(0) << x, y;
-		coords.row(1) << x + height, y;
-		coords.row(2) << x, y + width;
-		coords.row(3) << x + height, y + width;
+		coords.row(1) << x + width, y;
+		coords.row(2) << x, y + height;
+		coords.row(3) << x + width, y + height;
 			
 		boundsCoordinates_.push_back(coords);
 	}
@@ -113,7 +117,7 @@ void World::Init(std::vector<Piece>& pieces)
 	//height = 800; //  peleg's value //dim * scale;
 	//width = 1440; //  peleg's value //dim * scale;
 
-	initBounds(height-500,width-500,scale);
+	initBounds(height,width,scale);
 
 	screen_ = new Screen(height, width, scale);
 
@@ -147,11 +151,15 @@ void World::Simulation()
 	while (!isFinished)
 	{
 		screen_->clearDisplay();
-		for (int i = 0; i < boundsCoordinates_.size(); i++)
+		/*for (int i = 0; i < boundsCoordinates_.size(); i++)
 		{
 			screen_->drawPolygon(boundsCoordinates_[i], cv::Scalar(255,255,255));
-		}
-
+		}*/
+		
+		//screen_->drawBounds(boundsCoordinates_);
+		
+		screen_->drawBounds();
+		
 		world_.Step(timeStep, velocityIterations, positionIterations);
 
 		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)

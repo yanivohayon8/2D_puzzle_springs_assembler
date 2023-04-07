@@ -14,10 +14,13 @@ public:
 	int width_;
 	int scale_; 
 	std::string windowName_;
+	cv::Scalar BOUNDS_COLOR_;
 
 	void initDisplay();
 	int updateDisplay();
 	void clearDisplay();
 	void finishDisplay();
 	void drawPolygon(Eigen::MatrixX2d& coordinates, cv::Scalar& color);
+	//void drawBounds(std::vector<Eigen::MatrixX2d> boundsCoordinates);
+	void drawBounds();
 };
