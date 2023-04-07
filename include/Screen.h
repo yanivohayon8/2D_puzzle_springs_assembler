@@ -15,6 +15,7 @@ public:
 	int scale_; 
 	std::string windowName_;
 	cv::Scalar BOUNDS_COLOR_;
+	float BOUNDS_THICKNESS_;
 
 	void initDisplay();
 	int updateDisplay();

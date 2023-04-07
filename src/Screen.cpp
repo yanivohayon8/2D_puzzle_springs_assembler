@@ -8,6 +8,7 @@ Screen::Screen(int height, int width, int scale)
 	frame_ = cv::Mat(height_, width_, CV_8UC3);
 	windowName_ = "Vika"; // What does it matter?
 	BOUNDS_COLOR_ = cv::Scalar(0, 0, 255);
+	BOUNDS_THICKNESS_ = 5;
 }
 void Screen::initDisplay()
 {
@@ -67,5 +68,5 @@ void Screen::drawBounds()
 		cv::fillPoly(frame_, polygon, BOUNDS_COLOR_);
 	}*/
 
-	cv::rectangle(frame_,cv::Point2i(0, 0), cv::Point2i(width_, height_), BOUNDS_COLOR_,10);
+	cv::rectangle(frame_,cv::Point2i(0, 0), cv::Point2i(width_, height_), BOUNDS_COLOR_,BOUNDS_THICKNESS_);
 }

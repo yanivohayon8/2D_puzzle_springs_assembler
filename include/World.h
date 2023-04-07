@@ -20,7 +20,7 @@ public:
 	b2Body* createBody(Piece& piece);
 	void connectSpringsToPieces(const EdgeMating& edgeMating);
 	void Simulation();
-	void initBounds(int height, int width, int scale);
+	void initBounds(float height, float width, float scale, float padding);
 };
 
 
