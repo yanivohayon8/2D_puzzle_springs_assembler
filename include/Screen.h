@@ -9,11 +9,11 @@
 class Screen
 {
 public:
-	Screen(int height, int width, int scale);
+	Screen(int height, int width, double scale);
 	cv::Mat frame_;
 	int height_;
 	int width_;
-	int scale_; 
+	double scale_; 
 	std::string windowName_;
 	cv::Scalar BOUNDS_COLOR_;
 	float BOUNDS_THICKNESS_;

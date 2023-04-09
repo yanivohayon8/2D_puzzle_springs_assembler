@@ -4,6 +4,9 @@ World::World()
 {
 	//world_ = &(std::make_unique<b2World>(b2Vec2(0, 0)));
 	//world_ = &b2World(b2Vec2(0, 0));
+
+	//cvDebugDraw cvVis;
+	//world_.SetDebugDraw(&cvVis);
 }
 
 b2Body* World::createPieceBody(Piece& piece)
@@ -11,7 +14,7 @@ b2Body* World::createPieceBody(Piece& piece)
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = b2Vec2{ 1000, 600 };
+	bodyDef.position = b2Vec2{ 100, 100};
 	//bodyDef.linearVelocity.Set(0, -10); // debug
 
 	b2PolygonShape shape;
@@ -62,8 +65,8 @@ void World::connectSpringsToPieces(const EdgeMating &edgeMating)
 
 void World::initBounds(float height, float width, float scale, float padding)
 {
-	width /= scale;
-	height /= scale;
+	//width /= scale;
+	//height /= scale;
 
 	float noOverlap = 2;
 
@@ -81,8 +84,13 @@ void World::initBounds(float height, float width, float scale, float padding)
 	//	{width / 2 - padding, -height / 2, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
 	//};
 	
+	//// working
+	//const std::vector<std::vector<float>> boundaries{
+	//	{0,20, width - (padding + noOverlap), 20}
+	//};
+
 	const std::vector<std::vector<float>> boundaries{ 
-		{0,0 + padding, width - (padding+ noOverlap), 1} // from bottom left to the horizontal line
+		{0,20, width - (padding+ noOverlap), 20} // from bottom left to the horizontal line
 		//{0, 0, width - (padding + noOverlap), 1}, // from top left along the horizontal line
 		//{0, 0, 1, height - (padding + noOverlap)}, // from bottom left along the vertical line
 		//{0, 0, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
@@ -94,7 +102,7 @@ void World::initBounds(float height, float width, float scale, float padding)
 		float y = bound->at(1);
 		b2BodyDef  bodyDef;
 		bodyDef.type = b2_staticBody; // b2_staticBody; // is this necessary? 
-		bodyDef.position.Set(0, 0);
+		bodyDef.position.Set(x,y);
 		//bodyDef.position
 		//bodyDef.linearVelocity.Set(0, 0);
 		//bodyDef.awake = false;
@@ -125,17 +133,30 @@ void World::initBounds(float height, float width, float scale, float padding)
 		//body->SetAwake()
 		//body->CreateFixture(&shape, 0);
 
+		double xMean = 0;
+		double yMean = 0;
+
+		// This is should be in global coords?
+		for (int i = 0; i < b2Poly.size(); i++)
+		{
+			auto& point = b2Poly.at(i);
+			xMean += point.x;
+			yMean += point.y;
+		}
+
+		xMean /= b2Poly.size();
+		yMean /= b2Poly.size();
+		b2Vec2 mean(xMean, yMean);
 		std::vector<b2Vec2> globalCoords;
+
 		for (int i = 0; i < 4; i++)
 		{
-			globalCoords.push_back(body->GetWorldPoint(b2Poly.at(i)));
+			b2Vec2& worldPoint = body->GetWorldPoint(b2Poly.at(i));
+			//globalCoords.push_back(worldPoint- mean);
+			globalCoords.push_back(worldPoint);
 		}
 
 		boundsCoordinates_.push_back(globalCoords);
-
-		/*Piece debugP(89, coords);
-		debugP.refb2Body_ = body;
-		pieces_.push_back(debugP);*/
 	}
 }
 
@@ -152,12 +173,25 @@ void World::Init(std::vector<Piece>& pieces)
 
 	// TODO call connectSpringsToPieces by the pairs
 
-	/*const int dim = static_cast<int>(1.2 * std::sqrt(puzzleArea));*/
-	int scale = 1;
-	int height; // = dim * scale;
-	int width; // = dim * scale;
+
+
+	//double puzzleArea = 0;
+	//for (auto& piece:pieces_ )
+	//{
+	//	puzzleArea += piece.getArea();
+	//}
+	//const int dim = static_cast<int>(3.0 * std::sqrt(puzzleArea));
+	//double scale = 0.5; //0.8;
+	//int height = dim; //dim * scale;
+	//int screenHeight=0;
+	//int screenWidth=0;
+	//getScreenSize(screenHeight, screenWidth);
+	//double screenRatio = screenWidth / (double)screenHeight;
+	//int width = dim * screenRatio; //dim * scale;
 	
-	getScreenSize(height, width);
+	double scale = 0.5; //0.8;
+	int height = 880; //dim * scale;
+	int width = 1440; //dim * scale;
 	
 	screen_ = new Screen(height, width, scale);
 
@@ -200,12 +234,6 @@ void World::Simulation()
 		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
 		{
 			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
-
-			//debug
-			if (transform.p.y < 10)
-			{
-				std::cout << "here" << std::endl;
-			}
 
 			pieceIt->rotate(transform.q);
 			auto& velocity = pieceIt->refb2Body_->GetLinearVelocity();

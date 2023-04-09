@@ -54,7 +54,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
         {
             //auto data_debug= coords.data();
             Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
-            //rtData = rtData.rowwise() - rtData.colwise().mean(); 
+            rtData = rtData.rowwise() - rtData.colwise().mean(); 
             Piece newPiece = Piece(int(currPieceId), rtData);
             olstPiece.push_back(newPiece);
             coords.clear();
@@ -69,7 +69,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
     }
 
     Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
-    //rtData = rtData.rowwise() - rtData.colwise().mean();
+    rtData = rtData.rowwise() - rtData.colwise().mean();
     Piece newPiece = Piece(currPieceId, rtData);
     olstPiece.push_back(newPiece);
 }

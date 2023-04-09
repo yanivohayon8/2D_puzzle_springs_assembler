@@ -5,6 +5,7 @@
 #include "Screen.h"
 #include <numeric>
 #include "Utils.h"
+#include "DebugVisualize.h"
 
 class World
 {

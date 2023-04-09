@@ -1,6 +1,6 @@
 #include "Screen.h"
 
-Screen::Screen(int height, int width, int scale)
+Screen::Screen(int height, int width, double scale)
 {
 	height_ = height;
 	width_ = width;
@@ -44,8 +44,8 @@ void Screen::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
 	{
 		/*int x = static_cast<int>(width_ / 2 + scale_ * coordinates.row(iCoord)(0));
 		int y = static_cast<int>(height_ / 2 - scale_ * coordinates.row(iCoord)(1));*/
-		int x = static_cast<int>(coordinates.at(iCoord)(0));
-		int y = static_cast<int>(height_ - coordinates.at(iCoord)(1));
+		int x = static_cast<int>(scale_*coordinates.at(iCoord)(0));
+		int y = static_cast<int>(height_ - scale_*coordinates.at(iCoord)(1));
 		cv::Point2i point(x, y);
 		polygon.push_back(point);
 	}
