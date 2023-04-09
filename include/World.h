@@ -12,7 +12,7 @@ class World
 public:
 	World();
 	//b2World world_ = b2World(b2Vec2(0, 0));
-	b2World world_ = b2World(b2Vec2(0, -0.5f));
+	b2World world_ = b2World(b2Vec2(0, -0.5f)); // for first debugging
 	std::vector<Piece> pieces_;
 	Screen* screen_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
@@ -21,5 +21,5 @@ public:
 	b2Body* createPieceBody(Piece& piece);
 	void connectSpringsToPieces(const EdgeMating& edgeMating);
 	void Simulation();
-	void initBounds(float height, float width, float scale, float padding);
+	void initBounds(float height, float width, float wallWidth);
 };

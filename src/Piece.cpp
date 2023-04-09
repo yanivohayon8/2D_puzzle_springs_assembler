@@ -48,7 +48,6 @@ void Piece::translate()
 {
 	for (int i = 0; i < globalCoordinates_.size(); i++)
 	{
-		//globalCoordinates_[i] = globalCoordinates_[i] + translateVector;
 		globalCoordinates_[i] = refb2Body_->GetWorldPoint(localCoordsAsVecs_.at(i));
 	}
 }

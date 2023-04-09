@@ -2,11 +2,6 @@
 
 World::World()
 {
-	//world_ = &(std::make_unique<b2World>(b2Vec2(0, 0)));
-	//world_ = &b2World(b2Vec2(0, 0));
-
-	//cvDebugDraw cvVis;
-	//world_.SetDebugDraw(&cvVis);
 }
 
 b2Body* World::createPieceBody(Piece& piece)
@@ -63,43 +58,17 @@ void World::connectSpringsToPieces(const EdgeMating &edgeMating)
 
 }
 
-void World::initBounds(float height, float width, float scale, float padding)
+void World::initBounds(float height, float width, float wallWidth)
 {
-	//width /= scale;
-	//height /= scale;
 
-	float noOverlap = 2;
-
-	//const std::vector<std::vector<float>> boundaries{
-	//	{0, 0, width - (padding + noOverlap), 20} // the box stops from falling
-	//};
-
+	float originX = 0;
+	float originY = 0;
 	
-
-	//const std::vector<std::vector<float>> boundaries{ 
-	//	{150, 0, 20, 20},
-	//	{-width / 2, -height / 2 + padding, width - (padding+ noOverlap), 1}, // from bottom left to the horizontal line
-	//	{-width / 2 +padding, height/2 - padding , width - (padding + noOverlap), 1}, // from top left along the horizontal line
-	//	{-width / 2 + padding, -height / 2, 1, height - (padding + noOverlap)}, // from bottom left along the vertical line
-	//	{width / 2 - padding, -height / 2, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
-	//};
-	
-	//// working
-	//const std::vector<std::vector<float>> boundaries{
-	//	{0,20, width - (padding + noOverlap), 20}
-	//};
-
-	float gameWidth = 5;
-	float startX = 0;
-	float startY = 0;
-	float wallWidth = 0.1;
-
 	const std::vector<std::vector<float>> boundaries{ 
-		{startX,startY, gameWidth, wallWidth}, // from bottom left to the horizontal line
-		{gameWidth,startY,wallWidth,gameWidth}
-		//{0, 0, width - (padding + noOverlap), 1}, // from top left along the horizontal line
-		//{0, 0, 1, height - (padding + noOverlap)}, // from bottom left along the vertical line
-		//{0, 0, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
+		{originX,originY, width, wallWidth}, // from bottom left to the horizontal line
+		{width,originY,wallWidth,height}, // from bottom right along the vertical line
+		{originX,originY,wallWidth,height}, // from bottom left along the vertical line
+		{originX,height,width,wallWidth} // from top left along the horizontal line
 	};
 
 	for (auto& bound = boundaries.begin(); bound != boundaries.end(); bound++)
@@ -109,9 +78,7 @@ void World::initBounds(float height, float width, float scale, float padding)
 		b2BodyDef  bodyDef;
 		bodyDef.type = b2_staticBody; // b2_staticBody; // is this necessary? 
 		bodyDef.position.Set(x,y);
-		//bodyDef.position
-		//bodyDef.linearVelocity.Set(0, 0);
-		//bodyDef.awake = false;
+		bodyDef.awake = false;
 
 		auto w = bound->at(2);
 		auto h = bound->at(3);
@@ -124,41 +91,20 @@ void World::initBounds(float height, float width, float scale, float padding)
 			{0, h}
 		};
 
-		//shape.SetAsBox(w/2, h/2);
 		shape.Set(b2Poly.data(), b2Poly.size());
 
 		b2FixtureDef fixture;
 		fixture.shape = &shape;
-		//fixture.density = 1.0f;
-		//fixture.friction = 0.3f;
-		//fixture.filter.groupIndex = 2;
 		fixture.restitution = 0.75;
 
 		auto* body = world_.CreateBody(&bodyDef);
 		body->CreateFixture(&fixture);
-		//body->SetAwake()
-		//body->CreateFixture(&shape, 0);
 
-		double xMean = 0;
-		double yMean = 0;
-
-		// This is should be in global coords?
-		for (int i = 0; i < b2Poly.size(); i++)
-		{
-			auto& point = b2Poly.at(i);
-			xMean += point.x;
-			yMean += point.y;
-		}
-
-		xMean /= b2Poly.size();
-		yMean /= b2Poly.size();
-		b2Vec2 mean(xMean, yMean);
 		std::vector<b2Vec2> globalCoords;
 
 		for (int i = 0; i < 4; i++)
 		{
 			b2Vec2& worldPoint = body->GetWorldPoint(b2Poly.at(i));
-			//globalCoords.push_back(worldPoint - mean);
 			globalCoords.push_back(worldPoint);
 		}
 
@@ -169,43 +115,22 @@ void World::initBounds(float height, float width, float scale, float padding)
 
 void World::Init(std::vector<Piece>& pieces)
 {
-	
-	for (auto pieceIt = pieces.begin(); pieceIt!=pieces.end(); pieceIt++)
+	double scale = 50;
+	int height = 880; 
+	int width = 1440; 
+	screen_ = new Screen(height, width, scale);
+
+	float wallWidth = 0.1;
+	float boardHeight = 15;
+	float boardWidth = 21;
+	initBounds(boardHeight,boardWidth,wallWidth);
+
+	for (auto pieceIt = pieces.begin(); pieceIt != pieces.end(); pieceIt++)
 	{
 		b2Body* body = this->createPieceBody(*pieceIt);
 		pieceIt->refb2Body_ = body;
 		pieces_.push_back(*pieceIt);
 	}
-
-	// TODO call connectSpringsToPieces by the pairs
-
-
-
-	//double puzzleArea = 0;
-	//for (auto& piece:pieces_ )
-	//{
-	//	puzzleArea += piece.getArea();
-	//}
-	//const int dim = static_cast<int>(3.0 * std::sqrt(puzzleArea));
-	//double scale = 0.5; //0.8;
-	//int height = dim; //dim * scale;
-	//int screenHeight=0;
-	//int screenWidth=0;
-	//getScreenSize(screenHeight, screenWidth);
-	//double screenRatio = screenWidth / (double)screenHeight;
-	//int width = dim * screenRatio; //dim * scale;
-	
-	double scale = 50; //0.8;
-	int height = 880; //dim * scale;
-	int width = 1440; //dim * scale;
-
-	//double scale = 50; //0.8;
-	//int height = 800; //dim * scale;
-	//int width = 800; //dim * scale;
-	
-	screen_ = new Screen(height, width, scale);
-
-	initBounds(height,width,scale,screen_->BOUNDS_THICKNESS_);
 
 	// Assign color for debuging or rendring
 	std::vector<cv::Scalar> colors(std::size(pieces_));
@@ -220,6 +145,9 @@ void World::Init(std::vector<Piece>& pieces)
 		++pieceIt;
 		++colorIt;
 	}
+
+	// TODO call connectSpringsToPieces by the pairs
+
 }
 
 void World::Simulation()
