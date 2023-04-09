@@ -82,10 +82,10 @@ void World::initBounds(float height, float width, float scale, float padding)
 	//};
 	
 	const std::vector<std::vector<float>> boundaries{ 
-		{0,0 + padding, width - (padding+ noOverlap), 1}, // from bottom left to the horizontal line
-		{0, 0, width - (padding + noOverlap), 1}, // from top left along the horizontal line
-		{0, 0, 1, height - (padding + noOverlap)}, // from bottom left along the vertical line
-		{0, 0, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
+		{0,0 + padding, width - (padding+ noOverlap), 1} // from bottom left to the horizontal line
+		//{0, 0, width - (padding + noOverlap), 1}, // from top left along the horizontal line
+		//{0, 0, 1, height - (padding + noOverlap)}, // from bottom left along the vertical line
+		//{0, 0, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
 	};
 
 	for (auto& bound = boundaries.begin(); bound != boundaries.end(); bound++)
@@ -94,7 +94,7 @@ void World::initBounds(float height, float width, float scale, float padding)
 		float y = bound->at(1);
 		b2BodyDef  bodyDef;
 		bodyDef.type = b2_staticBody; // b2_staticBody; // is this necessary? 
-		bodyDef.position.Set(x, y);
+		bodyDef.position.Set(0, 0);
 		//bodyDef.position
 		//bodyDef.linearVelocity.Set(0, 0);
 		//bodyDef.awake = false;
@@ -125,14 +125,13 @@ void World::initBounds(float height, float width, float scale, float padding)
 		//body->SetAwake()
 		//body->CreateFixture(&shape, 0);
 
-		Eigen::MatrixX2d coords;
-		coords.resize(4, 2);
-		coords.row(0) << x, y;
-		coords.row(1) << x + w, y;
-		coords.row(2) << x + w, y + h;
-		coords.row(3) << x, y + h;
+		std::vector<b2Vec2> globalCoords;
+		for (int i = 0; i < 4; i++)
+		{
+			globalCoords.push_back(body->GetWorldPoint(b2Poly.at(i)));
+		}
 
-		boundsCoordinates_.push_back(coords);
+		boundsCoordinates_.push_back(globalCoords);
 
 		/*Piece debugP(89, coords);
 		debugP.refb2Body_ = body;
@@ -162,7 +161,7 @@ void World::Init(std::vector<Piece>& pieces)
 	
 	screen_ = new Screen(height, width, scale);
 
-	//initBounds(height,width,scale,screen_->BOUNDS_THICKNESS_);
+	initBounds(height,width,scale,screen_->BOUNDS_THICKNESS_);
 
 	// Assign color for debuging or rendring
 	std::vector<cv::Scalar> colors(std::size(pieces_));
@@ -201,6 +200,13 @@ void World::Simulation()
 		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
 		{
 			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
+
+			//debug
+			if (transform.p.y < 10)
+			{
+				std::cout << "here" << std::endl;
+			}
+
 			pieceIt->rotate(transform.q);
 			auto& velocity = pieceIt->refb2Body_->GetLinearVelocity();
 			pieceIt->translate(velocity);

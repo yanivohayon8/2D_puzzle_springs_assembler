@@ -11,10 +11,10 @@ class World
 public:
 	World();
 	//b2World world_ = b2World(b2Vec2(0, 0));
-	b2World world_ = b2World(b2Vec2(0, -2.0f));
+	b2World world_ = b2World(b2Vec2(0, -10.0f));
 	std::vector<Piece> pieces_;
 	Screen* screen_;
-	std::vector<Eigen::MatrixX2d> boundsCoordinates_;
+	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 
 	void Init(std::vector<Piece> &pieces);
 	b2Body* createPieceBody(Piece& piece);

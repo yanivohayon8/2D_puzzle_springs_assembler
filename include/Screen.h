@@ -23,6 +23,6 @@ public:
 	void clearDisplay();
 	void finishDisplay();
 	void drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color);
-	void drawBounds(std::vector<Eigen::MatrixX2d>* boundsBodyCoordinates);
+	void drawBounds(std::vector<std::vector<b2Vec2>>* boundsBodyCoordinates);
 	void drawBounds();
 };

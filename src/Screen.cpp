@@ -53,7 +53,7 @@ void Screen::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
 	cv::fillPoly(frame_, polygon, color);
 }
 
-void Screen::drawBounds(std::vector<Eigen::MatrixX2d>* boundsBodyCoordinates = nullptr)
+void Screen::drawBounds(std::vector<std::vector<b2Vec2>>* boundsBodyCoordinates = nullptr)
 {
 	
 	// when colliding is complete - return this
@@ -74,9 +74,9 @@ void Screen::drawBounds(std::vector<Eigen::MatrixX2d>* boundsBodyCoordinates = n
 	
 	auto& colorIt = colors.begin();
 
-	/*for (auto coordIt = boundsBodyCoordinates->begin(); coordIt != boundsBodyCoordinates->end(); ++coordIt)
+	for (auto coordIt = boundsBodyCoordinates->begin(); coordIt != boundsBodyCoordinates->end(); ++coordIt)
 	{
 		this->drawPolygon(*coordIt, *colorIt);
 		colorIt++;
-	}*/
+	}
 }
