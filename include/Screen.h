@@ -25,6 +25,7 @@ public:
 	void drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color);
 	void drawBounds(std::vector<std::vector<b2Vec2>>* boundsBodyCoordinates);
 	void drawCircle(const b2Vec2& point, int radius, cv::Scalar& color);
-	int castToImage(double val);
+	int castToImageX(double x);
+	int castToImageY(double y);
 	void drawBounds();
 };

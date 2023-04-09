@@ -245,9 +245,9 @@ void World::Simulation()
 
 		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
 		{
-			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
 			pieceIt->translate();
 			screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
+			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
 			screen_->drawCircle(transform.p, 3, redColor);
 		}
 

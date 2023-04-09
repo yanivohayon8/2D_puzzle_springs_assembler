@@ -35,14 +35,20 @@ void Screen::finishDisplay()
 	cv::destroyWindow(windowName_);
 }
 
-int Screen::castToImage(double val)
+int Screen::castToImageX(double x)
 {
-	return static_cast<int>(scale_ * val);
+	return static_cast<int>(scale_ * x);
+}
+
+int Screen::castToImageY(double y)
+{
+	int padding = 10;// Well this is empiracly helps
+	return static_cast<int>(height_ - padding - scale_ * y);
 }
 
 void Screen::drawCircle(const b2Vec2& point,int radius,cv::Scalar& color)
 {
-	auto castPoint = cv::Point(castToImage(point.x), castToImage(point.y));
+	auto castPoint = cv::Point(castToImageX(point.x), castToImageY(point.y));
 	cv::circle(frame_, castPoint, radius, color);
 }
 
@@ -54,10 +60,10 @@ void Screen::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
 	{
 		/*int x = static_cast<int>(width_ / 2 + scale_ * coordinates.at(iCoord)(0));
 		int y = static_cast<int>(height_ / 2 - scale_ * coordinates.at(iCoord)(1));*/
-		int x = static_cast<int>(castToImage(coordinates.at(iCoord)(0)));
+		int x = static_cast<int>(castToImageX(coordinates.at(iCoord)(0)));
 		//int y = static_cast<int>(height_ - scale_*coordinates.at(iCoord)(1));
 		// 
-		int y = static_cast<int>(castToImage(coordinates.at(iCoord)(1)));
+		int y = static_cast<int>(castToImageY(coordinates.at(iCoord)(1)));
 		cv::Point2i point(x, y);
 		polygon.push_back(point);
 	}
