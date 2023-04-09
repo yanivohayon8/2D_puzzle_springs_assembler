@@ -11,20 +11,14 @@ class World
 public:
 	World();
 	//b2World world_ = b2World(b2Vec2(0, 0));
-	b2World world_ = b2World(b2Vec2(0, -10.0f));
+	b2World world_ = b2World(b2Vec2(0, -2.0f));
 	std::vector<Piece> pieces_;
 	Screen* screen_;
 	std::vector<Eigen::MatrixX2d> boundsCoordinates_;
 
 	void Init(std::vector<Piece> &pieces);
-	b2Body* createBody(Piece& piece);
+	b2Body* createPieceBody(Piece& piece);
 	void connectSpringsToPieces(const EdgeMating& edgeMating);
 	void Simulation();
 	void initBounds(float height, float width, float scale, float padding);
 };
-
-
-//struct SimulationParams
-//{
-//	
-//};

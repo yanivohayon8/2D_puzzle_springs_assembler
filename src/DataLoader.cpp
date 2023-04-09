@@ -69,6 +69,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
     }
 
     Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
+    //rtData = rtData.rowwise() - rtData.colwise().mean();
     Piece newPiece = Piece(currPieceId, rtData);
     olstPiece.push_back(newPiece);
 }

@@ -6,8 +6,15 @@ World::World()
 	//world_ = &b2World(b2Vec2(0, 0));
 }
 
-b2Body* World::createBody(Piece& piece)
+b2Body* World::createPieceBody(Piece& piece)
 {
+
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.position = b2Vec2{ 1000, 600 };
+	//bodyDef.linearVelocity.Set(0, -10); // debug
+
+	b2PolygonShape shape;
 	std::vector<b2Vec2> b2Poly;
 	int numCoords = piece.getNumCoords();
 
@@ -18,13 +25,6 @@ b2Body* World::createBody(Piece& piece)
 		float y_ = static_cast<float>(y);
 		b2Poly.push_back(b2Vec2{ x_,y_});
 	}
-
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = b2Vec2{0,0};
-	//bodyDef.position.Set(0.0f, 4.0f);
-
-	b2PolygonShape shape;
 	shape.Set(b2Poly.data(), b2Poly.size());
 	/*if (is_polygon_degenerate(points)) {
 		s.SetAsBox(b2_linearSlop * 2,
@@ -36,11 +36,20 @@ b2Body* World::createBody(Piece& piece)
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
-	fixture.density = 1;
-	fixture.filter.groupIndex = -2;
+	fixture.density = 1.0f;
+	fixture.friction = 0.3f;
+	//fixture.filter.groupIndex = 2;
 
 	b2Body* oBody = world_.CreateBody(&bodyDef);
 	oBody->CreateFixture(&fixture);
+
+	for (int i = 0; i < numCoords; i++)
+	{
+		b2Vec2& localPoint = b2Poly.at(i);
+		b2Vec2& globalPoint = oBody->GetWorldPoint(localPoint);
+		piece.globalCoordinates_.push_back(globalPoint);
+	}
+
 	return oBody;
 }
 
@@ -51,39 +60,70 @@ void World::connectSpringsToPieces(const EdgeMating &edgeMating)
 
 }
 
-void World::initBounds(float height, float width, float scale,float padding)
+void World::initBounds(float height, float width, float scale, float padding)
 {
 	width /= scale;
 	height /= scale;
-	
-	//const std::vector<std::vector<float>> boundaries{};
-	//const std::vector<std::vector<float>> boundaries{ {-width / 2-padding, -height / 2-padding, 100, 100} };
-	const std::vector<std::vector<float>> boundaries{ 
-		{-width / 2, -height / 2 +padding, width, 1}, // from bottom left to the horizontal line
-		{-width / 2, height/2-padding, width, 1} // from bottom left to the vertical line
-	};
-	
-	//const std::array<std::array<float, 4>, 4> bs{ {{0, 0, width / 2, 1},
-	//											  {0, 0, height / 2, 1}}
-	//											  //{width / 2, 0, 1, height},
-	//											  //{-width / 2, 0, 1, height}}
+
+	float noOverlap = 2;
+
+	//const std::vector<std::vector<float>> boundaries{
+	//	{0, 0, width - (padding + noOverlap), 20} // the box stops from falling
 	//};
+
+	
+
+	//const std::vector<std::vector<float>> boundaries{ 
+	//	{150, 0, 20, 20},
+	//	{-width / 2, -height / 2 + padding, width - (padding+ noOverlap), 1}, // from bottom left to the horizontal line
+	//	{-width / 2 +padding, height/2 - padding , width - (padding + noOverlap), 1}, // from top left along the horizontal line
+	//	{-width / 2 + padding, -height / 2, 1, height - (padding + noOverlap)}, // from bottom left along the vertical line
+	//	{width / 2 - padding, -height / 2, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
+	//};
+	
+	const std::vector<std::vector<float>> boundaries{ 
+		{0,0 + padding, width - (padding+ noOverlap), 1}, // from bottom left to the horizontal line
+		{0, 0, width - (padding + noOverlap), 1}, // from top left along the horizontal line
+		{0, 0, 1, height - (padding + noOverlap)}, // from bottom left along the vertical line
+		{0, 0, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
+	};
 
 	for (auto& bound = boundaries.begin(); bound != boundaries.end(); bound++)
 	{
-		auto x = bound->at(0);
-		auto y = bound->at(1);
+		float x = bound->at(0);
+		float y = bound->at(1);
 		b2BodyDef  bodyDef;
-		bodyDef.type = b2_staticBody; // is this necessary? 
+		bodyDef.type = b2_staticBody; // b2_staticBody; // is this necessary? 
 		bodyDef.position.Set(x, y);
-		
+		//bodyDef.position
+		//bodyDef.linearVelocity.Set(0, 0);
+		//bodyDef.awake = false;
+
 		auto w = bound->at(2);
 		auto h = bound->at(3);
+
 		b2PolygonShape shape;
-		shape.SetAsBox(w/2, h/2);
-		
+		std::vector<b2Vec2> b2Poly = {
+			{x, y},
+			{x + w, y},
+			{x + w, y + h},
+			{x, y + h}
+		};
+
+		//shape.SetAsBox(w/2, h/2);
+		shape.Set(b2Poly.data(), b2Poly.size());
+
+		b2FixtureDef fixture;
+		fixture.shape = &shape;
+		//fixture.density = 1.0f;
+		//fixture.friction = 0.3f;
+		//fixture.filter.groupIndex = 2;
+		fixture.restitution = 0.75;
+
 		auto* body = world_.CreateBody(&bodyDef);
-		body->CreateFixture(&shape, 0);
+		body->CreateFixture(&fixture);
+		//body->SetAwake()
+		//body->CreateFixture(&shape, 0);
 
 		Eigen::MatrixX2d coords;
 		coords.resize(4, 2);
@@ -91,40 +131,38 @@ void World::initBounds(float height, float width, float scale,float padding)
 		coords.row(1) << x + w, y;
 		coords.row(2) << x + w, y + h;
 		coords.row(3) << x, y + h;
-			
+
 		boundsCoordinates_.push_back(coords);
+
+		/*Piece debugP(89, coords);
+		debugP.refb2Body_ = body;
+		pieces_.push_back(debugP);*/
 	}
 }
+
 
 void World::Init(std::vector<Piece>& pieces)
 {
 	
 	for (auto pieceIt = pieces.begin(); pieceIt!=pieces.end(); pieceIt++)
 	{
-		b2Body* body = this->createBody(*pieceIt);
+		b2Body* body = this->createPieceBody(*pieceIt);
 		pieceIt->refb2Body_ = body;
 		pieces_.push_back(*pieceIt);
 	}
 
 	// TODO call connectSpringsToPieces by the pairs
-	
 
-	double puzzleArea = 0;
-	for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++) { puzzleArea += pieceIt->getArea(); };
-
-	const int dim = static_cast<int>(1.2 * std::sqrt(puzzleArea));
+	/*const int dim = static_cast<int>(1.2 * std::sqrt(puzzleArea));*/
 	int scale = 1;
 	int height; // = dim * scale;
 	int width; // = dim * scale;
 	
 	getScreenSize(height, width);
 	
-	//height = 800; //  peleg's value //dim * scale;
-	//width = 1440; //  peleg's value //dim * scale;
-
 	screen_ = new Screen(height, width, scale);
 
-	initBounds(height,width,scale,screen_->BOUNDS_THICKNESS_);
+	//initBounds(height,width,scale,screen_->BOUNDS_THICKNESS_);
 
 	// Assign color for debuging or rendring
 	std::vector<cv::Scalar> colors(std::size(pieces_));
@@ -156,15 +194,7 @@ void World::Simulation()
 	while (!isFinished)
 	{
 		screen_->clearDisplay();
-		screen_->drawBounds();
-		//screen_->drawPolygon(boundsCoordinates_[0], cv::Scalar(255, 255, 255));
-		for (int i = 0; i < boundsCoordinates_.size(); i++)
-		{
-			screen_->drawPolygon(boundsCoordinates_[i], cv::Scalar(255,255,255));
-		}
-		
-		//screen_->drawBounds(boundsCoordinates_);
-		
+		screen_->drawBounds(&boundsCoordinates_);
 		
 		world_.Step(timeStep, velocityIterations, positionIterations);
 
@@ -172,8 +202,14 @@ void World::Simulation()
 		{
 			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
 			pieceIt->rotate(transform.q);
-			pieceIt->translate(transform.p);
-			screen_->drawPolygon(pieceIt->coordinates_, pieceIt->color_);
+			auto& velocity = pieceIt->refb2Body_->GetLinearVelocity();
+			pieceIt->translate(velocity);
+			screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
+		}
+
+		for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
+		{
+			std::cout << "collide" << contact->GetFixtureA() << std::endl;
 		}
 
 		int pressedKey = screen_->updateDisplay();

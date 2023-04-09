@@ -21,6 +21,88 @@ int EigenHelloWorld()
 	return 0;
 }
 
+
+int hellowWorld()
+{
+	// Initialize Box2D world
+	b2Vec2 gravity(0.0f, -10.0f);
+	b2World world(gravity);
+
+	// Create the ground body
+	b2BodyDef groundBodyDef;
+	groundBodyDef.position.Set(0.0f, -10.0f);
+	b2Body* groundBody = world.CreateBody(&groundBodyDef);
+
+	// Define the ground shape
+	b2PolygonShape groundShape;
+	groundShape.SetAsBox(50.0f, 10.0f);
+
+	// Create the ground fixture
+	b2FixtureDef groundFixtureDef;
+	groundFixtureDef.shape = &groundShape;
+	groundBody->CreateFixture(&groundFixtureDef);
+
+	// Create the box body
+	b2BodyDef boxBodyDef;
+	boxBodyDef.type = b2_dynamicBody;
+	boxBodyDef.position.Set(0.0f, 20.0f);
+	b2Body* boxBody = world.CreateBody(&boxBodyDef);
+
+	// Define the box shape
+	b2PolygonShape boxShape;
+	boxShape.SetAsBox(1.0f, 1.0f);
+
+	// Create the box fixture
+	b2FixtureDef boxFixtureDef;
+	boxFixtureDef.shape = &boxShape;
+	boxFixtureDef.density = 1.0f;
+	boxFixtureDef.friction = 0.3f;
+	boxFixtureDef.restitution = 0.5f;
+	boxBody->CreateFixture(&boxFixtureDef);
+
+	// Set up OpenCV visualization
+	const float k_pixelsPerMeter = 10.0f;
+	cv::Mat image(600, 800, CV_8UC3);
+	cv::namedWindow("Box2D Simulation", cv::WINDOW_NORMAL);
+	cv::resizeWindow("Box2D Simulation", image.cols, image.rows);
+
+	// Step through the simulation
+	float timeStep = 1.0f / 60.0f;
+	int32 velocityIterations = 6;
+	int32 positionIterations = 2;
+	for (int32 i = 0; i < 99999999; ++i)
+	{
+		world.Step(timeStep, velocityIterations, positionIterations);
+
+		// Clear the image
+		image.setTo(cv::Scalar(255, 255, 255));
+
+		// Draw the ground
+		const b2Transform& groundTransform = groundBody->GetTransform();
+		for (b2Fixture* f = groundBody->GetFixtureList(); f; f = f->GetNext())
+		{
+			b2PolygonShape* polygonShape = dynamic_cast<b2PolygonShape*>(f->GetShape());
+			if (polygonShape)
+			{
+				b2Vec2 vertices[b2_maxPolygonVertices];
+				for (int i = 0; i < polygonShape->m_count; ++i)
+				{
+					vertices[i] = b2Mul(groundTransform, polygonShape->m_vertices[i]);
+				}
+				std::vector<cv::Point> points(polygonShape->m_count);
+				for (int i = 0; i < polygonShape->m_count; ++i)
+				{
+					points[i] = cv::Point(vertices[i].x * k_pixelsPerMeter, vertices[i].y * k_pixelsPerMeter);
+				}
+				cv::polylines(image, points, true, cv::Scalar(0, 0, 0), 2);
+			}
+		}
+
+	}
+
+	return 0;
+}
+
 int Box2dHelloWorld(int argc, char** argv)
 {
 	B2_NOT_USED(argc);

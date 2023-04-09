@@ -3,6 +3,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
 #include <string>
+#include <box2d/box2d.h>
 
 
 class Screen
@@ -21,7 +22,7 @@ public:
 	int updateDisplay();
 	void clearDisplay();
 	void finishDisplay();
-	void drawPolygon(Eigen::MatrixX2d& coordinates, cv::Scalar& color);
-	//void drawBounds(std::vector<Eigen::MatrixX2d> boundsCoordinates);
+	void drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color);
+	void drawBounds(std::vector<Eigen::MatrixX2d>* boundsBodyCoordinates);
 	void drawBounds();
 };

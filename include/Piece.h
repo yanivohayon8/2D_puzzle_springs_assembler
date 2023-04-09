@@ -8,10 +8,11 @@ class Piece
 {
 public:
 	int id_;
-	Eigen::MatrixX2d coordinates_;
 	b2Body* refb2Body_;
 	cv::Mat cvCoords_;
 	cv::Scalar color_;
+	Eigen::MatrixX2d localCoordinates_;
+	std::vector<b2Vec2> globalCoordinates_;
 	Piece(int pieceId,Eigen::MatrixX2d coordinates);
 	void printCoords();
 	std::pair<double, double> getVertexCoord(int iVertex);

@@ -4,7 +4,7 @@
 Piece::Piece(int pieceId, Eigen::MatrixX2d coordinates)
 {
 	id_ = pieceId;
-	coordinates_ = coordinates;
+	localCoordinates_ = coordinates;
 	
 	cv::eigen2cv(coordinates, cvCoords_);
 	cvCoords_.convertTo(cvCoords_, CV_32F);
@@ -12,23 +12,23 @@ Piece::Piece(int pieceId, Eigen::MatrixX2d coordinates)
 
 void Piece::printCoords()
 {
-	for (int ii = 0; ii < coordinates_.rows(); ii++)
+	for (int ii = 0; ii < localCoordinates_.rows(); ii++)
 	{
-		std::cout << "(" << coordinates_.coeff(ii, 0) << "," << coordinates_(ii, 1) << ")" << std::endl;
+		std::cout << "(" << localCoordinates_.coeff(ii, 0) << "," << localCoordinates_(ii, 1) << ")" << std::endl;
 	}
 }
 
 std::pair<double, double> Piece::getVertexCoord(int iVertex)
 {
 	std::pair<double, double> xy;
-	xy.first = coordinates_.coeff(iVertex, 0);
-	xy.second = coordinates_.coeff(iVertex, 1);
+	xy.first = localCoordinates_.coeff(iVertex, 0);
+	xy.second = localCoordinates_.coeff(iVertex, 1);
 	return xy;
 }
 
 int Piece::getNumCoords()
 {
-	return coordinates_.rows();
+	return localCoordinates_.rows();
 }
 
 double Piece::getArea()
@@ -38,12 +38,16 @@ double Piece::getArea()
 
 void Piece::rotate(const b2Rot& rot)
 {
+	// This is inspired from pelegs code: check it! (remember in Passover about the traslate method)
 	Eigen::Matrix2d rotationEigen;
 	rotationEigen << rot.c, -rot.s, rot.s, rot.c;
-	coordinates_ = coordinates_ * rotationEigen.transpose();
+	localCoordinates_ = localCoordinates_ * rotationEigen.transpose();
 }
 
 void Piece::translate(const b2Vec2& translateVector)
 {
-	coordinates_ = coordinates_.rowwise() + Eigen::RowVector2d(translateVector.x, translateVector.y);
+	for (int i = 0; i < globalCoordinates_.size(); i++)
+	{
+		globalCoordinates_[i] = globalCoordinates_[i] + translateVector;
+	}
 }

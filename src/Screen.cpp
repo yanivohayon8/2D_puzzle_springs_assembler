@@ -36,14 +36,16 @@ void Screen::finishDisplay()
 
 
 
-void Screen::drawPolygon(Eigen::MatrixX2d& coordinates, cv::Scalar& color)
+void Screen::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
 {
 	std::vector<cv::Point2i> polygon;
 
-	for (int iCoord = 0; iCoord < coordinates.rows(); iCoord++)
+	for (int iCoord = 0; iCoord < coordinates.size(); iCoord++)
 	{
-		int x = static_cast<int>(width_ / 2 + scale_ * coordinates.row(iCoord)(0));
-		int y = static_cast<int>(height_ / 2 - scale_ * coordinates.row(iCoord)(1));
+		/*int x = static_cast<int>(width_ / 2 + scale_ * coordinates.row(iCoord)(0));
+		int y = static_cast<int>(height_ / 2 - scale_ * coordinates.row(iCoord)(1));*/
+		int x = static_cast<int>(coordinates.at(iCoord)(0));
+		int y = static_cast<int>(height_ - coordinates.at(iCoord)(1));
 		cv::Point2i point(x, y);
 		polygon.push_back(point);
 	}
@@ -51,22 +53,30 @@ void Screen::drawPolygon(Eigen::MatrixX2d& coordinates, cv::Scalar& color)
 	cv::fillPoly(frame_, polygon, color);
 }
 
-void Screen::drawBounds()
+void Screen::drawBounds(std::vector<Eigen::MatrixX2d>* boundsBodyCoordinates = nullptr)
 {
-	/*std::vector<cv::Point2i> polygon;
+	
+	// when colliding is complete - return this
+	/*cv::rectangle(frame_,cv::Point2i(0, 0), cv::Point2i(width_, height_), BOUNDS_COLOR_,BOUNDS_THICKNESS_);
 
-	for (auto& coordinates : boundsCoordinates)
+	for (auto coordIt = boundsBodyCoordinates->begin();coordIt!=boundsBodyCoordinates->end();++coordIt)
 	{
-		for (int iCoord = 0; iCoord < coordinates.rows(); iCoord++)
-		{
-			int x = static_cast<int>(coordinates.row(iCoord)(0));
-			int y = static_cast<int>(coordinates.row(iCoord)(1));
-			cv::Point2i point(x, y);
-			polygon.push_back(point);
-		}
-
-		cv::fillPoly(frame_, polygon, BOUNDS_COLOR_);
+		this->drawPolygon(*coordIt, cv::Scalar(255, 255, 255));
 	}*/
 
-	cv::rectangle(frame_,cv::Point2i(0, 0), cv::Point2i(width_, height_), BOUNDS_COLOR_,BOUNDS_THICKNESS_);
+	std::vector<cv::Scalar> colors = {
+		{255,255,255},
+		{255,0,255},
+		{0,0,255},
+		{0,255,0},
+		{255,0,0},
+	};
+	
+	auto& colorIt = colors.begin();
+
+	/*for (auto coordIt = boundsBodyCoordinates->begin(); coordIt != boundsBodyCoordinates->end(); ++coordIt)
+	{
+		this->drawPolygon(*coordIt, *colorIt);
+		colorIt++;
+	}*/
 }
