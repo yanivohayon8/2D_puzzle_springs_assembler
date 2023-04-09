@@ -14,11 +14,11 @@ b2Body* World::createPieceBody(Piece& piece)
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = b2Vec2{ 3, 2};
+	bodyDef.position = b2Vec2{ 3, 2.5};
 	//bodyDef.linearVelocity.Set(1, 0); // debug
 
 	b2PolygonShape shape;
-	std::vector<b2Vec2> b2Poly;
+	std::vector<b2Vec2>& b2Poly = piece.localCoordsAsVecs_;
 	int numCoords = piece.getNumCoords();
 
 	for (int i = 0; i < numCoords; i++)
@@ -90,10 +90,13 @@ void World::initBounds(float height, float width, float scale, float padding)
 	//};
 
 	float gameWidth = 5;
+	float startX = 0;
+	float startY = 0;
+	float wallWidth = 0.1;
 
 	const std::vector<std::vector<float>> boundaries{ 
-		{0,0.1, gameWidth, 0.1}, // from bottom left to the horizontal line
-		{gameWidth,0.1,0.1,gameWidth}
+		{startX,startY, gameWidth, wallWidth}, // from bottom left to the horizontal line
+		{gameWidth,startY,wallWidth,gameWidth}
 		//{0, 0, width - (padding + noOverlap), 1}, // from top left along the horizontal line
 		//{0, 0, 1, height - (padding + noOverlap)}, // from bottom left along the vertical line
 		//{0, 0, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
@@ -228,8 +231,10 @@ void World::Simulation()
 	int positionIterations = 2;
 	bool isFinished = false;
 	float damping = 0;
+	cv::Scalar redColor = { 0,0,255 };
 
 	screen_->initDisplay();
+
 
 	while (!isFinished)
 	{
@@ -241,11 +246,9 @@ void World::Simulation()
 		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
 		{
 			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
-
-			pieceIt->rotate(transform.q);
-			auto& velocity = pieceIt->refb2Body_->GetLinearVelocity();
-			pieceIt->translate(velocity);
+			pieceIt->translate();
 			screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
+			screen_->drawCircle(transform.p, 3, redColor);
 		}
 
 		for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())

@@ -44,10 +44,11 @@ void Piece::rotate(const b2Rot& rot)
 	localCoordinates_ = localCoordinates_ * rotationEigen.transpose();
 }
 
-void Piece::translate(const b2Vec2& translateVector)
+void Piece::translate()
 {
 	for (int i = 0; i < globalCoordinates_.size(); i++)
 	{
-		globalCoordinates_[i] = globalCoordinates_[i] + translateVector;
+		//globalCoordinates_[i] = globalCoordinates_[i] + translateVector;
+		globalCoordinates_[i] = refb2Body_->GetWorldPoint(localCoordsAsVecs_.at(i));
 	}
 }

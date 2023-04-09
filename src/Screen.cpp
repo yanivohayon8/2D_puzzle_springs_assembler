@@ -6,6 +6,7 @@ Screen::Screen(int height, int width, double scale)
 	width_ = width;
 	scale_ = scale;
 	frame_ = cv::Mat(height_, width_, CV_8UC3);
+	//frame_ = cv::Mat(width_, height_, CV_8UC3);
 	windowName_ = "Vika"; // What does it matter?
 	BOUNDS_COLOR_ = cv::Scalar(0, 0, 255);
 	BOUNDS_THICKNESS_ = 5;
@@ -34,7 +35,16 @@ void Screen::finishDisplay()
 	cv::destroyWindow(windowName_);
 }
 
+int Screen::castToImage(double val)
+{
+	return static_cast<int>(scale_ * val);
+}
 
+void Screen::drawCircle(const b2Vec2& point,int radius,cv::Scalar& color)
+{
+	auto castPoint = cv::Point(castToImage(point.x), castToImage(point.y));
+	cv::circle(frame_, castPoint, radius, color);
+}
 
 void Screen::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
 {
@@ -44,10 +54,10 @@ void Screen::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
 	{
 		/*int x = static_cast<int>(width_ / 2 + scale_ * coordinates.at(iCoord)(0));
 		int y = static_cast<int>(height_ / 2 - scale_ * coordinates.at(iCoord)(1));*/
-		int x = static_cast<int>(scale_* coordinates.at(iCoord)(0));
-		int y = static_cast<int>(height_ - scale_*coordinates.at(iCoord)(1));
+		int x = static_cast<int>(castToImage(coordinates.at(iCoord)(0)));
+		//int y = static_cast<int>(height_ - scale_*coordinates.at(iCoord)(1));
 		// 
-		//int y = static_cast<int>(scale_ * coordinates.at(iCoord)(1));
+		int y = static_cast<int>(castToImage(coordinates.at(iCoord)(1)));
 		cv::Point2i point(x, y);
 		polygon.push_back(point);
 	}
@@ -67,9 +77,9 @@ void Screen::drawBounds(std::vector<std::vector<b2Vec2>>* boundsBodyCoordinates 
 	}*/
 
 	std::vector<cv::Scalar> colors = {
-		{255,255,255},
-		{255,0,255},
 		{0,0,255},
+		{255,0,255},
+		{255,255,255},
 		{0,255,0},
 		{255,0,0},
 	};
