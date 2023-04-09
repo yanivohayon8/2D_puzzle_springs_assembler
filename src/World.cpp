@@ -14,8 +14,8 @@ b2Body* World::createPieceBody(Piece& piece)
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = b2Vec2{ 100, 100};
-	//bodyDef.linearVelocity.Set(0, -10); // debug
+	bodyDef.position = b2Vec2{ 3, 2};
+	//bodyDef.linearVelocity.Set(1, 0); // debug
 
 	b2PolygonShape shape;
 	std::vector<b2Vec2> b2Poly;
@@ -89,8 +89,11 @@ void World::initBounds(float height, float width, float scale, float padding)
 	//	{0,20, width - (padding + noOverlap), 20}
 	//};
 
+	float gameWidth = 5;
+
 	const std::vector<std::vector<float>> boundaries{ 
-		{0,20, width - (padding+ noOverlap), 20} // from bottom left to the horizontal line
+		{0,0.1, gameWidth, 0.1}, // from bottom left to the horizontal line
+		{gameWidth,0.1,0.1,gameWidth}
 		//{0, 0, width - (padding + noOverlap), 1}, // from top left along the horizontal line
 		//{0, 0, 1, height - (padding + noOverlap)}, // from bottom left along the vertical line
 		//{0, 0, 1, height - (padding + noOverlap)} // from bottom right up to the vertical line
@@ -112,10 +115,10 @@ void World::initBounds(float height, float width, float scale, float padding)
 
 		b2PolygonShape shape;
 		std::vector<b2Vec2> b2Poly = {
-			{x, y},
-			{x + w, y},
-			{x + w, y + h},
-			{x, y + h}
+			{0, 0},
+			{w, 0},
+			{w, h},
+			{0, h}
 		};
 
 		//shape.SetAsBox(w/2, h/2);
@@ -152,7 +155,7 @@ void World::initBounds(float height, float width, float scale, float padding)
 		for (int i = 0; i < 4; i++)
 		{
 			b2Vec2& worldPoint = body->GetWorldPoint(b2Poly.at(i));
-			//globalCoords.push_back(worldPoint- mean);
+			//globalCoords.push_back(worldPoint - mean);
 			globalCoords.push_back(worldPoint);
 		}
 
@@ -189,9 +192,13 @@ void World::Init(std::vector<Piece>& pieces)
 	//double screenRatio = screenWidth / (double)screenHeight;
 	//int width = dim * screenRatio; //dim * scale;
 	
-	double scale = 0.5; //0.8;
+	double scale = 50; //0.8;
 	int height = 880; //dim * scale;
 	int width = 1440; //dim * scale;
+
+	//double scale = 50; //0.8;
+	//int height = 800; //dim * scale;
+	//int width = 800; //dim * scale;
 	
 	screen_ = new Screen(height, width, scale);
 

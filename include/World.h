@@ -12,7 +12,7 @@ class World
 public:
 	World();
 	//b2World world_ = b2World(b2Vec2(0, 0));
-	b2World world_ = b2World(b2Vec2(0, -10.0f));
+	b2World world_ = b2World(b2Vec2(0, -0.1f));
 	std::vector<Piece> pieces_;
 	Screen* screen_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
