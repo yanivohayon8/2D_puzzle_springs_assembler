@@ -18,7 +18,7 @@ public:
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 
 	void Init(std::vector<Piece> &pieces);
-	b2Body* createPieceBody(Piece& piece);
+	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(const EdgeMating& edgeMating);
 	void Simulation();
 	void initBounds(float height, float width, float wallWidth);

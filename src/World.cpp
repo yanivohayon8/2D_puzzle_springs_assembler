@@ -4,12 +4,12 @@ World::World()
 {
 }
 
-b2Body* World::createPieceBody(Piece& piece)
+b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 {
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = b2Vec2{ 3, 2.5};
+	bodyDef.position = initialPosition; //b2Vec2{ 3, 2.5};
 	//bodyDef.linearVelocity.Set(1, 0); // debug
 
 	b2PolygonShape shape;
@@ -76,7 +76,7 @@ void World::initBounds(float height, float width, float wallWidth)
 		float x = bound->at(0);
 		float y = bound->at(1);
 		b2BodyDef  bodyDef;
-		bodyDef.type = b2_staticBody; // b2_staticBody; // is this necessary? 
+		bodyDef.type = b2_staticBody;
 		bodyDef.position.Set(x,y);
 		bodyDef.awake = false;
 
@@ -125,11 +125,18 @@ void World::Init(std::vector<Piece>& pieces)
 	float boardWidth = 21;
 	initBounds(boardHeight,boardWidth,wallWidth);
 
+	std::vector<b2Vec2> positions;
+	int seed = 0;
+	int padding = 1;
+	generate2DVectors(positions, pieces.size(), boardWidth, boardHeight,padding, seed);
+	auto& initialPosIt = positions.begin();
+
 	for (auto pieceIt = pieces.begin(); pieceIt != pieces.end(); pieceIt++)
 	{
-		b2Body* body = this->createPieceBody(*pieceIt);
+		b2Body* body = this->createPieceBody(*pieceIt,*initialPosIt);
 		pieceIt->refb2Body_ = body;
 		pieces_.push_back(*pieceIt);
+		initialPosIt++;
 	}
 
 	// Assign color for debuging or rendring

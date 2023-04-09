@@ -1,5 +1,19 @@
 #include <Utils.h>
 
+void generate2DVectors(std::vector<b2Vec2>&vectors,int n,int maxX,int maxY,int padding, int seed)
+{
+	std::mt19937 gen(seed); 
+	std::uniform_int_distribution<int> distributionX(padding + 0, maxX-padding);
+	std::uniform_int_distribution<int> distributionY(padding + 0, maxY-padding);
+
+	for (int i = 0; i < n; i++)
+	{
+		int x = distributionX(gen);
+		int y = distributionY(gen);
+		vectors.push_back(b2Vec2(x, y));
+	}
+
+}
 
 void generateColors(std::vector<cv::Scalar>& oColors)
 {
