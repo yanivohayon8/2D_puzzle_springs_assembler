@@ -36,7 +36,7 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
 	fixture.friction = 0.3f;
-	//fixture.filter.groupIndex = 2;
+	fixture.filter.groupIndex = -2; // Don't collide
 
 	b2Body* oBody = world_.CreateBody(&bodyDef);
 	oBody->CreateFixture(&fixture);
