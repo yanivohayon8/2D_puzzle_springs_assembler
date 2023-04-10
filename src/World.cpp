@@ -36,8 +36,8 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
-	fixture.friction = 0.3f;
-	fixture.filter.groupIndex = -2; // Don't collide
+	fixture.friction = 0.5f;
+	fixture.filter.groupIndex = 2; //-2; // Don't collide
 
 	b2Body* oBody = world_.CreateBody(&bodyDef);
 	oBody->CreateFixture(&fixture);
@@ -48,6 +48,12 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 		b2Vec2& globalPoint = oBody->GetWorldPoint(localPoint);
 		piece.globalCoordinates_.push_back(globalPoint);
 	}
+
+	// Setting the mass of all the pieces to prevent overlapping of pieces
+	// https://www.iforce2d.net/b2dtut/joints-overview (last paragraph)
+	/*b2MassData mass = oBody->GetMassData();
+	mass.mass = 2;
+	oBody->SetMassData(&mass);*/
 
 	return oBody;
 }
@@ -231,7 +237,7 @@ void World::Simulation()
 
 	
 	screen_->initDisplay();
-	//explode(5, 0);
+	explode(1, 0);
 
 	while (!isFinished)
 	{
@@ -272,7 +278,7 @@ void World::Simulation()
 			}
 			break;
 		case 'e':
-			explode(5, -1);
+			explode(5, 0);
 			break;
 		case 'E':
 			explode(50, -1);
