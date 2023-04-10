@@ -58,17 +58,19 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	return oBody;
 }
 
-void World::initBounds(float height, float width, float wallWidth)
+void World::initBounds()
 {
+	float wallWidth = 0.1;
+	screen_ = new Screen(screenHeight_, screenWidth_, screenScale_);
 
 	float originX = 0;
 	float originY = 0;
 	
 	const std::vector<std::vector<float>> boundaries{ 
-		{originX,originY, width, wallWidth}, // from bottom left to the horizontal line
-		{width,originY,wallWidth,height}, // from bottom right along the vertical line
-		{originX,originY,wallWidth,height}, // from bottom left along the vertical line
-		{originX,height,width,wallWidth} // from top left along the horizontal line
+		{originX,originY, boardWidth_, wallWidth}, // from bottom left to the horizontal line
+		{boardWidth_,originY,wallWidth,boardHeight_}, // from bottom right along the vertical line
+		{originX,originY,wallWidth,boardHeight_}, // from bottom left along the vertical line
+		{originX,boardHeight_,boardWidth_,wallWidth} // from top left along the horizontal line
 	};
 
 	for (auto& bound = boundaries.begin(); bound != boundaries.end(); bound++)
@@ -114,20 +116,11 @@ void World::initBounds(float height, float width, float wallWidth)
 
 void World::InitPieces(std::vector<Piece>& pieces)
 {
-	double scale = 50; //10; //50;
-	int height = 880; 
-	int width = 1440; 
-	screen_ = new Screen(height, width, scale);
-
-	float wallWidth = 0.1;
-	float boardHeight = 17; //This fit my screeen...
-	float boardWidth = 28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
-	initBounds(boardHeight,boardWidth,wallWidth);
-
+	
 	std::vector<b2Vec2> positions;
 	int seed = 0;
 	int padding = 2;
-	generate2DVectors(positions, pieces.size(), boardWidth, boardHeight,padding, seed);
+	generate2DVectors(positions, pieces.size(), boardWidth_, boardHeight_,padding, seed);
 	auto& initialPosIt = positions.begin();
 
 	for (auto pieceIt = pieces.begin(); pieceIt != pieces.end(); pieceIt++)
@@ -197,7 +190,6 @@ void World::putMatingSprings(EdgeMating& mating)
 	b2Vec2 anchorB = 0.5*secondVertexGlobalB + 0.5*firstVertexGlobalB;
 	connectSpringsToPieces(bodyA, bodyB, &anchorA, &anchorB);
 }
-
 
 void World::explode(int MaxPower, int seed)
 {

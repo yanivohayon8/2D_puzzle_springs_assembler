@@ -68,3 +68,35 @@ void Piece::getVeterxGlobalCoords(b2Vec2 &oCoords,int iVertex)
 {
 	oCoords = globalCoordinates_[iVertex];
 }
+
+void sortVerticesCCW(std::vector<std::pair<double, double>>& coords, std::map<int, int>& indexMap) {
+	// Calculate the center of the polygon
+	double centerX = 0.0;
+	double centerY = 0.0;
+	for (const auto& coord : coords) {
+		centerX += coord.first;
+		centerY += coord.second;
+	}
+	centerX /= coords.size();
+	centerY /= coords.size();
+
+	// Calculate angles of the vertices with respect to the center
+	std::vector<std::pair<double, int>> angles;
+	for (int i = 0; i < coords.size(); i++) {
+		double dx = coords[i].first - centerX;
+		double dy = coords[i].second - centerY;
+		double angle = std::atan2(dy, dx);
+		angles.push_back(std::make_pair(angle, i));
+	}
+
+	// Sort the vertices by angle
+	std::sort(angles.begin(), angles.end());
+
+	// Build the new "coords" vector and the index mapping
+	std::vector<std::pair<double, double>> newCoords;
+	for (int i = 0; i < angles.size(); i++) {
+		newCoords.push_back(coords[angles[i].second]);
+		indexMap[angles[i].second] = i;
+	}
+	coords = newCoords;
+}

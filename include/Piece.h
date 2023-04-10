@@ -25,5 +25,7 @@ public:
 	b2Vec2* getVeterxLocalCoords(int iVertex);
 	//b2Vec2* getVeterxGlobalCoords(int iVertex);
 	void getVeterxGlobalCoords(b2Vec2& oCoords, int iVertex);
+
+	void sortVerticesCCW(std::vector<std::pair<double, double>>& coords, std::map<int, int>& indexMap);
 };
 

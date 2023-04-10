@@ -45,3 +45,4 @@ int sampleIntUniformly(double max, double min, int seed)
 	std::uniform_int_distribution<int> distribution(min,max);
 	return distribution(gen);
 }
+

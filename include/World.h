@@ -22,13 +22,19 @@ public:
 	std::vector<SpringMating> springs_;
 	int connectedSpringIndex_ = -1; // from the start
 
+	double screenScale_ = 50; //10; //50;
+	int screenHeight_ = 880;
+	int screenWidth_ = 1440;
+	//float wallWidth = 0.1;
+	float boardHeight_ = 17; //This fit my screeen...
+	float boardWidth_ = 28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
 
 	void InitPieces(std::vector<Piece> &pieces);
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB);
 	void putMatingSprings(EdgeMating& mating);
 	void Simulation();
-	void initBounds(float height, float width, float wallWidth);
+	void initBounds();
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
 	void setDamping(b2Body* body, double linearDamping, double angularDamping);
