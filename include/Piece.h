@@ -21,5 +21,8 @@ public:
 	double getArea();
 	void rotate(const b2Rot& rot);
 	void translate();
+	std::pair<int, int> getEdgeVertexIndexes(int iEdge);
+	b2Vec2* getVeterxLocalCoords(int iVertex);
+	b2Vec2* getVeterxGlobalCoords(int iVertex);
 };
 

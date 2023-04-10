@@ -51,3 +51,20 @@ void Piece::translate()
 		globalCoordinates_[i] = refb2Body_->GetWorldPoint(localCoordsAsVecs_.at(i));
 	}
 }
+
+std::pair<int, int> Piece::getEdgeVertexIndexes(int iEdge)
+{
+	int indexFirstVertex = iEdge;
+	int indexSecondVertex = (iEdge + 1) % getNumCoords();
+	return std::pair<int, int>(indexFirstVertex, indexSecondVertex);
+}
+
+b2Vec2* Piece::getVeterxLocalCoords(int iVertex)
+{
+	return &localCoordsAsVecs_[iVertex];
+}
+
+b2Vec2* Piece::getVeterxGlobalCoords(int iVertex)
+{
+	return &globalCoordinates_[iVertex];
+}

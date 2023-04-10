@@ -53,11 +53,6 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 
 
 
-void World::connectSpringsToPieces(const EdgeMating &edgeMating)
-{
-
-}
-
 void World::initBounds(float height, float width, float wallWidth)
 {
 
@@ -113,7 +108,7 @@ void World::initBounds(float height, float width, float wallWidth)
 }
 
 
-void World::Init(std::vector<Piece>& pieces)
+void World::InitPieces(std::vector<Piece>& pieces)
 {
 	double scale = 50;
 	int height = 880; 
@@ -155,6 +150,40 @@ void World::Init(std::vector<Piece>& pieces)
 
 	// TODO call connectSpringsToPieces by the pairs
 
+}
+
+
+void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB)
+{
+	b2DistanceJointDef jointDef;
+	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
+	jointDef.collideConnected = true;
+	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
+	joints_.push_back(joint);
+}
+
+void World::InitMatings(std::vector<EdgeMating>& matings)
+{
+
+	for (auto& matingIt: matings)
+	{
+		Piece* pieceA = &pieces_.at(matingIt.firstPieceId_);
+		Piece* pieceB = &pieces_.at(matingIt.secondPieceId_);
+
+		b2Body* bodyA = pieceA->refb2Body_;
+		b2Body* bodyB = pieceB->refb2Body_;
+
+		std::pair<int, int> vertsPieceA = pieceA->getEdgeVertexIndexes(matingIt.firstPieceEdge_);
+		b2Vec2* firstVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.first);
+		b2Vec2* secondVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.second);
+
+		std::pair<int, int> vertsPieceB = pieceB->getEdgeVertexIndexes(matingIt.secondPieceEdge_);
+		b2Vec2* firstVertexGlobalB = pieceB->getVeterxGlobalCoords(vertsPieceB.first);
+		b2Vec2* secondVertexGlobalB = pieceB->getVeterxGlobalCoords(vertsPieceB.second);
+
+		connectSpringsToPieces(bodyA, bodyB, firstVertexGlobalA, firstVertexGlobalB);
+		connectSpringsToPieces(bodyA, bodyB, secondVertexGlobalA, secondVertexGlobalB);
+	}
 }
 
 void World::Simulation()
