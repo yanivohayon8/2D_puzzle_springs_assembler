@@ -276,6 +276,9 @@ void World::Simulation()
 		case 'e':
 			explode(5, -1);
 			break;
+		case 'E':
+			explode(50, -1);
+			break;
 		case 'c':
 			for (auto& piece: pieces_)
 			{
