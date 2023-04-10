@@ -26,4 +26,5 @@ public:
 	void initBounds(float height, float width, float wallWidth);
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
+	void setDamping(b2Body* body, double linearDamping, double angularDamping);
 };

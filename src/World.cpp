@@ -218,6 +218,12 @@ void World::switchColide(b2Body* body)
 	body->GetFixtureList()->SetFilterData(filter);
 }
 
+void World::setDamping(b2Body* body, double linearDamping,double angularDamping)
+{
+	body->SetLinearDamping(linearDamping);
+	body->SetAngularDamping(angularDamping);
+}
+
 void World::Simulation()
 {
 	
@@ -275,6 +281,25 @@ void World::Simulation()
 			{
 				switchColide(piece.refb2Body_);
 			}
+			break;
+		case 'd':
+			damping += 0.1;
+			for (auto& piece : pieces_)
+			{
+				setDamping(piece.refb2Body_, damping, damping);
+			}
+			break;
+		case 'D':
+			damping -= 0.1;
+			if (damping<0)
+			{
+				damping = 0;
+			}
+			for (auto& piece : pieces_)
+			{
+				setDamping(piece.refb2Body_, damping, damping);
+			}
+			break;
 		default:
 			break;
 		}
