@@ -36,7 +36,7 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
 	fixture.friction = 0.3f;
-	fixture.filter.groupIndex = -2; // Don't collide
+	//fixture.filter.groupIndex = -2; // Don't collide
 
 	b2Body* oBody = world_.CreateBody(&bodyDef);
 	oBody->CreateFixture(&fixture);
@@ -158,6 +158,9 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalC
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
 	jointDef.collideConnected = true;
+	jointDef.minLength = 0.1f; //0.05f;
+	jointDef.maxLength = 1.0f; //0.5f;
+	jointDef.damping = 0.8f; //1.0f;
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
 	joints_.push_back(joint);
 }
@@ -176,13 +179,28 @@ void World::InitMatings(std::vector<EdgeMating>& matings)
 		std::pair<int, int> vertsPieceA = pieceA->getEdgeVertexIndexes(matingIt.firstPieceEdge_);
 		b2Vec2* firstVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.first);
 		b2Vec2* secondVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.second);
+		
+		//a test
+		/*b2Vec2* firstVertexLocalA = pieceA->getVeterxLocalCoords(vertsPieceA.first);
+		b2Vec2* secondVertexLocalA = pieceA->getVeterxLocalCoords(vertsPieceA.second);*/
+
 
 		std::pair<int, int> vertsPieceB = pieceB->getEdgeVertexIndexes(matingIt.secondPieceEdge_);
 		b2Vec2* firstVertexGlobalB = pieceB->getVeterxGlobalCoords(vertsPieceB.first);
 		b2Vec2* secondVertexGlobalB = pieceB->getVeterxGlobalCoords(vertsPieceB.second);
 
+		//a test
+		/*b2Vec2* firstVertexLocalB = pieceB->getVeterxLocalCoords(vertsPieceB.first);
+		b2Vec2* secondVertexLocalB = pieceB->getVeterxLocalCoords(vertsPieceB.second);*/
+
+
 		connectSpringsToPieces(bodyA, bodyB, firstVertexGlobalA, firstVertexGlobalB);
 		connectSpringsToPieces(bodyA, bodyB, secondVertexGlobalA, secondVertexGlobalB);
+		
+		/*connectSpringsToPieces(bodyA, bodyB, firstVertexLocalA, firstVertexLocalB);
+		connectSpringsToPieces(bodyA, bodyB, secondVertexLocalA, secondVertexLocalB);*/
+
+
 	}
 }
 

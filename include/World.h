@@ -11,8 +11,8 @@ class World
 {
 public:
 	World();
-	//b2World world_ = b2World(b2Vec2(0, 0));
-	b2World world_ = b2World(b2Vec2(0, -0.5f)); // for first debugging
+	b2World world_ = b2World(b2Vec2(0, 0));
+	//b2World world_ = b2World(b2Vec2(0, -2.0f)); // for first debugging
 	std::vector<Piece> pieces_;
 	Screen* screen_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
