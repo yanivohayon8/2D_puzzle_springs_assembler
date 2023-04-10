@@ -10,11 +10,12 @@
 class World
 {
 public:
-	World(std::vector<EdgeMating> &matings);
+	World(std::vector<Piece>& pieces,std::vector<EdgeMating> &matings);
 	b2World world_ = b2World(b2Vec2(0, 0));
 	//b2World world_ = b2World(b2Vec2(0, -2.0f)); // for first debugging
 	//b2World world_ = b2World(b2Vec2(0, -12.0f)); // for first debugging
 	std::vector<Piece> pieces_;
+	std::vector<Piece> rawPieces_;
 	Screen* screen_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	std::vector< b2DistanceJoint*> joints_;
@@ -29,7 +30,7 @@ public:
 	float boardHeight_ = 17; //This fit my screeen...
 	float boardWidth_ = 28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
 
-	void InitPieces(std::vector<Piece> &pieces);
+	void InitPieces();
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB);
 	void putMatingSprings(EdgeMating& mating);

@@ -1,8 +1,9 @@
 #include "World.h"
 
-World::World(std::vector<EdgeMating>& matings)
+World::World(std::vector<Piece>& pieces,std::vector<EdgeMating>& matings)
 {
 	matings_ = matings;
+	rawPieces_ = pieces;
 }
 
 b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
@@ -114,16 +115,16 @@ void World::initBounds()
 	}
 }
 
-void World::InitPieces(std::vector<Piece>& pieces)
+void World::InitPieces()
 {
 	
 	std::vector<b2Vec2> positions;
 	int seed = 0;
 	int padding = 2;
-	generate2DVectors(positions, pieces.size(), boardWidth_, boardHeight_,padding, seed);
+	generate2DVectors(positions, rawPieces_.size(), boardWidth_, boardHeight_,padding, seed);
 	auto& initialPosIt = positions.begin();
 
-	for (auto pieceIt = pieces.begin(); pieceIt != pieces.end(); pieceIt++)
+	for (auto pieceIt = rawPieces_.begin(); pieceIt != rawPieces_.end(); pieceIt++)
 	{
 		b2Body* body = this->createPieceBody(*pieceIt,*initialPosIt);
 		pieceIt->refb2Body_ = body;

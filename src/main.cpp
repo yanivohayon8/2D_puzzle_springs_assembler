@@ -14,9 +14,9 @@ int main(int argc, char** argv)
 	//pieces[0].printCoords();
 	std::vector<EdgeMating> edgeMatings;
 	dataLoader.loadEdgeMatings(edgeMatings);
-	World world(edgeMatings);
+	World world(pieces,edgeMatings);
 	world.initBounds();
-	world.InitPieces(pieces);
+	world.InitPieces();
 	world.Simulation();
 	std::cout << "Finish" << std::endl;
 
