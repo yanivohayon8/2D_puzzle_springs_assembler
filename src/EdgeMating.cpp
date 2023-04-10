@@ -7,3 +7,13 @@ EdgeMating::EdgeMating(int firstPieceId, int firstPieceEdge, int secondPieceId, 
 	firstPieceEdge_ = firstPieceEdge;
 	secondPieceEdge_ = secondPieceEdge;
 }
+
+SpringMating::SpringMating(b2Body* bodyA, b2Body* bodyB, b2Vec2& firstAnchorsA, b2Vec2& secondAnchorsA, b2Vec2& firstAnchorsB, b2Vec2& secondAnchorsB)
+{
+	bodyA_ = bodyA;
+	bodyB_ = bodyB;
+	firstAnchorsA_ = firstAnchorsA;
+	secondAnchorsA_ = secondAnchorsA;
+	firstAnchorsB_ = firstAnchorsB;
+	secondAnchorsB_ = secondAnchorsB;
+}

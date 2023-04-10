@@ -64,7 +64,7 @@ b2Vec2* Piece::getVeterxLocalCoords(int iVertex)
 	return &localCoordsAsVecs_[iVertex];
 }
 
-b2Vec2* Piece::getVeterxGlobalCoords(int iVertex)
+void Piece::getVeterxGlobalCoords(b2Vec2 &oCoords,int iVertex)
 {
-	return &globalCoordinates_[iVertex];
+	oCoords = globalCoordinates_[iVertex];
 }

@@ -1,7 +1,8 @@
 #include "World.h"
 
-World::World()
+World::World(std::vector<EdgeMating>& matings)
 {
+	matings_ = matings;
 }
 
 b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
@@ -152,41 +153,45 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalC
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
 	jointDef.collideConnected = true;
-	jointDef.minLength = 0.1f; //0.05f;
-	jointDef.maxLength = 1.0f; //0.5f;
-	jointDef.damping = 0.7f; //1.0f;
+	jointDef.minLength = 0.05f; //0.05f;
+	jointDef.maxLength = 0.1f; //0.5f;
+	jointDef.damping = 0.8f; //1.0f;
+	//jointDef.stiffness = 0.5f;
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
 	joints_.push_back(joint);
 }
 
-void World::InitMatings(std::vector<EdgeMating>& matings)
+void World::putMatingSprings(EdgeMating& mating)
 {
+	Piece* pieceA = &pieces_.at(mating.firstPieceId_);
+	Piece* pieceB = &pieces_.at(mating.secondPieceId_);
 
-	for (auto& matingIt: matings)
-	{
-		Piece* pieceA = &pieces_.at(matingIt.firstPieceId_);
-		Piece* pieceB = &pieces_.at(matingIt.secondPieceId_);
+	b2Body* bodyA = pieceA->refb2Body_;
+	b2Body* bodyB = pieceB->refb2Body_;
 
-		b2Body* bodyA = pieceA->refb2Body_;
-		b2Body* bodyB = pieceB->refb2Body_;
+	b2Vec2 firstVertexGlobalA;
+	b2Vec2 secondVertexGlobalA;
 
-		std::pair<int, int> vertsPieceA = pieceA->getEdgeVertexIndexes(matingIt.firstPieceEdge_);
-		b2Vec2* firstVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.first);
-		b2Vec2* secondVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.second);
-		
-		std::pair<int, int> vertsPieceB = pieceB->getEdgeVertexIndexes(matingIt.secondPieceEdge_);
-		b2Vec2* firstVertexGlobalB = pieceB->getVeterxGlobalCoords(vertsPieceB.first);
-		b2Vec2* secondVertexGlobalB = pieceB->getVeterxGlobalCoords(vertsPieceB.second);
+	std::pair<int, int> vertsPieceA = pieceA->getEdgeVertexIndexes(mating.firstPieceEdge_);
+	//b2Vec2* firstVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.first);
+	//b2Vec2* secondVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.second);
+	pieceA->getVeterxGlobalCoords(firstVertexGlobalA, vertsPieceA.first);
+	pieceA->getVeterxGlobalCoords(secondVertexGlobalA, vertsPieceA.second);
 
-		/*connectSpringsToPieces(bodyA, bodyB, firstVertexGlobalA, firstVertexGlobalB);
-		connectSpringsToPieces(bodyA, bodyB, secondVertexGlobalA, secondVertexGlobalB);
-		*/
-		connectSpringsToPieces(bodyA, bodyB, secondVertexGlobalA, firstVertexGlobalB);
-		connectSpringsToPieces(bodyA, bodyB, firstVertexGlobalA, secondVertexGlobalB);
+	b2Vec2 firstVertexGlobalB;
+	b2Vec2 secondVertexGlobalB;
+	std::pair<int, int> vertsPieceB = pieceB->getEdgeVertexIndexes(mating.secondPieceEdge_);
+	pieceB->getVeterxGlobalCoords(firstVertexGlobalB, vertsPieceB.first);
+	pieceB->getVeterxGlobalCoords(secondVertexGlobalB, vertsPieceB.second);
 
+	//connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
+	//connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
 
-	}
+	b2Vec2 anchorA = 0.5*secondVertexGlobalA + 0.5*firstVertexGlobalA;
+	b2Vec2 anchorB = 0.5*secondVertexGlobalB + 0.5*firstVertexGlobalB;
+	connectSpringsToPieces(bodyA, bodyB, &anchorA, &anchorB);
 }
+
 
 void World::explode(int MaxPower, int seed)
 {
@@ -222,7 +227,9 @@ void World::Simulation()
 	bool isFinished = false;
 	float damping = 0;
 	cv::Scalar redColor = { 0,0,255 };
+	//SpringMating* nextSpring;
 
+	
 	screen_->initDisplay();
 	//explode(5, 0);
 
@@ -288,9 +295,12 @@ void World::Simulation()
 				setDamping(piece.refb2Body_, damping, damping);
 			}
 			break;
-		/*case 's':
-			InitMatings(matings_);
-			break;*/
+		case 'm':
+			if (connectedSpringIndex_ < int(matings_.size()))
+			{
+				putMatingSprings(matings_[++connectedSpringIndex_]);
+			}
+			break;
 		case 'q':
 			isFinished = true;
 			break;

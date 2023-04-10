@@ -23,6 +23,7 @@ public:
 	void translate();
 	std::pair<int, int> getEdgeVertexIndexes(int iEdge);
 	b2Vec2* getVeterxLocalCoords(int iVertex);
-	b2Vec2* getVeterxGlobalCoords(int iVertex);
+	//b2Vec2* getVeterxGlobalCoords(int iVertex);
+	void getVeterxGlobalCoords(b2Vec2& oCoords, int iVertex);
 };
 
