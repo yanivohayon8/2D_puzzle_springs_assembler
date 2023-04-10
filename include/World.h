@@ -30,12 +30,13 @@ public:
 	float boardHeight_ = 17; //This fit my screeen...
 	float boardWidth_ = 28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
 
-	void InitPieces();
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB);
 	void putMatingSprings(EdgeMating& mating);
-	void Simulation();
+	void InitPieces();
 	void initBounds();
+	void Init();
+	void Simulation();
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
 	void setDamping(b2Body* body, double linearDamping, double angularDamping);

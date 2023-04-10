@@ -59,6 +59,12 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	return oBody;
 }
 
+void World::Init()
+{
+	initBounds();
+	InitPieces();
+}
+
 void World::initBounds()
 {
 	float wallWidth = 0.1;
