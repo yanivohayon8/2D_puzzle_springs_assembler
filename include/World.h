@@ -24,4 +24,5 @@ public:
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB);
 	void Simulation();
 	void initBounds(float height, float width, float wallWidth);
+	void explode(int MaxPower, int seed);
 };

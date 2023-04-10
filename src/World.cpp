@@ -51,8 +51,6 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	return oBody;
 }
 
-
-
 void World::initBounds(float height, float width, float wallWidth)
 {
 
@@ -107,7 +105,6 @@ void World::initBounds(float height, float width, float wallWidth)
 	}
 }
 
-
 void World::InitPieces(std::vector<Piece>& pieces)
 {
 	double scale = 50;
@@ -152,7 +149,6 @@ void World::InitPieces(std::vector<Piece>& pieces)
 
 }
 
-
 void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB)
 {
 	b2DistanceJointDef jointDef;
@@ -160,7 +156,7 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalC
 	jointDef.collideConnected = true;
 	jointDef.minLength = 0.1f; //0.05f;
 	jointDef.maxLength = 1.0f; //0.5f;
-	jointDef.damping = 0.8f; //1.0f;
+	jointDef.damping = 0.7f; //1.0f;
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
 	joints_.push_back(joint);
 }
@@ -201,6 +197,17 @@ void World::InitMatings(std::vector<EdgeMating>& matings)
 		connectSpringsToPieces(bodyA, bodyB, secondVertexLocalA, secondVertexLocalB);*/
 
 
+	}
+}
+
+void World::explode(int MaxPower, int seed)
+{
+	int power = sampleIntUniformly(MaxPower, -MaxPower, seed);
+	b2Vec2 impulse(power, power);
+
+	for (auto& piece: pieces_)
+	{
+		piece.refb2Body_->ApplyLinearImpulseToCenter(impulse,true);
 	}
 }
 
@@ -252,6 +259,10 @@ void World::Simulation()
 		{
 		case 'q':
 			isFinished = true;
+			break;
+		case 'e':
+			explode(5, -1);
+			break;
 		default:
 			break;
 		}

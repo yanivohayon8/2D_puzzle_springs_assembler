@@ -9,4 +9,6 @@ void generate2DVectors(std::vector<b2Vec2>& vectors, int n, int maxX, int maxY, 
 
 void generateColors(std::vector<cv::Scalar>& oColors);
 
+int sampleIntUniformly(double max, double min, int seed);
+
 void getScreenSize(int& oHeight, int& oWidth);

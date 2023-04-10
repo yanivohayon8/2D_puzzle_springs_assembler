@@ -30,3 +30,18 @@ void getScreenSize(int& oHeight, int& oWidth)
 	oHeight = GetDeviceCaps(GetDC(NULL), VERTRES);
 	oWidth = GetDeviceCaps(GetDC(NULL), HORZRES);
 }
+
+int sampleIntUniformly(double max, double min, int seed)
+{
+
+	std::mt19937 gen(seed);
+
+	if (seed==-1)
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+	}
+
+	std::uniform_int_distribution<int> distribution(min,max);
+	return distribution(gen);
+}
