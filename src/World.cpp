@@ -107,7 +107,7 @@ void World::initBounds(float height, float width, float wallWidth)
 
 void World::InitPieces(std::vector<Piece>& pieces)
 {
-	double scale = 50;
+	double scale = 50; //10; //50;
 	int height = 880; 
 	int width = 1440; 
 	screen_ = new Screen(height, width, scale);
@@ -119,7 +119,7 @@ void World::InitPieces(std::vector<Piece>& pieces)
 
 	std::vector<b2Vec2> positions;
 	int seed = 0;
-	int padding = 1;
+	int padding = 2;
 	generate2DVectors(positions, pieces.size(), boardWidth, boardHeight,padding, seed);
 	auto& initialPosIt = positions.begin();
 
@@ -144,8 +144,6 @@ void World::InitPieces(std::vector<Piece>& pieces)
 		++pieceIt;
 		++colorIt;
 	}
-
-	// TODO call connectSpringsToPieces by the pairs
 
 }
 
@@ -176,25 +174,15 @@ void World::InitMatings(std::vector<EdgeMating>& matings)
 		b2Vec2* firstVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.first);
 		b2Vec2* secondVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.second);
 		
-		//a test
-		/*b2Vec2* firstVertexLocalA = pieceA->getVeterxLocalCoords(vertsPieceA.first);
-		b2Vec2* secondVertexLocalA = pieceA->getVeterxLocalCoords(vertsPieceA.second);*/
-
-
 		std::pair<int, int> vertsPieceB = pieceB->getEdgeVertexIndexes(matingIt.secondPieceEdge_);
 		b2Vec2* firstVertexGlobalB = pieceB->getVeterxGlobalCoords(vertsPieceB.first);
 		b2Vec2* secondVertexGlobalB = pieceB->getVeterxGlobalCoords(vertsPieceB.second);
 
-		//a test
-		/*b2Vec2* firstVertexLocalB = pieceB->getVeterxLocalCoords(vertsPieceB.first);
-		b2Vec2* secondVertexLocalB = pieceB->getVeterxLocalCoords(vertsPieceB.second);*/
-
-
-		connectSpringsToPieces(bodyA, bodyB, firstVertexGlobalA, firstVertexGlobalB);
+		/*connectSpringsToPieces(bodyA, bodyB, firstVertexGlobalA, firstVertexGlobalB);
 		connectSpringsToPieces(bodyA, bodyB, secondVertexGlobalA, secondVertexGlobalB);
-		
-		/*connectSpringsToPieces(bodyA, bodyB, firstVertexLocalA, firstVertexLocalB);
-		connectSpringsToPieces(bodyA, bodyB, secondVertexLocalA, secondVertexLocalB);*/
+		*/
+		connectSpringsToPieces(bodyA, bodyB, secondVertexGlobalA, firstVertexGlobalB);
+		connectSpringsToPieces(bodyA, bodyB, firstVertexGlobalA, secondVertexGlobalB);
 
 
 	}
@@ -236,7 +224,7 @@ void World::Simulation()
 	cv::Scalar redColor = { 0,0,255 };
 
 	screen_->initDisplay();
-	explode(5, 0);
+	//explode(5, 0);
 
 	while (!isFinished)
 	{
@@ -270,20 +258,17 @@ void World::Simulation()
 
 		switch (pressedKey)
 		{
-		case 'q':
-			isFinished = true;
+		case 'c':
+			for (auto& piece: pieces_)
+			{
+				switchColide(piece.refb2Body_);
+			}
 			break;
 		case 'e':
 			explode(5, -1);
 			break;
 		case 'E':
 			explode(50, -1);
-			break;
-		case 'c':
-			for (auto& piece: pieces_)
-			{
-				switchColide(piece.refb2Body_);
-			}
 			break;
 		case 'd':
 			damping += 0.1;
@@ -302,6 +287,12 @@ void World::Simulation()
 			{
 				setDamping(piece.refb2Body_, damping, damping);
 			}
+			break;
+		/*case 's':
+			InitMatings(matings_);
+			break;*/
+		case 'q':
+			isFinished = true;
 			break;
 		default:
 			break;

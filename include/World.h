@@ -13,10 +13,13 @@ public:
 	World();
 	b2World world_ = b2World(b2Vec2(0, 0));
 	//b2World world_ = b2World(b2Vec2(0, -2.0f)); // for first debugging
+	//b2World world_ = b2World(b2Vec2(0, -12.0f)); // for first debugging
 	std::vector<Piece> pieces_;
 	Screen* screen_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	std::vector< b2DistanceJoint*> joints_;
+	//std::vector<EdgeMating> matings_; // might be unnessary
+
 
 	void InitPieces(std::vector<Piece> &pieces);
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
