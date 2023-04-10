@@ -160,9 +160,9 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalC
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
 	jointDef.collideConnected = true;
 	jointDef.minLength = 0.05f; //0.05f;
-	jointDef.maxLength = 0.1f; //0.5f;
-	jointDef.damping = 0.8f; //1.0f;
-	//jointDef.stiffness = 0.5f;
+	jointDef.maxLength = 0.2f; //0.5f;
+	jointDef.damping = 0.3f; //1.0f;
+	jointDef.stiffness = 0.5f;
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
 	joints_.push_back(joint);
 }
