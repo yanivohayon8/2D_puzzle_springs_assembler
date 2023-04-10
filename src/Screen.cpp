@@ -64,6 +64,7 @@ void Screen::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
 	cv::fillPoly(frame_, polygon, color);
 }
 
+
 void Screen::drawBounds(std::vector<std::vector<b2Vec2>>* boundsBodyCoordinates = nullptr)
 {
 	
@@ -83,4 +84,17 @@ void Screen::drawBounds(std::vector<std::vector<b2Vec2>>* boundsBodyCoordinates 
 		this->drawPolygon(*coordIt, colors[0]);
 		colorIt++;
 	}
+}
+
+void Screen::drawLine(b2Vec2& point1, b2Vec2& point2, cv::Scalar& color, int thickness)
+{
+	int x1 = static_cast<int>(castToImageX(point1.x));
+	int y1 = static_cast<int>(castToImageY(point1.y));
+	cv::Point2i cvPoint1(x1, y1);
+	
+	int x2 = static_cast<int>(castToImageX(point2.x));
+	int y2 = static_cast<int>(castToImageY(point2.y));
+	cv::Point2i cvPoint2(x2, y2);
+	
+	cv::line(frame_, cvPoint1, cvPoint2, color, thickness);
 }

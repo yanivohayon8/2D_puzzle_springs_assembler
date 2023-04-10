@@ -28,4 +28,5 @@ public:
 	int castToImageX(double x);
 	int castToImageY(double y);
 	void drawBounds();
+	void drawLine(b2Vec2& point1, b2Vec2& point2, cv::Scalar& color, int thickness);
 };
