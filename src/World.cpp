@@ -215,10 +215,18 @@ void World::Simulation()
 			screen_->drawCircle(transform.p, 3, redColor);
 		}
 
-		for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
+		for (auto& joint: joints_)
+		{
+			auto& anchorA = joint->GetAnchorA();
+			auto& anchorB = joint->GetAnchorB();
+			screen_->drawLine(anchorA, anchorB, redColor, 1);
+		}
+
+		// for debug
+		/*for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
 		{
 			std::cout << "collide" << contact->GetFixtureA() << std::endl;
-		}
+		}*/
 
 		int pressedKey = screen_->updateDisplay();
 
