@@ -113,8 +113,8 @@ void World::InitPieces(std::vector<Piece>& pieces)
 	screen_ = new Screen(height, width, scale);
 
 	float wallWidth = 0.1;
-	float boardHeight = 15;
-	float boardWidth = 21;
+	float boardHeight = 17; //This fit my screeen...
+	float boardWidth = 28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
 	initBounds(boardHeight,boardWidth,wallWidth);
 
 	std::vector<b2Vec2> positions;
@@ -236,7 +236,7 @@ void World::Simulation()
 	cv::Scalar redColor = { 0,0,255 };
 
 	screen_->initDisplay();
-
+	explode(5, 0);
 
 	while (!isFinished)
 	{
