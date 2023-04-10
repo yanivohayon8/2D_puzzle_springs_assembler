@@ -36,7 +36,7 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
 	fixture.friction = 0.3f;
-	//fixture.filter.groupIndex = -2; // Don't collide
+	fixture.filter.groupIndex = -2; // Don't collide
 
 	b2Body* oBody = world_.CreateBody(&bodyDef);
 	oBody->CreateFixture(&fixture);
@@ -211,6 +211,13 @@ void World::explode(int MaxPower, int seed)
 	}
 }
 
+void World::switchColide(b2Body* body)
+{
+	b2Filter filter = body->GetFixtureList()->GetFilterData();
+	filter.groupIndex = filter.groupIndex * -1;
+	body->GetFixtureList()->SetFilterData(filter);
+}
+
 void World::Simulation()
 {
 	
@@ -263,6 +270,11 @@ void World::Simulation()
 		case 'e':
 			explode(5, -1);
 			break;
+		case 'c':
+			for (auto& piece: pieces_)
+			{
+				switchColide(piece.refb2Body_);
+			}
 		default:
 			break;
 		}

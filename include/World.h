@@ -25,4 +25,5 @@ public:
 	void Simulation();
 	void initBounds(float height, float width, float wallWidth);
 	void explode(int MaxPower, int seed);
+	void switchColide(b2Body* body);
 };
