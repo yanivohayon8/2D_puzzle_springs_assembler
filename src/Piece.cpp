@@ -69,34 +69,35 @@ void Piece::getVeterxGlobalCoords(b2Vec2 &oCoords,int iVertex)
 	oCoords = globalCoordinates_[iVertex];
 }
 
-void sortVerticesCCW(std::vector<std::pair<double, double>>& coords, std::map<int, int>& indexMap) {
-	// Calculate the center of the polygon
-	double centerX = 0.0;
-	double centerY = 0.0;
-	for (const auto& coord : coords) {
-		centerX += coord.first;
-		centerY += coord.second;
+void Piece::sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map)
+{
+	// Compute centroid
+	Eigen::Vector2d centroid(0, 0);
+	for (int i = 0; i < coords.rows(); i++) {
+		centroid += coords.row(i);
 	}
-	centerX /= coords.size();
-	centerY /= coords.size();
+	centroid /= coords.rows();
 
-	// Calculate angles of the vertices with respect to the center
+	// Compute angles with respect to centroid
 	std::vector<std::pair<double, int>> angles;
-	for (int i = 0; i < coords.size(); i++) {
-		double dx = coords[i].first - centerX;
-		double dy = coords[i].second - centerY;
-		double angle = std::atan2(dy, dx);
+	for (int i = 0; i < coords.rows(); i++) {
+		double x = coords(i, 0) - centroid(0);
+		double y = coords(i, 1) - centroid(1);
+		double angle = atan2(y, x);
 		angles.push_back(std::make_pair(angle, i));
 	}
 
-	// Sort the vertices by angle
+	// Sort angles
 	std::sort(angles.begin(), angles.end());
 
-	// Build the new "coords" vector and the index mapping
-	std::vector<std::pair<double, double>> newCoords;
-	for (int i = 0; i < angles.size(); i++) {
-		newCoords.push_back(coords[angles[i].second]);
-		indexMap[angles[i].second] = i;
+	// Reorder coordinates and index map
+	Eigen::MatrixX2d sorted_coords(coords.rows(), coords.cols());
+	std::vector<int> sorted_index_map(coords.rows());
+	for (int i = 0; i < coords.rows(); i++) {
+		sorted_coords.row(i) = coords.row(angles[i].second);
+		sorted_index_map[angles[i].second] = i;
 	}
-	coords = newCoords;
+
+	coords = sorted_coords;
+	index_map = sorted_index_map;
 }

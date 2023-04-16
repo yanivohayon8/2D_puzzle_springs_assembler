@@ -59,10 +59,42 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	return oBody;
 }
 
+void World::preProcess()
+{
+	// Sort the edges of the pieces counter clockwise
+	// And update the mating indexes of the edges
+	for (auto& piece:rawPieces_)
+	{
+		std::vector<int> index_map;
+		piece.sortVerticesCCW(piece.localCoordinates_, index_map);
+
+		for (auto& mating: matings_ )
+		{
+			if (mating.firstPieceId_==piece.id_)
+			{
+				int oldIndex = mating.firstPieceEdge_;
+				mating.firstPieceEdge_ = index_map[oldIndex];
+			}
+			else
+			{
+
+				if (mating.secondPieceId_==piece.id_)
+				{
+					int oldIndex = mating.secondPieceEdge_;
+					mating.secondPieceEdge_ = index_map[oldIndex];
+				}
+			}
+
+		}
+	}
+}
+
 void World::Init()
 {
+	//preProcess();
 	initBounds();
 	InitPieces();
+	orderPutSprings();
 }
 
 void World::initBounds()
@@ -196,6 +228,29 @@ void World::putMatingSprings(EdgeMating& mating)
 	b2Vec2 anchorA = 0.5*secondVertexGlobalA + 0.5*firstVertexGlobalA;
 	b2Vec2 anchorB = 0.5*secondVertexGlobalB + 0.5*firstVertexGlobalB;
 	connectSpringsToPieces(bodyA, bodyB, &anchorA, &anchorB);
+}
+
+void World::orderSpringsConnection()
+{
+	std::vector<EdgeMating> orderedMatings;
+
+	for (auto& piece:pieces_)
+	{
+		for (auto &matingIt :matings_)
+		{
+			if (matingIt.firstPieceId_ == piece.id_ || matingIt.secondPieceId_ == piece.id_)
+			{
+
+				if (std::find(orderedMatings.begin(), orderedMatings.end(),matingIt) == orderedMatings.end())
+				{
+					orderedMatings.push_back(matingIt);
+				}
+			}
+
+		}
+	}
+
+	matings_ = orderedMatings;
 }
 
 void World::explode(int MaxPower, int seed)

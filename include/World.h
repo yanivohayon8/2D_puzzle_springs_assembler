@@ -33,9 +33,12 @@ public:
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB);
 	void putMatingSprings(EdgeMating& mating);
+	void orderSpringsConnection();
+
 	void InitPieces();
 	void initBounds();
 	void Init();
+	void preProcess();
 	void Simulation();
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);

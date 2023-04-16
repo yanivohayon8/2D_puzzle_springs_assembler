@@ -8,6 +8,13 @@ EdgeMating::EdgeMating(int firstPieceId, int firstPieceEdge, int secondPieceId, 
 	secondPieceEdge_ = secondPieceEdge;
 }
 
+bool EdgeMating::operator==(const EdgeMating& other) const {
+	return (firstPieceId_ == other.firstPieceId_ &&
+		firstPieceEdge_ == other.firstPieceEdge_ &&
+		secondPieceId_ == other.secondPieceId_ &&
+		secondPieceEdge_ == other.secondPieceEdge_);
+}
+
 SpringMating::SpringMating(b2Body* bodyA, b2Body* bodyB, b2Vec2& firstAnchorsA, b2Vec2& secondAnchorsA, b2Vec2& firstAnchorsB, b2Vec2& secondAnchorsB)
 {
 	bodyA_ = bodyA;
@@ -17,3 +24,5 @@ SpringMating::SpringMating(b2Body* bodyA, b2Body* bodyB, b2Vec2& firstAnchorsA, 
 	firstAnchorsB_ = firstAnchorsB;
 	secondAnchorsB_ = secondAnchorsB;
 }
+
+

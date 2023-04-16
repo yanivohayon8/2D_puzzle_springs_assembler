@@ -3,6 +3,8 @@
 #include <box2d/box2d.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/eigen.hpp>
+#include <vector>
+#include <algorithm>
 
 class Piece
 {
@@ -26,6 +28,6 @@ public:
 	//b2Vec2* getVeterxGlobalCoords(int iVertex);
 	void getVeterxGlobalCoords(b2Vec2& oCoords, int iVertex);
 
-	void sortVerticesCCW(std::vector<std::pair<double, double>>& coords, std::map<int, int>& indexMap);
+	void sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map);
 };
 

@@ -10,6 +10,8 @@ public:
 	int secondPieceEdge_; // the id of the edge of the second piece
 
 	EdgeMating(int firstPieceId, int firstPieceEdge, int secondPieceId, int secondPieceEdge);
+
+	bool operator==(const EdgeMating& other) const;
 };
 
 
