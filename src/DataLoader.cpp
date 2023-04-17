@@ -12,7 +12,7 @@ DataLoader::DataLoader(std::string puzzleDirectoryPath)
     puzzleDirectoryPath_ = puzzleDirectoryPath;
 }
 
-void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
+void DataLoader::loadPieces(std::vector<Piece>& olstPiece, bool isOfir)
 {
     /*
         Loads the computed pieces. The csv headers are the following: piece,x,y.
@@ -61,6 +61,14 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece)
         }
 
         std::pair<double, double> coord;
+
+        if (isOfir)
+        {
+            // Hardcoded to ofir puzzle types
+            x /= 1000; // The scale shouldbe 0.x...
+            y /= 1000; // because of the input is in hundreds..
+        }
+
         coord.first = x;
         coord.second = y;
         coords.push_back(coord);

@@ -12,7 +12,7 @@ public:
 
 	DataLoader(std::string puzzleDirectoryPath);
 
-	void loadPieces(std::vector<Piece> &olstPiece);
+	void loadPieces(std::vector<Piece> &olstPiece,bool isOfir=false);
 	void loadEdgeMatings(std::vector<EdgeMating>& olstMatings);
 };
 
