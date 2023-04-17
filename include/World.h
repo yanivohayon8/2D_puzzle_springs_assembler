@@ -31,7 +31,8 @@ public:
 	float boardWidth_ = 28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
 
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
-	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,float minLength = 0.05f, float maxLength = 0.2f, float damping = 0.3, float stiffness = 0.5f);
+	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
+		float minLength = 0.05f, float maxLength = 0.2f, float damping = 0.3, float stiffness = 0.5f);
 	void putMatingSprings(EdgeMating& mating);
 	void orderSpringsConnection();
 

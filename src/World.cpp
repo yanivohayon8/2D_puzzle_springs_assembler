@@ -368,7 +368,8 @@ void World::Simulation()
 		case 's':
 			for (auto& joint:joints_)
 			{
-				
+				joint->SetMinLength(0.01);
+				joint->SetMaxLength(0.05);
 			}
 			break;
 		case 'q':
