@@ -361,7 +361,8 @@ void World::Simulation()
 		case 'm':
 			if (connectedSpringIndex_ < int(matings_.size()))
 			{
-				putMatingSprings(matings_[++connectedSpringIndex_]);
+				putMatingSprings(matings_[connectedSpringIndex_]);
+				++connectedSpringIndex_;
 			}
 			break;
 		case 's':

@@ -21,7 +21,7 @@ public:
 	std::vector< b2DistanceJoint*> joints_;
 	std::vector<EdgeMating> matings_; // might be unnessary
 	std::vector<SpringMating> springs_;
-	int connectedSpringIndex_ = -1; // from the start
+	int connectedSpringIndex_ = 0; // from the start
 
 	double screenScale_ = 50; //10; //50;
 	int screenHeight_ = 880;
