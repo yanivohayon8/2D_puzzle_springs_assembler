@@ -186,18 +186,21 @@ void World::InitPieces()
 
 }
 
-void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB)
+void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
+	b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
+	float minLength,float maxLength, float damping, float stiffness)
 {
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
 	jointDef.collideConnected = true;
-	jointDef.minLength = 0.05f; //0.05f;
-	jointDef.maxLength = 0.2f; //0.5f;
-	jointDef.damping = 0.3f; //1.0f;
-	jointDef.stiffness = 0.5f;
+	jointDef.minLength = minLength; //0.05f; //0.05f;
+	jointDef.maxLength = maxLength;//0.2f; //0.5f;
+	jointDef.damping = damping; //0.3f; //1.0f;
+	jointDef.stiffness = stiffness; //0.5f;
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
 	joints_.push_back(joint);
 }
+
 
 void World::putMatingSprings(EdgeMating& mating)
 {
@@ -359,6 +362,12 @@ void World::Simulation()
 			if (connectedSpringIndex_ < int(matings_.size()))
 			{
 				putMatingSprings(matings_[++connectedSpringIndex_]);
+			}
+			break;
+		case 's':
+			for (auto& joint:joints_)
+			{
+				
 			}
 			break;
 		case 'q':
