@@ -94,7 +94,7 @@ void World::Init()
 	//preProcess();
 	initBounds();
 	InitPieces();
-	orderPutSprings();
+	orderSpringsConnection();
 }
 
 void World::initBounds()
