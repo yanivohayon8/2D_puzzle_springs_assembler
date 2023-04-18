@@ -502,7 +502,7 @@ void World::AutomaticSimulation()
 
 		int pressedKey = screen_->updateDisplay();
 
-		if (nIteration%30==0)
+		if (nIteration%60==0)
 		{
 			if (connectedSpringIndex_ < int(matings_.size()))
 			{
@@ -605,3 +605,5 @@ void World::AutomaticSimulation()
 	screen_->finishDisplay();
 
 }
+
+
