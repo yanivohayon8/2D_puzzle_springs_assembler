@@ -44,6 +44,7 @@ void Piece::rotate(const b2Rot& rot)
 	localCoordinates_ = localCoordinates_ * rotationEigen.transpose();
 }
 
+
 void Piece::translate()
 {
 	for (int i = 0; i < globalCoordinates_.size(); i++)
@@ -100,4 +101,25 @@ void Piece::sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_ma
 
 	coords = sorted_coords;
 	index_map = sorted_index_map;
+}
+
+void Piece::getGlobalCoordsMoved(Eigen::MatrixX2d& oCoords, b2Vec2 translate)
+{
+	for (int i = 0; i < oCoords.rows(); i++)
+	{
+		/*oCoords(i, 0) = globalCoordinates_[i].x - translate.x;
+		oCoords(i, 1) = globalCoordinates_[i].y - translate.y;*/
+		oCoords(i, 0) = oCoords(i,0) - translate.x;
+		oCoords(i, 1) = oCoords(i, 1) - translate.y;
+	}
+}
+
+void Piece::getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords)
+{
+	oCoords.resizeLike(localCoordinates_);
+	for (int coordIndex = 0; coordIndex < oCoords.rows(); coordIndex++)
+	{
+		oCoords(coordIndex, 0) = globalCoordinates_.at(coordIndex).x;
+		oCoords(coordIndex, 1) = globalCoordinates_.at(coordIndex).y;
+	}
 }

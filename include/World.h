@@ -41,7 +41,10 @@ public:
 	void Init();
 	void preProcess();
 	void Simulation();
+	void AutomaticSimulation();
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
+	void setCollideOff(b2Body* body);
+	void setCollideOn(b2Body* body);
 	void setDamping(b2Body* body, double linearDamping, double angularDamping);
 };

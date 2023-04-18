@@ -228,9 +228,57 @@ void World::putMatingSprings(EdgeMating& mating)
 	//connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
 	//connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
 
-	b2Vec2 anchorA = 0.5*secondVertexGlobalA + 0.5*firstVertexGlobalA;
-	b2Vec2 anchorB = 0.5*secondVertexGlobalB + 0.5*firstVertexGlobalB;
-	connectSpringsToPieces(bodyA, bodyB, &anchorA, &anchorB);
+	//b2Vec2 anchorA = 0.5*secondVertexGlobalA + 0.5*firstVertexGlobalA;
+	//b2Vec2 anchorB = 0.5*secondVertexGlobalB + 0.5*firstVertexGlobalB;
+	//connectSpringsToPieces(bodyA, bodyB, &anchorA, &anchorB);
+
+	// init coords
+	Eigen::MatrixX2d coordsA;
+	pieceA->getVertexGlobalCoordsAsEigen(coordsA);
+	Eigen::MatrixX2d coordsB;
+	pieceB->getVertexGlobalCoordsAsEigen(coordsB);
+
+	// set firstVertexGlobalA as origin
+	pieceA->getGlobalCoordsMoved(coordsA, firstVertexGlobalA);
+	pieceB->getGlobalCoordsMoved(coordsB, firstVertexGlobalA);
+
+	// move B polygon to set firstVertexGlobalB on firstVertexGlobalA
+	b2Vec2 transFirstAtoFirstB = { float(coordsB(vertsPieceB.first,0)),float(coordsB(vertsPieceB.first,1)) };
+	pieceB->getGlobalCoordsMoved(coordsB, transFirstAtoFirstB);
+
+	b2Vec2 secondVertAMoved = { float(coordsA(vertsPieceA.second,0)), float(coordsA(vertsPieceA.second,1)) };
+	secondVertAMoved.Normalize();
+	b2Vec2 secondVertBMoved = { float(coordsB(vertsPieceB.second,0)),float(coordsB(vertsPieceB.second,1)) };
+	secondVertBMoved.Normalize();
+	double dotProduct = secondVertAMoved.x * secondVertBMoved.x + secondVertAMoved.y * secondVertBMoved.y;
+	double angle = std::acos(dotProduct)*180.0/ 3.14159265; // divided by pi
+
+	Eigen::MatrixX2d R(2,2);
+	getRoatationMatrix(R, -angle);
+	coordsB = coordsB * R;
+
+	cv::Mat cvCoordsA;
+	cv::eigen2cv(coordsA, cvCoordsA);
+	cvCoordsA.convertTo(cvCoordsA, CV_32F);
+	cv::Mat cvCoordsB;
+	cv::eigen2cv(coordsB, cvCoordsB);
+	cvCoordsB.convertTo(cvCoordsB, CV_32F);
+	double intersectArea = cv::intersectConvexConvex(cvCoordsA, cvCoordsB, cv::noArray());
+
+	double epsilon = 0.01;
+
+	if (intersectArea < epsilon)
+	{
+
+		connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
+		connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
+	}
+	else
+	{
+		connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &secondVertexGlobalB);
+		connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &firstVertexGlobalB);
+
+	}
 }
 
 void World::orderSpringsConnection()
@@ -273,6 +321,27 @@ void World::switchColide(b2Body* body)
 	filter.groupIndex = filter.groupIndex * -1;
 	body->GetFixtureList()->SetFilterData(filter);
 }
+
+void World::setCollideOff(b2Body* body)
+{
+	b2Filter filter = body->GetFixtureList()->GetFilterData();
+	if (filter.groupIndex > 0)
+	{
+		filter.groupIndex = filter.groupIndex * -1;
+	}
+	body->GetFixtureList()->SetFilterData(filter);
+}
+
+void World::setCollideOn(b2Body* body)
+{
+	b2Filter filter = body->GetFixtureList()->GetFilterData();
+	if (filter.groupIndex < 0)
+	{
+		filter.groupIndex = filter.groupIndex * -1;
+	}
+	body->GetFixtureList()->SetFilterData(filter);
+}
+
 
 void World::setDamping(b2Body* body, double linearDamping,double angularDamping)
 {
@@ -379,6 +448,158 @@ void World::Simulation()
 			break;
 		}
 
+	}
+
+	screen_->finishDisplay();
+
+}
+
+void World::AutomaticSimulation()
+{
+
+	// The following params make as parameters to the function
+	double timeStep = 1.0F / 60.0F;
+	int velocityIterations = 6;
+	int positionIterations = 2;
+	bool isFinished = false;
+	float damping = 0;
+	cv::Scalar redColor = { 0,0,255 };
+	//SpringMating* nextSpring;
+
+	int nIteration = 0;
+	bool isJointShorted = false;
+
+	screen_->initDisplay();
+	explode(1, 0);
+
+	while (!isFinished)
+	{
+		screen_->clearDisplay();
+		screen_->drawBounds(&boundsCoordinates_);
+
+		world_.Step(timeStep, velocityIterations, positionIterations);
+
+		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
+		{
+			pieceIt->translate();
+			screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
+			const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
+			screen_->drawCircle(transform.p, 3, redColor);
+		}
+
+		for (auto& joint : joints_)
+		{
+			auto& anchorA = joint->GetAnchorA();
+			auto& anchorB = joint->GetAnchorB();
+			screen_->drawLine(anchorA, anchorB, redColor, 1);
+		}
+
+		// for debug
+		/*for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
+		{
+			std::cout << "collide" << contact->GetFixtureA() << std::endl;
+		}*/
+
+		int pressedKey = screen_->updateDisplay();
+
+		if (nIteration%30==0)
+		{
+			if (connectedSpringIndex_ < int(matings_.size()))
+			{
+				putMatingSprings(matings_[connectedSpringIndex_]);
+				++connectedSpringIndex_;
+			}
+			else {
+				if (!isJointShorted)
+				{
+					for (auto& joint : joints_)
+					{
+						joint->SetMinLength(0.01);
+						joint->SetMaxLength(0.05);
+					}
+					isJointShorted = true;
+				}
+				else {
+					double AveragedSpeed = 0;
+
+					for (auto& piece: pieces_)
+					{
+						AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
+					}
+
+					AveragedSpeed /= pieces_.size();
+					double speedEpsilon = 0.1;
+
+					if (AveragedSpeed< speedEpsilon)
+					{
+						isFinished = true;
+						continue;
+					}
+
+
+					damping += 0.1;
+					for (auto& piece : pieces_)
+					{
+						setDamping(piece.refb2Body_, damping, damping);
+					}
+				}
+			}
+		}
+
+		switch (pressedKey)
+		{
+		case 'c':
+			for (auto& piece : pieces_)
+			{
+				switchColide(piece.refb2Body_);
+			}
+			break;
+		case 'e':
+			explode(5, 0);
+			break;
+		case 'E':
+			explode(50, -1);
+			break;
+		case 'd':
+			damping += 0.1;
+			for (auto& piece : pieces_)
+			{
+				setDamping(piece.refb2Body_, damping, damping);
+			}
+			break;
+		case 'D':
+			damping -= 0.1;
+			if (damping < 0)
+			{
+				damping = 0;
+			}
+			for (auto& piece : pieces_)
+			{
+				setDamping(piece.refb2Body_, damping, damping);
+			}
+			break;
+		case 'm':
+			if (connectedSpringIndex_ < int(matings_.size()))
+			{
+				putMatingSprings(matings_[connectedSpringIndex_]);
+				++connectedSpringIndex_;
+			}
+			break;
+		case 's':
+			for (auto& joint : joints_)
+			{
+				joint->SetMinLength(0.01);
+				joint->SetMaxLength(0.05);
+			}
+			break;
+		case 'q':
+			isFinished = true;
+			break;
+		default:
+			break;
+		}
+
+		nIteration++;
 	}
 
 	screen_->finishDisplay();

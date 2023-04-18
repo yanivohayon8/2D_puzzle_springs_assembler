@@ -22,6 +22,7 @@ public:
 	int getNumCoords();
 	double getArea();
 	void rotate(const b2Rot& rot);
+
 	void translate();
 	std::pair<int, int> getEdgeVertexIndexes(int iEdge);
 	b2Vec2* getVeterxLocalCoords(int iVertex);
@@ -29,5 +30,10 @@ public:
 	void getVeterxGlobalCoords(b2Vec2& oCoords, int iVertex);
 
 	void sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map);
+
+	//void isOverlapAfterTranslation(Piece& otherPiece, Eigen::matrixx t, Eigen::MatrixX2d& R);
+	//void coordsMoved(Eigen::MatrixX2d oCoordsCopy, b2Vec2 translate);
+	void getGlobalCoordsMoved(Eigen::MatrixX2d &oCoords, b2Vec2 translate);
+	void getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords);
 };
 

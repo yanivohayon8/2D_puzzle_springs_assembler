@@ -46,3 +46,12 @@ int sampleIntUniformly(double max, double min, int seed)
 	return distribution(gen);
 }
 
+
+void getRoatationMatrix(Eigen::MatrixX2d& oRotation, double angle)
+{
+	oRotation(0, 0) = std::cos(angle);
+	oRotation(1, 0) = std::sin(angle);
+	oRotation(1, 0) = -std::sin(angle);
+	oRotation(1, 1) = std::cos(angle);
+}
+
