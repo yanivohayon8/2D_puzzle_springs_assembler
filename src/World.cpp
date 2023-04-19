@@ -574,9 +574,7 @@ void World::saveFinalTransforms(const std::string& filename)
 	// Write each row of the matrix as a separate line in the CSV file
 	for (auto& piece : pieces_)
 	{
-		for (int i = 0; i < piece.finalCoordinates_.rows(); ++i) {
-			file << piece.id_ << "," << piece.finalTranslate_.x << "," << piece.finalTranslate_.y << "," << piece.finalRot_.s << "," << piece.finalRot_.c << std::endl;
-		}
+		file << std::to_string(piece.id_) << "," << piece.finalTranslate_.x << "," << piece.finalTranslate_.y << "," << piece.finalRot_.s << "," << piece.finalRot_.c << std::endl;
 	}
 
 	// Close the file
