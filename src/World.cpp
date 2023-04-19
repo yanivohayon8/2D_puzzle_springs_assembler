@@ -604,6 +604,9 @@ void World::AutomaticSimulation()
 
 	screen_->finishDisplay();
 
+
+
+
 }
 
 

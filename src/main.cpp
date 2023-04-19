@@ -6,7 +6,8 @@
 
 int main(int argc, char** argv)
 {
-	std::string puzzleDirectory = "../data/ofir/Roman_fresco_Villa_dei_Misteri_Pompeii_009/Puzzle3/0";
+	std::string puzzleDirectory = "../data/ofir/Roman_fresco_Villa_dei_Misteri_Pompeii_009/Puzzle1/4";
+	//std::string puzzleDirectory = "../data/ofir/Roman_fresco_Villa_dei_Misteri_Pompeii_009/Puzzle3/0";
 	//std::string puzzleDirectory = "../data/ofir/Roman_fresco_Villa_dei_Misteri_Pompeii_009/Puzzle2/0";
 	//std::string puzzleDirectory = "../data/ofir/Roman_fresco_Villa_dei_Misteri_Pompeii_009/Puzzle1/0";
 	//std::string puzzleDirectory = "../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle3/0";
