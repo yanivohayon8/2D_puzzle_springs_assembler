@@ -359,6 +359,7 @@ void World::Simulation(bool isAuto)
 	bool isFinished = false;
 	float damping = 0;
 	cv::Scalar redColor = { 0,0,255 };
+	cv::Scalar greenColor = { 0,255,0 };
 	//SpringMating* nextSpring;
 
 	int nIteration = 0;
@@ -389,6 +390,11 @@ void World::Simulation(bool isAuto)
 			screen_->drawLine(anchorA, anchorB, redColor, 1);
 		}
 
+		//// for debug
+		//b2Vec2 centerOfMass = getCenterOfMass(pieces_);
+		//screen_->drawCircle(centerOfMass, 6, greenColor);
+
+
 		// for debug
 		/*for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
 		{
@@ -404,12 +410,14 @@ void World::Simulation(bool isAuto)
 
 			if (nIteration % 60 == 0)
 			{
+				// Still connecting the springs
 				if (connectedSpringIndex_ < int(matings_.size()))
 				{
 					putMatingSprings(matings_[connectedSpringIndex_]);
 					++connectedSpringIndex_;
 				}
 				else {
+					// Shorting the springs
 					if (!isJointShorted)
 					{
 						for (auto& joint : joints_)
@@ -420,6 +428,8 @@ void World::Simulation(bool isAuto)
 						isJointShorted = true;
 					}
 					else {
+
+						// start to slow down
 						double AveragedSpeed = 0;
 
 						for (auto& piece : pieces_)
@@ -511,4 +521,26 @@ void World::Simulation(bool isAuto)
 
 }
 
+
+b2Vec2 World::getCenterOfMass(std::vector<Piece>& pieces)
+{
+	// Compute total mass
+	float totalMass = 0.f;
+	for (auto& piece : pieces) {
+		b2Body* body = piece.refb2Body_;
+		totalMass += body->GetMass();
+	}
+
+	b2Vec2 centreOfMass(0.f, 0.f);
+
+	for (auto& piece : pieces) {
+		b2Body* body = piece.refb2Body_;
+		b2Vec2 r = body->GetWorldCenter();
+		float m = body->GetMass();
+		float weight = m / totalMass;
+		centreOfMass += weight * r;
+	}
+
+	return centreOfMass;
+}
 
