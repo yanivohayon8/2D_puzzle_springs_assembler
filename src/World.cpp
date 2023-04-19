@@ -600,7 +600,7 @@ void World::saveFinalCoordinates(const std::string& filename)
 	for (auto& piece:pieces_)
 	{
 		for (int i = 0; i < piece.finalCoordinates_.rows(); ++i) {
-			file << piece.id_ <<"," << piece.finalCoordinates_(i, 0) << "," << piece.finalCoordinates_(i, 1) << std::endl;
+			file << std::to_string(piece.id_) <<"," << piece.finalCoordinates_(i, 0) << "," << piece.finalCoordinates_(i, 1) << std::endl;
 		}
 	}
 
