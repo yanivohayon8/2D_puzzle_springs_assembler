@@ -24,6 +24,7 @@ int main(int argc, char** argv)
 	world.Init();
 	//world.Simulation();
 	world.Simulation();
+	world.saveFinalTransforms(puzzleDirectory + "/final_transforms.csv");
 	std::cout << "Finish" << std::endl;
 
 	return 0;

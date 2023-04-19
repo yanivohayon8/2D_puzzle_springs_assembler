@@ -516,9 +516,22 @@ void World::Simulation(bool isAuto)
 
 	screen_->finishDisplay();
 
+	b2Vec2 centerOfMass = getCenterOfMass(pieces_);
 
+	for (auto& piece:pieces_ )
+	{
+		piece.finalCoordinates_ = piece.localCoordinates_;
+		const b2Transform& transform = piece.refb2Body_->GetTransform();
+		Eigen::MatrixX2d rotation(2,2);
+		b2Vec2 finalTranslate = transform.p - centerOfMass;
 
-
+		piece.finalRot_ = transform.q;
+		piece.finalTranslate_ = finalTranslate;
+		
+		getRoatationMatrix(rotation, transform.q);
+		piece.finalCoordinates_*= rotation;
+		piece.finalCoordinates_ = piece.finalCoordinates_.rowwise() + Eigen::RowVector2d(finalTranslate.x,finalTranslate.y);
+	}
 }
 
 
@@ -544,3 +557,57 @@ b2Vec2 World::getCenterOfMass(std::vector<Piece>& pieces)
 	return centreOfMass;
 }
 
+
+void World::saveFinalTransforms(const std::string& filename)
+{
+	// Open the CSV file for writing
+	std::ofstream file(filename);
+
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file: " << filename << std::endl;
+		return;
+	}
+
+	// Write the header
+	file << "piece,t_x,t_y,r_sin,r_cos" << std::endl;
+
+	// Write each row of the matrix as a separate line in the CSV file
+	for (auto& piece : pieces_)
+	{
+		for (int i = 0; i < piece.finalCoordinates_.rows(); ++i) {
+			file << piece.id_ << "," << piece.finalTranslate_.x << "," << piece.finalTranslate_.y << "," << piece.finalRot_.s << "," << piece.finalRot_.c << std::endl;
+		}
+	}
+
+	// Close the file
+	file.close();
+
+	std::cout << "Matrix data written to CSV file: " << filename << std::endl;
+}
+
+void World::saveFinalCoordinates(const std::string& filename)
+{
+	// Open the CSV file for writing
+	std::ofstream file(filename);
+
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file: " << filename << std::endl;
+		return;
+	}
+
+	// Write the header
+	file << "piece,x,y" << std::endl;
+
+	// Write each row of the matrix as a separate line in the CSV file
+	for (auto& piece:pieces_)
+	{
+		for (int i = 0; i < piece.finalCoordinates_.rows(); ++i) {
+			file << piece.id_ <<"," << piece.finalCoordinates_(i, 0) << "," << piece.finalCoordinates_(i, 1) << std::endl;
+		}
+	}
+
+	// Close the file
+	file.close();
+
+	std::cout << "Matrix data written to CSV file: " << filename << std::endl;
+}

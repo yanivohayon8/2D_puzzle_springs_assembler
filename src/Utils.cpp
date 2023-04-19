@@ -55,3 +55,11 @@ void getRoatationMatrix(Eigen::MatrixX2d& oRotation, double angle)
 	oRotation(1, 1) = std::cos(angle);
 }
 
+void getRoatationMatrix(Eigen::MatrixX2d& oRotation, const b2Rot& rot)
+{
+	oRotation(0, 0) = rot.c;
+	oRotation(1, 0) = rot.s;
+	oRotation(1, 0) = -rot.s;
+	oRotation(1, 1) = rot.c;
+}
+

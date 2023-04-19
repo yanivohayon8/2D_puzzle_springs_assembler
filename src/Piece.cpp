@@ -5,6 +5,7 @@ Piece::Piece(int pieceId, Eigen::MatrixX2d coordinates)
 {
 	id_ = pieceId;
 	localCoordinates_ = coordinates;
+	//finalCoordinates_ = coordinates;
 	
 	cv::eigen2cv(coordinates, cvCoords_);
 	cvCoords_.convertTo(cvCoords_, CV_32F);

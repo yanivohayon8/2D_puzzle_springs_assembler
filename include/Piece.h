@@ -14,15 +14,18 @@ public:
 	cv::Mat cvCoords_;
 	cv::Scalar color_;
 	Eigen::MatrixX2d localCoordinates_;
+	Eigen::MatrixX2d finalCoordinates_;
 	std::vector<b2Vec2> localCoordsAsVecs_;
 	std::vector<b2Vec2> globalCoordinates_;
+	b2Vec2 finalTranslate_;
+	b2Rot finalRot_;
+
 	Piece(int pieceId,Eigen::MatrixX2d coordinates);
 	void printCoords();
 	std::pair<double, double> getVertexCoord(int iVertex);
 	int getNumCoords();
 	double getArea();
 	void rotate(const b2Rot& rot);
-
 	void translate();
 	std::pair<int, int> getEdgeVertexIndexes(int iEdge);
 	b2Vec2* getVeterxLocalCoords(int iVertex);

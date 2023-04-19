@@ -6,6 +6,8 @@
 #include <numeric>
 #include "Utils.h"
 #include "DebugVisualize.h"
+#include <iostream>
+#include <fstream>
 
 class World
 {
@@ -40,7 +42,7 @@ public:
 	void initBounds();
 	void Init();
 	void preProcess();
-	void Simulation(bool isAuto=false);
+	void Simulation(bool isAuto=true);
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
 	void setCollideOff(b2Body* body);
@@ -48,5 +50,8 @@ public:
 	void setDamping(b2Body* body, double linearDamping, double angularDamping);
 
 	b2Vec2 getCenterOfMass(std::vector<Piece>& pieces);
+
+	void saveFinalCoordinates(const std::string& filename);
+	void saveFinalTransforms(const std::string& filename);
 
 };
