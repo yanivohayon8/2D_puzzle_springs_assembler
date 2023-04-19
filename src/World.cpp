@@ -349,112 +349,7 @@ void World::setDamping(b2Body* body, double linearDamping,double angularDamping)
 	body->SetAngularDamping(angularDamping);
 }
 
-void World::Simulation()
-{
-	
-	// The following params make as parameters to the function
-	double timeStep = 1.0F / 60.0F;
-	int velocityIterations = 6;
-	int positionIterations = 2;
-	bool isFinished = false;
-	float damping = 0;
-	cv::Scalar redColor = { 0,0,255 };
-	//SpringMating* nextSpring;
-
-	
-	screen_->initDisplay();
-	explode(1, 0);
-
-	while (!isFinished)
-	{
-		screen_->clearDisplay();
-		screen_->drawBounds(&boundsCoordinates_);
-		
-		world_.Step(timeStep, velocityIterations, positionIterations);
-
-		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
-		{
-			pieceIt->translate();
-			screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
-			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
-			screen_->drawCircle(transform.p, 3, redColor);
-		}
-
-		for (auto& joint: joints_)
-		{
-			auto& anchorA = joint->GetAnchorA();
-			auto& anchorB = joint->GetAnchorB();
-			screen_->drawLine(anchorA, anchorB, redColor, 1);
-		}
-
-		// for debug
-		/*for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
-		{
-			std::cout << "collide" << contact->GetFixtureA() << std::endl;
-		}*/
-
-		int pressedKey = screen_->updateDisplay();
-
-		switch (pressedKey)
-		{
-		case 'c':
-			for (auto& piece: pieces_)
-			{
-				switchColide(piece.refb2Body_);
-			}
-			break;
-		case 'e':
-			explode(5, 0);
-			break;
-		case 'E':
-			explode(50, -1);
-			break;
-		case 'd':
-			damping += 0.1;
-			for (auto& piece : pieces_)
-			{
-				setDamping(piece.refb2Body_, damping, damping);
-			}
-			break;
-		case 'D':
-			damping -= 0.1;
-			if (damping<0)
-			{
-				damping = 0;
-			}
-			for (auto& piece : pieces_)
-			{
-				setDamping(piece.refb2Body_, damping, damping);
-			}
-			break;
-		case 'm':
-			if (connectedSpringIndex_ < int(matings_.size()))
-			{
-				putMatingSprings(matings_[connectedSpringIndex_]);
-				++connectedSpringIndex_;
-			}
-			break;
-		case 's':
-			for (auto& joint:joints_)
-			{
-				joint->SetMinLength(0.01);
-				joint->SetMaxLength(0.05);
-			}
-			break;
-		case 'q':
-			isFinished = true;
-			break;
-		default:
-			break;
-		}
-
-	}
-
-	screen_->finishDisplay();
-
-}
-
-void World::AutomaticSimulation()
+void World::Simulation(bool isAuto)
 {
 
 	// The following params make as parameters to the function
@@ -502,47 +397,54 @@ void World::AutomaticSimulation()
 
 		int pressedKey = screen_->updateDisplay();
 
-		if (nIteration%60==0)
+		if (isAuto)
 		{
-			if (connectedSpringIndex_ < int(matings_.size()))
+
+		
+
+			if (nIteration % 60 == 0)
 			{
-				putMatingSprings(matings_[connectedSpringIndex_]);
-				++connectedSpringIndex_;
-			}
-			else {
-				if (!isJointShorted)
+				if (connectedSpringIndex_ < int(matings_.size()))
 				{
-					for (auto& joint : joints_)
-					{
-						joint->SetMinLength(0.01);
-						joint->SetMaxLength(0.05);
-					}
-					isJointShorted = true;
+					putMatingSprings(matings_[connectedSpringIndex_]);
+					++connectedSpringIndex_;
 				}
 				else {
-					double AveragedSpeed = 0;
-
-					for (auto& piece: pieces_)
+					if (!isJointShorted)
 					{
-						AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
+						for (auto& joint : joints_)
+						{
+							joint->SetMinLength(0.01);
+							joint->SetMaxLength(0.05);
+						}
+						isJointShorted = true;
 					}
+					else {
+						double AveragedSpeed = 0;
 
-					AveragedSpeed /= pieces_.size();
-					double speedEpsilon = 0.1;
+						for (auto& piece : pieces_)
+						{
+							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
+						}
 
-					if (AveragedSpeed< speedEpsilon)
-					{
-						isFinished = true;
-						continue;
-					}
+						AveragedSpeed /= pieces_.size();
+						double speedEpsilon = 0.1;
+
+						if (AveragedSpeed < speedEpsilon)
+						{
+							isFinished = true;
+							continue;
+						}
 
 
-					damping += 0.1;
-					for (auto& piece : pieces_)
-					{
-						setDamping(piece.refb2Body_, damping, damping);
+						damping += 0.1;
+						for (auto& piece : pieces_)
+						{
+							setDamping(piece.refb2Body_, damping, damping);
+						}
 					}
 				}
+
 			}
 		}
 

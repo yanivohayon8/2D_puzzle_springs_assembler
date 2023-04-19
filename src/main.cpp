@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 	World world(pieces,edgeMatings);
 	world.Init();
 	//world.Simulation();
-	world.AutomaticSimulation();
+	world.Simulation();
 	std::cout << "Finish" << std::endl;
 
 	return 0;

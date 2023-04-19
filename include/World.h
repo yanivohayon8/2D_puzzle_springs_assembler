@@ -40,8 +40,7 @@ public:
 	void initBounds();
 	void Init();
 	void preProcess();
-	void Simulation();
-	void AutomaticSimulation();
+	void Simulation(bool isAuto=true);
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
 	void setCollideOff(b2Body* body);
