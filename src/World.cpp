@@ -167,7 +167,21 @@ void World::InitPieces()
 
 	for (auto pieceIt = rawPieces_.begin(); pieceIt != rawPieces_.end(); pieceIt++)
 	{
-		b2Body* body = this->createPieceBody(*pieceIt,*initialPosIt);
+		b2Body* body;
+
+		//// Box2d limitations
+		//if (pieceIt->getNumCoords()>7)
+		//{
+		//	std::vector<std::vector<b2Vec2>> triangles;
+		//	pieceIt->triangulated(triangles);
+		//	std::cout << "here" << std::endl;
+		//}
+		//else
+		//{
+		//	body = this->createPieceBody(*pieceIt, *initialPosIt);
+		//}
+		body = this->createPieceBody(*pieceIt, *initialPosIt);
+
 		pieceIt->refb2Body_ = body;
 		pieces_.push_back(*pieceIt);
 		initialPosIt++;

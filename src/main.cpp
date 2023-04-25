@@ -26,7 +26,6 @@ int main(int argc, char** argv)
 	World world(pieces,edgeMatings);
 	world.Init();
 	world.Simulation();
-	world.Simulation();
 	world.saveFinalTransforms(puzzleDirectory + "/final_transforms.csv");
 	std::cout << "Finish" << std::endl;
 

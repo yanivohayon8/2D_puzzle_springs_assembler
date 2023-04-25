@@ -6,7 +6,7 @@
 
 
 
-std::map<int, std::vector<b2Vec2>> triangulate(std::vector<b2Vec2>& polygon)
+void triangulate(std::vector<std::vector<b2Vec2>>&oTriangles,std::vector<b2Vec2>& polygon)
 {
     
     std::vector<std::array<double, 2>> array_;
@@ -20,19 +20,18 @@ std::map<int, std::vector<b2Vec2>> triangulate(std::vector<b2Vec2>& polygon)
     tfira_container.push_back(array_);
     std::vector<uint32_t> triangleIndices = mapbox::earcut(tfira_container);
     
-    std::map<int,std::vector<b2Vec2>> triangles;
+    //std::map<int,std::vector<b2Vec2>> triangles;
 
-    for (int i=0; i< polygon.size(); i++)
+    // According to the documentation:
+    // Returns array of indices that refer to the vertices of the input polygon.
+    // Three subsequent indices form a triangle. Output triangles are clockwise.
+    for (int i=0; i< triangleIndices.size(); i+=3)
     {
-        auto triangleIndex = triangleIndices[i];
-        if (triangles.find(triangleIndex)==triangles.end())
-        {
-            std::vector<b2Vec2> emptyTriangle;
-            triangles.insert({ triangleIndex,emptyTriangle });
-        }
-
-        triangles.at(triangleIndex).push_back(polygon[i]);
+        std::vector<b2Vec2> emptyTriangle;
+        emptyTriangle.push_back(polygon[triangleIndices[i]]);
+        emptyTriangle.push_back(polygon[triangleIndices[i + 1]]);
+        emptyTriangle.push_back(polygon[triangleIndices[i + 2]]);
+       
+        oTriangles.push_back(emptyTriangle);
     }
-
-    return triangles;
 }

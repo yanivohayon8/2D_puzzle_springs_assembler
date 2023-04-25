@@ -6,4 +6,4 @@
 #include <map>
 
 // Function to perform Delaunay triangulation using Earcut
-std::map<int, std::vector<b2Vec2>> triangulate(std::vector<b2Vec2> &polygon);
+void triangulate(std::vector<std::vector<b2Vec2>>& oTriangles, std::vector<b2Vec2>& polygon);

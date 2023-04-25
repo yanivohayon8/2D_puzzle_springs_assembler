@@ -131,3 +131,8 @@ void Piece::getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords)
 		oCoords(coordIndex, 1) = globalCoordinates_.at(coordIndex).y;
 	}
 }
+
+void Piece::triangulated(std::vector<std::vector<b2Vec2>>& oTriangles)
+{
+	triangulate(oTriangles, localCoordsAsVecs_);
+}
