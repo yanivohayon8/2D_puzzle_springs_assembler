@@ -15,7 +15,7 @@ public:
 };
 
 
-class SpringMating
+class SpringEdgeMating
 {
 public:
 	b2Body* bodyA_;
@@ -25,5 +25,5 @@ public:
 	b2Vec2 firstAnchorsB_;
 	b2Vec2 secondAnchorsB_;
 
-	SpringMating(b2Body* bodyA, b2Body* bodyB, b2Vec2& firstAnchorsA, b2Vec2& secondAnchorsA, b2Vec2& firstAnchorsB, b2Vec2& secondAnchorsB);
+	SpringEdgeMating(b2Body* bodyA, b2Body* bodyB, b2Vec2& firstAnchorsA, b2Vec2& secondAnchorsA, b2Vec2& firstAnchorsB, b2Vec2& secondAnchorsB);
 };

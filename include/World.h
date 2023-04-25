@@ -22,7 +22,7 @@ public:
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	std::vector< b2DistanceJoint*> joints_;
 	std::vector<EdgeMating> matings_; // might be unnessary
-	std::vector<SpringMating> springs_;
+	std::vector<SpringEdgeMating> springs_;
 	int connectedSpringIndex_ = 0; // from the start
 
 	double screenScale_ = 50; //10; //50;

@@ -15,7 +15,7 @@ bool EdgeMating::operator==(const EdgeMating& other) const {
 		secondPieceEdge_ == other.secondPieceEdge_);
 }
 
-SpringMating::SpringMating(b2Body* bodyA, b2Body* bodyB, b2Vec2& firstAnchorsA, b2Vec2& secondAnchorsA, b2Vec2& firstAnchorsB, b2Vec2& secondAnchorsB)
+SpringEdgeMating::SpringEdgeMating(b2Body* bodyA, b2Body* bodyB, b2Vec2& firstAnchorsA, b2Vec2& secondAnchorsA, b2Vec2& firstAnchorsB, b2Vec2& secondAnchorsB)
 {
 	bodyA_ = bodyA;
 	bodyB_ = bodyB;
