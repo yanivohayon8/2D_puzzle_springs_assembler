@@ -15,7 +15,7 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	//bodyDef.linearVelocity.Set(1, 0); // debug
 
 	b2PolygonShape shape;
-	std::vector<b2Vec2>& b2Poly = piece.localCoordsAsVecs_;
+	/*std::vector<b2Vec2>& b2Poly = piece.localCoordsAsVecs_;
 	int numCoords = piece.getNumCoords();
 
 	for (int i = 0; i < numCoords; i++)
@@ -24,8 +24,10 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 		float x_ = static_cast<float>(x);
 		float y_ = static_cast<float>(y);
 		b2Poly.push_back(b2Vec2{ x_,y_});
-	}
-	shape.Set(b2Poly.data(), b2Poly.size());
+	}*/
+	
+	shape.Set(piece.localCoordsAsVecs_.data(), piece.localCoordsAsVecs_.size());
+
 	/*if (is_polygon_degenerate(points)) {
 		s.SetAsBox(b2_linearSlop * 2,
 			b2_linearSlop * 2);
@@ -34,6 +36,7 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 		s.Set(points.data(), points.size());
 	}*/
 
+	
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
@@ -43,9 +46,9 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	b2Body* oBody = world_.CreateBody(&bodyDef);
 	oBody->CreateFixture(&fixture);
 
-	for (int i = 0; i < numCoords; i++)
+	for (int i = 0; i < piece.localCoordsAsVecs_.size(); i++)
 	{
-		b2Vec2& localPoint = b2Poly.at(i);
+		b2Vec2& localPoint = piece.localCoordsAsVecs_.at(i);
 		b2Vec2& globalPoint = oBody->GetWorldPoint(localPoint);
 		piece.globalCoordinates_.push_back(globalPoint);
 	}
@@ -366,7 +369,13 @@ void World::Simulation(bool isAuto)
 	bool isJointShorted = false;
 
 	screen_->initDisplay();
-	explode(1, 0);
+
+	if (isAuto)
+	{
+		explode(1, 0);
+
+	}
+
 
 	while (!isFinished)
 	{
@@ -380,7 +389,8 @@ void World::Simulation(bool isAuto)
 			pieceIt->translate();
 			screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
 			const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
-			screen_->drawCircle(transform.p, 3, redColor);
+			//screen_->drawCircle(transform.p, 3, redColor);
+			screen_->writeText(std::to_string(pieceIt->id_), transform.p);
 		}
 
 		for (auto& joint : joints_)

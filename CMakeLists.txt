@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 add_subdirectory(box2d)
+#add_subdirectory(earcut.hpp)
 find_package(Eigen3 REQUIRED)
 
 # Add the 'include' directory to the list of directories searched for header files

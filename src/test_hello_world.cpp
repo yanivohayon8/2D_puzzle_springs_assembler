@@ -4,10 +4,31 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/types_c.h>
+
+//#include "earcut.hpp"
+#include "mapbox/earcut.hpp"
+
 using namespace cv;
 
 //#include <Eigen/src/Eigenvalues/
 #include <Eigen/Dense>
+
+int HelloWorldEarcut()
+{
+	// Define the input polygon as a list of vertices
+	std::vector<std::vector<std::array<double, 2>>> polygon;
+	polygon.push_back({ {100, 0}, {100, 100}, {0, 100}, {0, 0} });
+
+	// Triangulate the polygon
+	//std::vector<std::vector<std::size_t>> triangles;
+	std::vector<uint32_t> indices = mapbox::earcut(polygon);
+	//earcut(polygon, {}, {}, triangles);
+
+	
+
+	return 0;
+}
+
 
 int EigenHelloWorld()
 {

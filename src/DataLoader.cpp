@@ -6,10 +6,30 @@ struct Row {
 	double y;
 };
 
+typedef Eigen::Matrix<double, Eigen::Dynamic, 2, Eigen::RowMajor> MatrixX2D_r;
 
 DataLoader::DataLoader(std::string puzzleDirectoryPath)
 {
     puzzleDirectoryPath_ = puzzleDirectoryPath;
+}
+
+void flipAndCenterPolygon(Eigen::MatrixXd& coords)
+{
+    // Compute center of mass
+    Eigen::Vector2d centerOfMass = coords.colwise().mean();
+
+    // Flip coordinates using mirror transformation
+    Eigen::MatrixXd flippedCoords = coords;
+    coords.col(1) = centerOfMass.col(1) - (coords.col(1) - centerOfMass.col(1));
+
+    // Center coordinates with respect to the center of mass
+    coords.rowwise() -= centerOfMass.transpose();
+}
+
+void DataLoader::coordsToEigenCoords(Eigen::MatrixXd& eigenCoords, std::vector<std::pair<double, double>>& coords)
+{
+    eigenCoords = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
+    eigenCoords = eigenCoords.rowwise() - eigenCoords.colwise().mean(); // put as comment for repair
 }
 
 void DataLoader::loadPieces(std::vector<Piece>& olstPiece, bool isOfir)
@@ -20,6 +40,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece, bool isOfir)
     */
 
     std::string piecesFile = puzzleDirectoryPath_ + "/pieces.csv";
+    //std::string piecesFile = puzzleDirectoryPath_ + "/ground_truth_puzzle.csv";
     std::ifstream infile(piecesFile);
 
     if (!infile.is_open()) {
@@ -27,7 +48,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece, bool isOfir)
         return;
     }
 
-    typedef Eigen::Matrix<double, Eigen::Dynamic, 2, Eigen::RowMajor> MatrixX2D_r;
+    
     std::string line;
     double pieceId;
     double x, y;
@@ -53,8 +74,9 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece, bool isOfir)
         if (currPieceId!=pieceId)
         {
             //auto data_debug= coords.data();
-            Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
-            rtData = rtData.rowwise() - rtData.colwise().mean(); 
+            Eigen::MatrixXd rtData;
+            coordsToEigenCoords(rtData, coords);
+
             Piece newPiece = Piece(int(currPieceId), rtData);
             olstPiece.push_back(newPiece);
             coords.clear();
@@ -76,8 +98,9 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece, bool isOfir)
         //std::cout << pieceId << ", " << x << ", " << y << std::endl;
     }
 
-    Eigen::MatrixXd rtData = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
-    rtData = rtData.rowwise() - rtData.colwise().mean();
+    Eigen::MatrixXd rtData;
+    coordsToEigenCoords(rtData, coords);
+
     Piece newPiece = Piece(currPieceId, rtData);
     olstPiece.push_back(newPiece);
 }

@@ -9,6 +9,13 @@ Piece::Piece(int pieceId, Eigen::MatrixX2d coordinates)
 	
 	cv::eigen2cv(coordinates, cvCoords_);
 	cvCoords_.convertTo(cvCoords_, CV_32F);
+
+	for (int i = 0; i < coordinates.rows(); i++)
+	{
+		float x_ = static_cast<float>(coordinates.coeff(i, 0));
+		float y_ = static_cast<float>(coordinates.coeff(i, 1));
+		localCoordsAsVecs_.push_back(b2Vec2{ x_,y_ });
+	}
 }
 
 void Piece::printCoords()

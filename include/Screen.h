@@ -29,4 +29,6 @@ public:
 	int castToImageY(double y);
 	void drawBounds();
 	void drawLine(b2Vec2& point1, b2Vec2& point2, cv::Scalar& color, int thickness);
+
+	void writeText(const std::string& str, const b2Vec2& position);
 };

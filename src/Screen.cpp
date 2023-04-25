@@ -98,3 +98,26 @@ void Screen::drawLine(b2Vec2& point1, b2Vec2& point2, cv::Scalar& color, int thi
 	
 	cv::line(frame_, cvPoint1, cvPoint2, color, thickness);
 }
+
+
+void Screen::writeText(const std::string& text, const b2Vec2& position)
+{
+	// Convert number to string
+	//std::string numberStr = std::to_string(str);
+
+	// Define the text properties
+	int fontFace = cv::FONT_HERSHEY_SIMPLEX;
+	double fontScale = 0.5;
+	int thickness = 1;
+	int baseline = 0;
+	int padding = 5; // Padding around the text
+
+	// Get the size of the text
+	cv::Size textSize = cv::getTextSize(text, fontFace, fontScale, thickness, &baseline);
+
+	// Calculate the position to write the text
+	cv::Point textPosition(castToImageX(position.x), castToImageY(position.y));
+
+	// Write the text on the image
+	cv::putText(frame_, text, textPosition, fontFace, fontScale, cv::Scalar(255, 0, 0), thickness);
+}
