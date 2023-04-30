@@ -1,6 +1,6 @@
 #include "World.h"
 
-World::World(std::vector<Piece>& pieces,std::vector<EdgeMating>& matings)
+World::World(std::vector<Piece>& pieces,std::vector<VertexMating>& matings)
 {
 	matings_ = matings;
 	rawPieces_ = pieces;
@@ -62,35 +62,6 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	return oBody;
 }
 
-void World::preProcess()
-{
-	// Sort the edges of the pieces counter clockwise
-	// And update the mating indexes of the edges
-	for (auto& piece:rawPieces_)
-	{
-		std::vector<int> index_map;
-		piece.sortVerticesCCW(piece.localCoordinates_, index_map);
-
-		for (auto& mating: matings_ )
-		{
-			if (mating.firstPieceId_==piece.id_)
-			{
-				int oldIndex = mating.firstPieceEdge_;
-				mating.firstPieceEdge_ = index_map[oldIndex];
-			}
-			else
-			{
-
-				if (mating.secondPieceId_==piece.id_)
-				{
-					int oldIndex = mating.secondPieceEdge_;
-					mating.secondPieceEdge_ = index_map[oldIndex];
-				}
-			}
-
-		}
-	}
-}
 
 void World::Init()
 {
@@ -219,7 +190,7 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 }
 
 
-void World::putMatingSprings(EdgeMating& mating)
+void World::putMatingSprings(VertexMating& mating)
 {
 	Piece* pieceA = &pieces_.at(mating.firstPieceId_);
 	Piece* pieceB = &pieces_.at(mating.secondPieceId_);
@@ -227,80 +198,87 @@ void World::putMatingSprings(EdgeMating& mating)
 	b2Body* bodyA = pieceA->refb2Body_;
 	b2Body* bodyB = pieceB->refb2Body_;
 
-	b2Vec2 firstVertexGlobalA;
-	b2Vec2 secondVertexGlobalA;
+	b2Vec2 vertexGlobalA;
+	pieceA->getVeterxGlobalCoords(vertexGlobalA, mating.firstPieceVertex_);
+	b2Vec2 vertexGlobalB;
+	pieceB->getVeterxGlobalCoords(vertexGlobalB, mating.secondPieceVertex_);
+	connectSpringsToPieces(bodyA, bodyB, &vertexGlobalA, &vertexGlobalB);
 
-	std::pair<int, int> vertsPieceA = pieceA->getEdgeVertexIndexes(mating.firstPieceEdge_);
-	//b2Vec2* firstVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.first);
-	//b2Vec2* secondVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.second);
-	pieceA->getVeterxGlobalCoords(firstVertexGlobalA, vertsPieceA.first);
-	pieceA->getVeterxGlobalCoords(secondVertexGlobalA, vertsPieceA.second);
 
-	b2Vec2 firstVertexGlobalB;
-	b2Vec2 secondVertexGlobalB;
-	std::pair<int, int> vertsPieceB = pieceB->getEdgeVertexIndexes(mating.secondPieceEdge_);
-	pieceB->getVeterxGlobalCoords(firstVertexGlobalB, vertsPieceB.first);
-	pieceB->getVeterxGlobalCoords(secondVertexGlobalB, vertsPieceB.second);
+	//b2Vec2 firstVertexGlobalA;
+	//b2Vec2 secondVertexGlobalA;
 
-	//connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
-	//connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
+	//std::pair<int, int> vertsPieceA = pieceA->getEdgeVertexIndexes(mating.firstPieceEdge_);
+	////b2Vec2* firstVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.first);
+	////b2Vec2* secondVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.second);
+	//pieceA->getVeterxGlobalCoords(firstVertexGlobalA, vertsPieceA.first);
+	//pieceA->getVeterxGlobalCoords(secondVertexGlobalA, vertsPieceA.second);
 
-	//b2Vec2 anchorA = 0.5*secondVertexGlobalA + 0.5*firstVertexGlobalA;
-	//b2Vec2 anchorB = 0.5*secondVertexGlobalB + 0.5*firstVertexGlobalB;
-	//connectSpringsToPieces(bodyA, bodyB, &anchorA, &anchorB);
+	//b2Vec2 firstVertexGlobalB;
+	//b2Vec2 secondVertexGlobalB;
+	//std::pair<int, int> vertsPieceB = pieceB->getEdgeVertexIndexes(mating.secondPieceEdge_);
+	//pieceB->getVeterxGlobalCoords(firstVertexGlobalB, vertsPieceB.first);
+	//pieceB->getVeterxGlobalCoords(secondVertexGlobalB, vertsPieceB.second);
 
-	// init coords
-	Eigen::MatrixX2d coordsA;
-	pieceA->getVertexGlobalCoordsAsEigen(coordsA);
-	Eigen::MatrixX2d coordsB;
-	pieceB->getVertexGlobalCoordsAsEigen(coordsB);
+	////connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
+	////connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
 
-	// set firstVertexGlobalA as origin
-	pieceA->getGlobalCoordsMoved(coordsA, firstVertexGlobalA);
-	pieceB->getGlobalCoordsMoved(coordsB, firstVertexGlobalA);
+	////b2Vec2 anchorA = 0.5*secondVertexGlobalA + 0.5*firstVertexGlobalA;
+	////b2Vec2 anchorB = 0.5*secondVertexGlobalB + 0.5*firstVertexGlobalB;
+	////connectSpringsToPieces(bodyA, bodyB, &anchorA, &anchorB);
 
-	// move B polygon to set firstVertexGlobalB on firstVertexGlobalA
-	b2Vec2 transFirstAtoFirstB = { float(coordsB(vertsPieceB.first,0)),float(coordsB(vertsPieceB.first,1)) };
-	pieceB->getGlobalCoordsMoved(coordsB, transFirstAtoFirstB);
+	//// init coords
+	//Eigen::MatrixX2d coordsA;
+	//pieceA->getVertexGlobalCoordsAsEigen(coordsA);
+	//Eigen::MatrixX2d coordsB;
+	//pieceB->getVertexGlobalCoordsAsEigen(coordsB);
 
-	b2Vec2 secondVertAMoved = { float(coordsA(vertsPieceA.second,0)), float(coordsA(vertsPieceA.second,1)) };
-	secondVertAMoved.Normalize();
-	b2Vec2 secondVertBMoved = { float(coordsB(vertsPieceB.second,0)),float(coordsB(vertsPieceB.second,1)) };
-	secondVertBMoved.Normalize();
-	double dotProduct = secondVertAMoved.x * secondVertBMoved.x + secondVertAMoved.y * secondVertBMoved.y;
-	double angle = std::acos(dotProduct)*180.0/ 3.14159265; // divided by pi
+	//// set firstVertexGlobalA as origin
+	//pieceA->getGlobalCoordsMoved(coordsA, firstVertexGlobalA);
+	//pieceB->getGlobalCoordsMoved(coordsB, firstVertexGlobalA);
 
-	Eigen::MatrixX2d R(2,2);
-	getRoatationMatrix(R, -angle);
-	coordsB = coordsB * R;
+	//// move B polygon to set firstVertexGlobalB on firstVertexGlobalA
+	//b2Vec2 transFirstAtoFirstB = { float(coordsB(vertsPieceB.first,0)),float(coordsB(vertsPieceB.first,1)) };
+	//pieceB->getGlobalCoordsMoved(coordsB, transFirstAtoFirstB);
 
-	cv::Mat cvCoordsA;
-	cv::eigen2cv(coordsA, cvCoordsA);
-	cvCoordsA.convertTo(cvCoordsA, CV_32F);
-	cv::Mat cvCoordsB;
-	cv::eigen2cv(coordsB, cvCoordsB);
-	cvCoordsB.convertTo(cvCoordsB, CV_32F);
-	double intersectArea = cv::intersectConvexConvex(cvCoordsA, cvCoordsB, cv::noArray());
+	//b2Vec2 secondVertAMoved = { float(coordsA(vertsPieceA.second,0)), float(coordsA(vertsPieceA.second,1)) };
+	//secondVertAMoved.Normalize();
+	//b2Vec2 secondVertBMoved = { float(coordsB(vertsPieceB.second,0)),float(coordsB(vertsPieceB.second,1)) };
+	//secondVertBMoved.Normalize();
+	//double dotProduct = secondVertAMoved.x * secondVertBMoved.x + secondVertAMoved.y * secondVertBMoved.y;
+	//double angle = std::acos(dotProduct)*180.0/ 3.14159265; // divided by pi
 
-	double epsilon = 0.01;
+	//Eigen::MatrixX2d R(2,2);
+	//getRoatationMatrix(R, -angle);
+	//coordsB = coordsB * R;
 
-	if (intersectArea < epsilon)
-	{
+	//cv::Mat cvCoordsA;
+	//cv::eigen2cv(coordsA, cvCoordsA);
+	//cvCoordsA.convertTo(cvCoordsA, CV_32F);
+	//cv::Mat cvCoordsB;
+	//cv::eigen2cv(coordsB, cvCoordsB);
+	//cvCoordsB.convertTo(cvCoordsB, CV_32F);
+	//double intersectArea = cv::intersectConvexConvex(cvCoordsA, cvCoordsB, cv::noArray());
 
-		connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
-		connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
-	}
-	else
-	{
-		connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &secondVertexGlobalB);
-		connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &firstVertexGlobalB);
+	//double epsilon = 0.01;
 
-	}
+	//if (intersectArea < epsilon)
+	//{
+
+	//	connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
+	//	connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
+	//}
+	//else
+	//{
+	//	connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &secondVertexGlobalB);
+	//	connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &firstVertexGlobalB);
+
+	//}
 }
 
 void World::orderSpringsConnection()
 {
-	std::vector<EdgeMating> orderedMatings;
+	std::vector<VertexMating> orderedMatings;
 
 	for (auto& piece:pieces_)
 	{
@@ -370,7 +348,7 @@ void World::Simulation(bool isAuto)
 {
 
 	// The following params make as parameters to the function
-	double timeStep = 1.0F / 60.0F;
+	double timeStep = 1.0F / 60.0F;//1.0F / 300.0F; //1.0F / 60.0F;
 	int velocityIterations = 6;
 	int positionIterations = 2;
 	bool isFinished = false;
@@ -524,8 +502,25 @@ void World::Simulation(bool isAuto)
 		case 's':
 			for (auto& joint : joints_)
 			{
-				joint->SetMinLength(0.01);
-				joint->SetMaxLength(0.05);
+				auto length = joint->GetMinLength();
+				if (length>0.05)
+				{
+					joint->SetMinLength(length-0.1);
+				}
+				//joint->SetMaxLength(0.05);
+			}
+			break;
+		case 'S':
+			for (auto& joint : joints_)
+			{
+
+				//joint->SetMinLength(joint->GetMinLength() - 0.1);
+				auto length = joint->GetMaxLength();
+				if (length>0.2f)
+				{
+
+					joint->SetMaxLength(length-0.1);
+				}
 			}
 			break;
 		case 'q':

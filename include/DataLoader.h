@@ -4,6 +4,7 @@
 #include "EdgeMating.h"
 #include <iostream>
 #include <fstream>
+#include "VertexMating.h"
 
 class DataLoader
 {
@@ -16,5 +17,6 @@ public:
 	void loadEdgeMatings(std::vector<EdgeMating>& olstMatings);
 	void coordsToEigenCoords(Eigen::MatrixXd &eigenCoords,std::vector<std::pair<double, double>>& coords);
 	
+	void loadVertexMatings(std::vector<VertexMating>& olstMatings);
 };
 

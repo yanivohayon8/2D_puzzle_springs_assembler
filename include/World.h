@@ -2,6 +2,7 @@
 #include <box2d/box2d.h>
 #include <Piece.h>
 #include <EdgeMating.h>
+#include <VertexMating.h>
 #include "Screen.h"
 #include <numeric>
 #include "Utils.h"
@@ -12,7 +13,7 @@
 class World
 {
 public:
-	World(std::vector<Piece>& pieces,std::vector<EdgeMating> &matings);
+	World(std::vector<Piece>& pieces,std::vector<VertexMating> &matings);
 	b2World world_ = b2World(b2Vec2(0, 0));
 	//b2World world_ = b2World(b2Vec2(0, -2.0f)); // for first debugging
 	//b2World world_ = b2World(b2Vec2(0, -12.0f)); // for first debugging
@@ -21,7 +22,7 @@ public:
 	Screen* screen_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	std::vector< b2DistanceJoint*> joints_;
-	std::vector<EdgeMating> matings_; // might be unnessary
+	std::vector<VertexMating> matings_; // might be unnessary
 	std::vector<SpringEdgeMating> springs_;
 	int connectedSpringIndex_ = 0; // from the start
 
@@ -34,8 +35,8 @@ public:
 
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
-		float minLength = 0.05f, float maxLength = 0.2f, float damping = 0.3, float stiffness = 0.5f);
-	void putMatingSprings(EdgeMating& mating);
+		float minLength = 0.05f, float maxLength = 2.0f, float damping = 0.3, float stiffness = 0.5f);
+	void putMatingSprings(VertexMating& mating);
 	void orderSpringsConnection();
 
 	void InitPieces();

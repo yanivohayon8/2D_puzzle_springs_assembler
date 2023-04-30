@@ -136,3 +136,35 @@ void DataLoader::loadEdgeMatings(std::vector<EdgeMating>& olstMatings)
         olstMatings.push_back(mating);
     }
 }
+
+void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings)
+{
+    /*
+        Loads the matings between the edges. The csv headers are piece1,vertex1,piece2,vertex2. All of them are int.
+    */
+    std::string piecesFile = puzzleDirectoryPath_ + "/ground_truth_rels_vertex.csv";
+    std::ifstream infile(piecesFile);
+
+    if (!infile.is_open()) {
+        std::cerr << "Failed to open file: " << piecesFile << std::endl;
+        return;
+    }
+
+    std::string line;
+    int firstPieceId, secondPieceId, firstPieceVertex, secondPieceVertex;
+    char comma;  // represent ',' in file, ignored.
+    std::getline(infile, line);//skip the first line because it is a header
+
+
+    while (std::getline(infile, line)) {
+        std::istringstream iss(line);
+
+        if (!(iss >> firstPieceId >> comma >> firstPieceVertex >> comma >> secondPieceId >> comma >> secondPieceVertex)) {
+            throw "Failed to read line: " + line;
+            continue;
+        }
+
+        VertexMating mating(firstPieceId, firstPieceVertex, secondPieceId, secondPieceVertex);
+        olstMatings.push_back(mating);
+    }
+}
