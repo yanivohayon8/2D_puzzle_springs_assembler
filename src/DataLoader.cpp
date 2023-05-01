@@ -168,3 +168,37 @@ void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings)
         olstMatings.push_back(mating);
     }
 }
+
+void DataLoader::loadExtraInfo(std::vector<Piece>& olstPiece)
+{
+    std::string piecesFile = puzzleDirectoryPath_ + "/info.csv";
+    std::ifstream infile(piecesFile);
+
+    if (!infile.is_open()) {
+        std::cerr << "Failed to open file: " << piecesFile << std::endl;
+        return;
+    }
+
+    std::string line;
+    int pieceId, is_rotated;
+    char comma;  // represent ',' in file, ignored.
+    std::getline(infile, line);//skip the first line because it is a header
+
+
+    while (std::getline(infile, line)) {
+        std::istringstream iss(line);
+
+        if (!(iss >> pieceId >> comma >> is_rotated)) {
+            throw "Failed to read line: " + line;
+            continue;
+        }
+
+        for (auto& piece:olstPiece)
+        {
+            if (piece.id_ == pieceId)
+            {
+                piece.isRotationFixed = bool(is_rotated);
+            }
+        }
+    }
+}

@@ -18,5 +18,6 @@ public:
 	void coordsToEigenCoords(Eigen::MatrixXd &eigenCoords,std::vector<std::pair<double, double>>& coords);
 	
 	void loadVertexMatings(std::vector<VertexMating>& olstMatings);
+	void loadExtraInfo(std::vector<Piece>& olstPiece);
 };
 

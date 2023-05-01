@@ -20,6 +20,7 @@ public:
 	std::vector<b2Vec2> globalCoordinates_;
 	b2Vec2 finalTranslate_;
 	b2Rot finalRot_;
+	bool isRotationFixed = false;
 
 	Piece(int pieceId,Eigen::MatrixX2d coordinates);
 	void printCoords();

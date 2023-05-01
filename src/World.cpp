@@ -12,6 +12,7 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position = initialPosition; //b2Vec2{ 3, 2.5};
+	bodyDef.fixedRotation = piece.isRotationFixed;
 	//bodyDef.linearVelocity.Set(1, 0); // debug
 
 	b2PolygonShape shape;
@@ -204,76 +205,6 @@ void World::putMatingSprings(VertexMating& mating)
 	pieceB->getVeterxGlobalCoords(vertexGlobalB, mating.secondPieceVertex_);
 	connectSpringsToPieces(bodyA, bodyB, &vertexGlobalA, &vertexGlobalB);
 
-
-	//b2Vec2 firstVertexGlobalA;
-	//b2Vec2 secondVertexGlobalA;
-
-	//std::pair<int, int> vertsPieceA = pieceA->getEdgeVertexIndexes(mating.firstPieceEdge_);
-	////b2Vec2* firstVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.first);
-	////b2Vec2* secondVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.second);
-	//pieceA->getVeterxGlobalCoords(firstVertexGlobalA, vertsPieceA.first);
-	//pieceA->getVeterxGlobalCoords(secondVertexGlobalA, vertsPieceA.second);
-
-	//b2Vec2 firstVertexGlobalB;
-	//b2Vec2 secondVertexGlobalB;
-	//std::pair<int, int> vertsPieceB = pieceB->getEdgeVertexIndexes(mating.secondPieceEdge_);
-	//pieceB->getVeterxGlobalCoords(firstVertexGlobalB, vertsPieceB.first);
-	//pieceB->getVeterxGlobalCoords(secondVertexGlobalB, vertsPieceB.second);
-
-	////connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
-	////connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
-
-	////b2Vec2 anchorA = 0.5*secondVertexGlobalA + 0.5*firstVertexGlobalA;
-	////b2Vec2 anchorB = 0.5*secondVertexGlobalB + 0.5*firstVertexGlobalB;
-	////connectSpringsToPieces(bodyA, bodyB, &anchorA, &anchorB);
-
-	//// init coords
-	//Eigen::MatrixX2d coordsA;
-	//pieceA->getVertexGlobalCoordsAsEigen(coordsA);
-	//Eigen::MatrixX2d coordsB;
-	//pieceB->getVertexGlobalCoordsAsEigen(coordsB);
-
-	//// set firstVertexGlobalA as origin
-	//pieceA->getGlobalCoordsMoved(coordsA, firstVertexGlobalA);
-	//pieceB->getGlobalCoordsMoved(coordsB, firstVertexGlobalA);
-
-	//// move B polygon to set firstVertexGlobalB on firstVertexGlobalA
-	//b2Vec2 transFirstAtoFirstB = { float(coordsB(vertsPieceB.first,0)),float(coordsB(vertsPieceB.first,1)) };
-	//pieceB->getGlobalCoordsMoved(coordsB, transFirstAtoFirstB);
-
-	//b2Vec2 secondVertAMoved = { float(coordsA(vertsPieceA.second,0)), float(coordsA(vertsPieceA.second,1)) };
-	//secondVertAMoved.Normalize();
-	//b2Vec2 secondVertBMoved = { float(coordsB(vertsPieceB.second,0)),float(coordsB(vertsPieceB.second,1)) };
-	//secondVertBMoved.Normalize();
-	//double dotProduct = secondVertAMoved.x * secondVertBMoved.x + secondVertAMoved.y * secondVertBMoved.y;
-	//double angle = std::acos(dotProduct)*180.0/ 3.14159265; // divided by pi
-
-	//Eigen::MatrixX2d R(2,2);
-	//getRoatationMatrix(R, -angle);
-	//coordsB = coordsB * R;
-
-	//cv::Mat cvCoordsA;
-	//cv::eigen2cv(coordsA, cvCoordsA);
-	//cvCoordsA.convertTo(cvCoordsA, CV_32F);
-	//cv::Mat cvCoordsB;
-	//cv::eigen2cv(coordsB, cvCoordsB);
-	//cvCoordsB.convertTo(cvCoordsB, CV_32F);
-	//double intersectArea = cv::intersectConvexConvex(cvCoordsA, cvCoordsB, cv::noArray());
-
-	//double epsilon = 0.01;
-
-	//if (intersectArea < epsilon)
-	//{
-
-	//	connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
-	//	connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
-	//}
-	//else
-	//{
-	//	connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &secondVertexGlobalB);
-	//	connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &firstVertexGlobalB);
-
-	//}
 }
 
 void World::orderSpringsConnection()

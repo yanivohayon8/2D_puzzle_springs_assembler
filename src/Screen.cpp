@@ -121,3 +121,8 @@ void Screen::writeText(const std::string& text, const b2Vec2& position)
 	// Write the text on the image
 	cv::putText(frame_, text, textPosition, fontFace, fontScale, cv::Scalar(255, 0, 0), thickness);
 }
+
+void Screen::pasteImage()
+{
+	cv::Mat img = cv::imread("../data/ofir/RePAIR/group_39/images/RPf_00316_intact_mesh.png")
+}
