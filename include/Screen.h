@@ -6,10 +6,10 @@
 #include <box2d/box2d.h>
 
 
-class Screen
+class ScreenOpencv
 {
 public:
-	Screen(int height, int width, double scale);
+	ScreenOpencv(int height, int width, double scale);
 	cv::Mat frame_;
 	int height_;
 	int width_;

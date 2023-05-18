@@ -4,6 +4,7 @@
 #include <EdgeMating.h>
 #include <VertexMating.h>
 #include "Screen.h"
+#include "SfmlScreen.h"
 #include <numeric>
 #include "Utils.h"
 #include "DebugVisualize.h"
@@ -19,16 +20,17 @@ public:
 	//b2World world_ = b2World(b2Vec2(0, -12.0f)); // for first debugging
 	std::vector<Piece> pieces_;
 	std::vector<Piece> rawPieces_;
-	Screen* screen_;
+	//ScreenOpencv* screen_;
+	SfmlScreen* screen_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	std::vector< b2DistanceJoint*> joints_;
 	std::vector<VertexMating> matings_; // might be unnessary
 	std::vector<SpringEdgeMating> springs_;
 	int connectedSpringIndex_ = 0; // from the start
 
-	double screenScale_ = 50; //10; //50;
-	int screenHeight_ = 880;
-	int screenWidth_ = 1440;
+	//double screenScale_ = 50; //10; //50;
+	int screenHeight_ = 1024; //880;
+	int screenWidth_ = 1024;
 	//float wallWidth = 0.1;
 	float boardHeight_ = 17; //This fit my screeen...
 	float boardWidth_ = 28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)

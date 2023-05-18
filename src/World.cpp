@@ -75,7 +75,7 @@ void World::Init()
 void World::initBounds()
 {
 	float wallWidth = 0.1;
-	screen_ = new Screen(screenHeight_, screenWidth_, screenScale_);
+	screen_ = new SfmlScreen(screenHeight_, screenWidth_);
 
 	float originX = 0;
 	float originY = 0;
@@ -299,203 +299,208 @@ void World::Simulation(bool isAuto)
 
 	}
 
-
-	while (!isFinished)
+	while (!isFinished && screen_->isWindowOpen())
 	{
 		screen_->clearDisplay();
-		screen_->drawBounds(&boundsCoordinates_);
-
-		world_.Step(timeStep, velocityIterations, positionIterations);
-
-		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
-		{
-			pieceIt->translate();
-			/*auto pos = pieceIt->refb2Body_->GetPosition();
-			screen_->pasteImage(int(pos.x),int(pos.y),100,100);*/
-			screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
-			const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
-			//screen_->drawCircle(transform.p, 3, redColor);
-			screen_->writeText(std::to_string(pieceIt->id_), transform.p);
-		}
-
-		for (auto& joint : joints_)
-		{
-			auto& anchorA = joint->GetAnchorA();
-			auto& anchorB = joint->GetAnchorB();
-			screen_->drawLine(anchorA, anchorB, redColor, 1);
-		}
-
-		//// for debug
-		//b2Vec2 centerOfMass = getCenterOfMass(pieces_);
-		//screen_->drawCircle(centerOfMass, 6, greenColor);
-
-
-		// for debug
-		/*for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
-		{
-			std::cout << "collide" << contact->GetFixtureA() << std::endl;
-		}*/
-
-		int pressedKey = screen_->updateDisplay();
-
-		if (isAuto)
-		{
-
-		
-
-			if (nIteration % 45 == 0)
-			{
-				// Still connecting the springs
-				if (connectedSpringIndex_ < int(matings_.size()))
-				{
-					putMatingSprings(matings_[connectedSpringIndex_]);
-					++connectedSpringIndex_;
-				}
-				else {
-					// Shorting the springs
-					if (!isJointShorted)
-					{
-						/*for (auto& joint : joints_)
-						{
-							joint->SetMinLength(0.01);
-							joint->SetMaxLength(0.05);
-						}
-						isJointShorted = true;*/
-
-						isJointShorted = true;
-						for (auto& joint : joints_)
-						{
-							auto length = joint->GetMaxLength();
-							if (length > 0.2f)
-							{
-								isJointShorted = false;
-								joint->SetMaxLength(length - 0.2);
-							}
-						}
-
-					}
-					else {
-
-						// start to slow down
-						double AveragedSpeed = 0;
-
-						for (auto& piece : pieces_)
-						{
-							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
-						}
-
-						AveragedSpeed /= pieces_.size();
-						double speedEpsilon = 0.1;
-
-						if (AveragedSpeed < speedEpsilon)
-						{
-							isFinished = true;
-							continue;
-						}
-
-
-						damping += 0.1;
-						for (auto& piece : pieces_)
-						{
-							setDamping(piece.refb2Body_, damping, damping);
-						}
-					}
-				}
-
-			}
-		}
-
-		switch (pressedKey)
-		{
-		case 'c':
-			for (auto& piece : pieces_)
-			{
-				switchColide(piece.refb2Body_);
-			}
-			break;
-		case 'e':
-			explode(5, 0);
-			break;
-		case 'E':
-			explode(50, -1);
-			break;
-		case 'd':
-			damping += 0.1;
-			for (auto& piece : pieces_)
-			{
-				setDamping(piece.refb2Body_, damping, damping);
-			}
-			break;
-		case 'D':
-			damping -= 0.1;
-			if (damping < 0)
-			{
-				damping = 0;
-			}
-			for (auto& piece : pieces_)
-			{
-				setDamping(piece.refb2Body_, damping, damping);
-			}
-			break;
-		case 'm':
-			if (connectedSpringIndex_ < int(matings_.size()))
-			{
-				putMatingSprings(matings_[connectedSpringIndex_]);
-				++connectedSpringIndex_;
-			}
-			break;
-		case 's':
-			for (auto& joint : joints_)
-			{
-				auto length = joint->GetMinLength();
-				if (length>0.05)
-				{
-					joint->SetMinLength(length-0.1);
-				}
-				//joint->SetMaxLength(0.05);
-			}
-			break;
-		case 'S':
-			for (auto& joint : joints_)
-			{
-
-				//joint->SetMinLength(joint->GetMinLength() - 0.1);
-				auto length = joint->GetMaxLength();
-				if (length>0.2f)
-				{
-
-					joint->SetMaxLength(length-0.1);
-				}
-			}
-			break;
-		case 'q':
-			isFinished = true;
-			break;
-		default:
-			break;
-		}
-
-		nIteration++;
+		screen_->updateDisplay();
 	}
 
-	screen_->finishDisplay();
+	//while (!isFinished)
+	//{
+	//	screen_->clearDisplay();
+	//	screen_->drawBounds(&boundsCoordinates_);
 
-	b2Vec2 centerOfMass = getCenterOfMass(pieces_);
+	//	world_.Step(timeStep, velocityIterations, positionIterations);
 
-	for (auto& piece:pieces_ )
-	{
-		piece.finalCoordinates_ = piece.localCoordinates_;
-		const b2Transform& transform = piece.refb2Body_->GetTransform();
-		Eigen::MatrixX2d rotation(2,2);
-		b2Vec2 finalTranslate = transform.p - centerOfMass;
+	//	for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
+	//	{
+	//		pieceIt->translate();
+	//		/*auto pos = pieceIt->refb2Body_->GetPosition();
+	//		screen_->pasteImage(int(pos.x),int(pos.y),100,100);*/
+	//		screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
+	//		const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
+	//		//screen_->drawCircle(transform.p, 3, redColor);
+	//		screen_->writeText(std::to_string(pieceIt->id_), transform.p);
+	//	}
 
-		piece.finalRot_ = transform.q;
-		piece.finalTranslate_ = finalTranslate;
-		
-		getRoatationMatrix(rotation, transform.q);
-		piece.finalCoordinates_*= rotation;
-		piece.finalCoordinates_ = piece.finalCoordinates_.rowwise() + Eigen::RowVector2d(finalTranslate.x,finalTranslate.y);
-	}
+	//	for (auto& joint : joints_)
+	//	{
+	//		auto& anchorA = joint->GetAnchorA();
+	//		auto& anchorB = joint->GetAnchorB();
+	//		screen_->drawLine(anchorA, anchorB, redColor, 1);
+	//	}
+
+	//	//// for debug
+	//	//b2Vec2 centerOfMass = getCenterOfMass(pieces_);
+	//	//screen_->drawCircle(centerOfMass, 6, greenColor);
+
+
+	//	// for debug
+	//	/*for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
+	//	{
+	//		std::cout << "collide" << contact->GetFixtureA() << std::endl;
+	//	}*/
+
+	//	int pressedKey = screen_->updateDisplay();
+
+	//	//if (isAuto)
+	//	//{
+
+	//	//
+
+	//	//	if (nIteration % 45 == 0)
+	//	//	{
+	//	//		// Still connecting the springs
+	//	//		if (connectedSpringIndex_ < int(matings_.size()))
+	//	//		{
+	//	//			putMatingSprings(matings_[connectedSpringIndex_]);
+	//	//			++connectedSpringIndex_;
+	//	//		}
+	//	//		else {
+	//	//			// Shorting the springs
+	//	//			if (!isJointShorted)
+	//	//			{
+	//	//				/*for (auto& joint : joints_)
+	//	//				{
+	//	//					joint->SetMinLength(0.01);
+	//	//					joint->SetMaxLength(0.05);
+	//	//				}
+	//	//				isJointShorted = true;*/
+
+	//	//				isJointShorted = true;
+	//	//				for (auto& joint : joints_)
+	//	//				{
+	//	//					auto length = joint->GetMaxLength();
+	//	//					if (length > 0.2f)
+	//	//					{
+	//	//						isJointShorted = false;
+	//	//						joint->SetMaxLength(length - 0.2);
+	//	//					}
+	//	//				}
+
+	//	//			}
+	//	//			else {
+
+	//	//				// start to slow down
+	//	//				double AveragedSpeed = 0;
+
+	//	//				for (auto& piece : pieces_)
+	//	//				{
+	//	//					AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
+	//	//				}
+
+	//	//				AveragedSpeed /= pieces_.size();
+	//	//				double speedEpsilon = 0.1;
+
+	//	//				if (AveragedSpeed < speedEpsilon)
+	//	//				{
+	//	//					isFinished = true;
+	//	//					continue;
+	//	//				}
+
+
+	//	//				damping += 0.1;
+	//	//				for (auto& piece : pieces_)
+	//	//				{
+	//	//					setDamping(piece.refb2Body_, damping, damping);
+	//	//				}
+	//	//			}
+	//	//		}
+
+	//	//	}
+	//	//}
+
+	//	//switch (pressedKey)
+	//	//{
+	//	//case 'c':
+	//	//	for (auto& piece : pieces_)
+	//	//	{
+	//	//		switchColide(piece.refb2Body_);
+	//	//	}
+	//	//	break;
+	//	//case 'e':
+	//	//	explode(5, 0);
+	//	//	break;
+	//	//case 'E':
+	//	//	explode(50, -1);
+	//	//	break;
+	//	//case 'd':
+	//	//	damping += 0.1;
+	//	//	for (auto& piece : pieces_)
+	//	//	{
+	//	//		setDamping(piece.refb2Body_, damping, damping);
+	//	//	}
+	//	//	break;
+	//	//case 'D':
+	//	//	damping -= 0.1;
+	//	//	if (damping < 0)
+	//	//	{
+	//	//		damping = 0;
+	//	//	}
+	//	//	for (auto& piece : pieces_)
+	//	//	{
+	//	//		setDamping(piece.refb2Body_, damping, damping);
+	//	//	}
+	//	//	break;
+	//	//case 'm':
+	//	//	if (connectedSpringIndex_ < int(matings_.size()))
+	//	//	{
+	//	//		putMatingSprings(matings_[connectedSpringIndex_]);
+	//	//		++connectedSpringIndex_;
+	//	//	}
+	//	//	break;
+	//	//case 's':
+	//	//	for (auto& joint : joints_)
+	//	//	{
+	//	//		auto length = joint->GetMinLength();
+	//	//		if (length>0.05)
+	//	//		{
+	//	//			joint->SetMinLength(length-0.1);
+	//	//		}
+	//	//		//joint->SetMaxLength(0.05);
+	//	//	}
+	//	//	break;
+	//	//case 'S':
+	//	//	for (auto& joint : joints_)
+	//	//	{
+
+	//	//		//joint->SetMinLength(joint->GetMinLength() - 0.1);
+	//	//		auto length = joint->GetMaxLength();
+	//	//		if (length>0.2f)
+	//	//		{
+
+	//	//			joint->SetMaxLength(length-0.1);
+	//	//		}
+	//	//	}
+	//	//	break;
+	//	//case 'q':
+	//	//	isFinished = true;
+	//	//	break;
+	//	//default:
+	//	//	break;
+	//	//}
+
+	//	nIteration++;
+	//}
+
+	//screen_->finishDisplay();
+
+	//b2Vec2 centerOfMass = getCenterOfMass(pieces_);
+
+	//for (auto& piece:pieces_ )
+	//{
+	//	piece.finalCoordinates_ = piece.localCoordinates_;
+	//	const b2Transform& transform = piece.refb2Body_->GetTransform();
+	//	Eigen::MatrixX2d rotation(2,2);
+	//	b2Vec2 finalTranslate = transform.p - centerOfMass;
+
+	//	piece.finalRot_ = transform.q;
+	//	piece.finalTranslate_ = finalTranslate;
+	//	
+	//	getRoatationMatrix(rotation, transform.q);
+	//	piece.finalCoordinates_*= rotation;
+	//	piece.finalCoordinates_ = piece.finalCoordinates_.rowwise() + Eigen::RowVector2d(finalTranslate.x,finalTranslate.y);
+	//}
 }
 
 

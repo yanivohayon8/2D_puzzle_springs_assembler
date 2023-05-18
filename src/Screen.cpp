@@ -1,6 +1,6 @@
 #include "Screen.h"
 
-Screen::Screen(int height, int width, double scale)
+ScreenOpencv::ScreenOpencv(int height, int width, double scale)
 {
 	height_ = height;
 	width_ = width;
@@ -10,48 +10,48 @@ Screen::Screen(int height, int width, double scale)
 	BOUNDS_COLOR_ = cv::Scalar(0, 0, 255);
 	BOUNDS_THICKNESS_ = 5;
 }
-void Screen::initDisplay()
+void ScreenOpencv::initDisplay()
 {
 	cv::namedWindow(windowName_, cv::WINDOW_NORMAL);
 	cv::setWindowProperty(windowName_, cv::WND_PROP_FULLSCREEN, cv::WND_PROP_FULLSCREEN);
 }
 
-int Screen::updateDisplay()
+int ScreenOpencv::updateDisplay()
 {
 	cv::imshow(windowName_, frame_);
 	return cv::waitKey(5);
 }
 
-void Screen::clearDisplay()
+void ScreenOpencv::clearDisplay()
 {
 	frame_.setTo(cv::Scalar(0, 0, 0));
 }
 
-void Screen::finishDisplay()
+void ScreenOpencv::finishDisplay()
 {
 	cv::destroyWindow(windowName_);
 }
 
-int Screen::castToImageX(double x)
+int ScreenOpencv::castToImageX(double x)
 {
 	//return static_cast<int>(scale_ * x);
 	int padding = 10;// Well this is empiracly helps
 	return static_cast<int>(width_ -padding -scale_ * x);
 }
 
-int Screen::castToImageY(double y)
+int ScreenOpencv::castToImageY(double y)
 {
 	int padding = 10;// Well this is empiracly helps
 	return static_cast<int>(height_ - padding - scale_ * y);
 }
 
-void Screen::drawCircle(const b2Vec2& point,int radius,cv::Scalar& color)
+void ScreenOpencv::drawCircle(const b2Vec2& point,int radius,cv::Scalar& color)
 {
 	auto castPoint = cv::Point(castToImageX(point.x), castToImageY(point.y));
 	cv::circle(frame_, castPoint, radius, color);
 }
 
-void Screen::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
+void ScreenOpencv::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
 {
 	std::vector<cv::Point2i> polygon;
 
@@ -67,7 +67,7 @@ void Screen::drawPolygon(std::vector<b2Vec2>& coordinates, cv::Scalar& color)
 }
 
 
-void Screen::drawBounds(std::vector<std::vector<b2Vec2>>* boundsBodyCoordinates = nullptr)
+void ScreenOpencv::drawBounds(std::vector<std::vector<b2Vec2>>* boundsBodyCoordinates = nullptr)
 {
 	
 	std::vector<cv::Scalar> colors = {
@@ -88,7 +88,7 @@ void Screen::drawBounds(std::vector<std::vector<b2Vec2>>* boundsBodyCoordinates 
 	}
 }
 
-void Screen::drawLine(b2Vec2& point1, b2Vec2& point2, cv::Scalar& color, int thickness)
+void ScreenOpencv::drawLine(b2Vec2& point1, b2Vec2& point2, cv::Scalar& color, int thickness)
 {
 	int x1 = static_cast<int>(castToImageX(point1.x));
 	int y1 = static_cast<int>(castToImageY(point1.y));
@@ -102,7 +102,7 @@ void Screen::drawLine(b2Vec2& point1, b2Vec2& point2, cv::Scalar& color, int thi
 }
 
 
-void Screen::writeText(const std::string& text, const b2Vec2& position)
+void ScreenOpencv::writeText(const std::string& text, const b2Vec2& position)
 {
 	// Convert number to string
 	//std::string numberStr = std::to_string(str);
