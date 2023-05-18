@@ -310,6 +310,8 @@ void World::Simulation(bool isAuto)
 		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
 		{
 			pieceIt->translate();
+			/*auto pos = pieceIt->refb2Body_->GetPosition();
+			screen_->pasteImage(int(pos.x),int(pos.y),100,100);*/
 			screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
 			const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
 			//screen_->drawCircle(transform.p, 3, redColor);
@@ -341,7 +343,7 @@ void World::Simulation(bool isAuto)
 
 		
 
-			if (nIteration % 60 == 0)
+			if (nIteration % 45 == 0)
 			{
 				// Still connecting the springs
 				if (connectedSpringIndex_ < int(matings_.size()))
@@ -353,12 +355,24 @@ void World::Simulation(bool isAuto)
 					// Shorting the springs
 					if (!isJointShorted)
 					{
-						for (auto& joint : joints_)
+						/*for (auto& joint : joints_)
 						{
 							joint->SetMinLength(0.01);
 							joint->SetMaxLength(0.05);
 						}
+						isJointShorted = true;*/
+
 						isJointShorted = true;
+						for (auto& joint : joints_)
+						{
+							auto length = joint->GetMaxLength();
+							if (length > 0.2f)
+							{
+								isJointShorted = false;
+								joint->SetMaxLength(length - 0.2);
+							}
+						}
+
 					}
 					else {
 

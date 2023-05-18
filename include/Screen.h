@@ -32,5 +32,5 @@ public:
 
 	void writeText(const std::string& str, const b2Vec2& position);
 
-	void pasteImage();
+	void pasteImage(int xPos, int yPos, int recCols, int recRows);
 };

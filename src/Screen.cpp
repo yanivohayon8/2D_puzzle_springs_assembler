@@ -34,7 +34,9 @@ void Screen::finishDisplay()
 
 int Screen::castToImageX(double x)
 {
-	return static_cast<int>(scale_ * x);
+	//return static_cast<int>(scale_ * x);
+	int padding = 10;// Well this is empiracly helps
+	return static_cast<int>(width_ -padding -scale_ * x);
 }
 
 int Screen::castToImageY(double y)
@@ -122,7 +124,23 @@ void Screen::writeText(const std::string& text, const b2Vec2& position)
 	cv::putText(frame_, text, textPosition, fontFace, fontScale, cv::Scalar(255, 0, 0), thickness);
 }
 
-void Screen::pasteImage()
-{
-	cv::Mat img = cv::imread("../data/ofir/RePAIR/group_39/images/RPf_00316_intact_mesh.png")
-}
+
+//
+//void Screen::pasteImage(int xPos,int yPos, int recCols,int recRows)
+//{
+//	cv::Mat img = cv::imread("../data/ofir/RePAIR/group_39/images/Picture1.png");
+//	//int xPos = 100;
+//	//int yPos = 200;
+//	cv::Mat destRoi;
+//	try
+//	{
+//		//destRoi = frame_(cv::Rect(xPos, yPos, img.cols, img.rows));
+//		frame_ = frame_(cv::Rect(xPos, yPos, 50, 50));
+//	}
+//	catch (const std::exception&)
+//	{
+//
+//	}
+//
+//	img.copyTo(frame_);
+//}
