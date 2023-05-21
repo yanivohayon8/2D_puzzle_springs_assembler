@@ -4,6 +4,7 @@ World::World(std::vector<Piece>& pieces,std::vector<VertexMating>& matings)
 {
 	matings_ = matings;
 	rawPieces_ = pieces;
+	screen_ = new SfmlScreen(screenWidth_,screenHeight_, screenWidth_ / boardWidth_,screenHeight_ / boardHeight_);
 }
 
 b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
@@ -26,8 +27,16 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 		float y_ = static_cast<float>(y);
 		b2Poly.push_back(b2Vec2{ x_,y_});
 	}*/
-	
-	shape.Set(piece.localCoordsAsVecs_.data(), piece.localCoordsAsVecs_.size());
+	std::vector<b2Vec2> localCoords;
+
+	for (int i = 0; i < piece.localCoordsAsVecs_.size(); i++)
+	{
+		float xFactored = piece.localCoordsAsVecs_[i].x;// * box2BodiesFactor_;
+		float yFactored = piece.localCoordsAsVecs_[i].y;// *box2BodiesFactor_;
+		localCoords.push_back(b2Vec2(xFactored, yFactored));
+	}
+
+	shape.Set(localCoords.data(), localCoords.size());
 
 	/*if (is_polygon_degenerate(points)) {
 		s.SetAsBox(b2_linearSlop * 2,
@@ -47,9 +56,9 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	b2Body* oBody = world_.CreateBody(&bodyDef);
 	oBody->CreateFixture(&fixture);
 
-	for (int i = 0; i < piece.localCoordsAsVecs_.size(); i++)
+	for (int i = 0; i < localCoords.size(); i++)
 	{
-		b2Vec2& localPoint = piece.localCoordsAsVecs_.at(i);
+		b2Vec2& localPoint = localCoords.at(i);
 		b2Vec2& globalPoint = oBody->GetWorldPoint(localPoint);
 		piece.globalCoordinates_.push_back(globalPoint);
 	}
@@ -66,7 +75,6 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 
 void World::Init()
 {
-	//preProcess();
 	initBounds();
 	InitPieces();
 	orderSpringsConnection();
@@ -75,16 +83,17 @@ void World::Init()
 void World::initBounds()
 {
 	float wallWidth = 0.1;
-	screen_ = new SfmlScreen(screenHeight_, screenWidth_);
+	float padding = wallWidth;
 
 	float originX = 0;
 	float originY = 0;
 	
+	// X_origin,Y_origin,width,height
 	const std::vector<std::vector<float>> boundaries{ 
 		{originX,originY, boardWidth_, wallWidth}, // from bottom left to the horizontal line
-		{boardWidth_,originY,wallWidth,boardHeight_}, // from bottom right along the vertical line
+		{boardWidth_-padding,originY,wallWidth,boardHeight_}, // from bottom right along the vertical line
 		{originX,originY,wallWidth,boardHeight_}, // from bottom left along the vertical line
-		{originX,boardHeight_,boardWidth_,wallWidth} // from top left along the horizontal line
+		{originX,boardHeight_-padding,boardWidth_,wallWidth} // from top left along the horizontal line
 	};
 
 	for (auto& bound = boundaries.begin(); bound != boundaries.end(); bound++)
@@ -140,19 +149,8 @@ void World::InitPieces()
 	for (auto pieceIt = rawPieces_.begin(); pieceIt != rawPieces_.end(); pieceIt++)
 	{
 		b2Body* body;
-
-		//// Box2d limitations
-		//if (pieceIt->getNumCoords()>7)
-		//{
-		//	std::vector<std::vector<b2Vec2>> triangles;
-		//	pieceIt->triangulated(triangles);
-		//	std::cout << "here" << std::endl;
-		//}
-		//else
-		//{
-		//	body = this->createPieceBody(*pieceIt, *initialPosIt);
-		//}
 		body = this->createPieceBody(*pieceIt, *initialPosIt);
+		//body = this->createPieceBody(*pieceIt, b2Vec2(5,5));
 
 		pieceIt->refb2Body_ = body;
 		pieces_.push_back(*pieceIt);
@@ -279,12 +277,12 @@ void World::Simulation(bool isAuto)
 {
 
 	// The following params make as parameters to the function
-	double timeStep = 1.0F / 60.0F;//1.0F / 300.0F; //1.0F / 60.0F;
-	int velocityIterations = 6;
-	int positionIterations = 2;
+	double timeStep = 1.0F / 60.0F;//1.0F / 120.0F; //1.0F / 60.0F;
+	int velocityIterations = 6; //3;//
+	int positionIterations = 2; //1;//
 	bool isFinished = false;
 	float damping = 0;
-	cv::Scalar redColor = { 0,0,255 };
+	auto redColor = sf::Color::Red;
 	cv::Scalar greenColor = { 0,255,0 };
 	//SpringMating* nextSpring;
 
@@ -292,6 +290,7 @@ void World::Simulation(bool isAuto)
 	bool isJointShorted = false;
 
 	screen_->initDisplay();
+	screen_->initBounds(boundsCoordinates_);
 
 	if (isAuto)
 	{
@@ -302,7 +301,103 @@ void World::Simulation(bool isAuto)
 	while (!isFinished && screen_->isWindowOpen())
 	{
 		screen_->clearDisplay();
+		screen_->drawBounds();
+		world_.Step(timeStep, velocityIterations, positionIterations);
+
+		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
+		{
+			pieceIt->translate();
+
+			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
+			screen_->drawPolygon(pieceIt->localCoordsAsVecs_, transform, pieceIt->refb2Body_->GetLocalCenter()); //position
+
+			for (auto& cord:pieceIt->globalCoordinates_)
+			{
+				screen_->drawCircle(cord, 0.1, sf::Color(140, 140, 140));
+			}
+
+			//screen_->drawCircle(transform.p, 0.25, sf::Color(255, 0, 255));
+			screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
+		
+
+			
+			//screen_->writeText(std::to_string(pieceIt->id_), transform.p);
+		}
+
+		for (auto& joint : joints_)
+		{
+			auto& anchorA = joint->GetAnchorA();
+			auto& anchorB = joint->GetAnchorB();
+			screen_->drawLine(anchorA, anchorB, redColor, -1);
+		}
+
+		////for debug
+		//for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
+		//{
+		//	std::cout << "collide" << contact->GetFixtureA() << std::endl;
+		//}
+
 		screen_->updateDisplay();
+
+		sf::Event nextEvent;
+		while (screen_->pollEvent(nextEvent))
+		{
+
+			if (nextEvent.type == sf::Event::Closed)
+				screen_->closeWindow();
+			else {
+
+				if (nextEvent.type == sf::Event::KeyPressed)
+				{
+					switch (nextEvent.key.code)
+					{
+					case sf::Keyboard::E:
+						explode(20, -1);
+						break;
+					case sf::Keyboard::R:
+						damping += 0.1;
+						for (auto& piece : pieces_)
+						{
+							setDamping(piece.refb2Body_, damping, damping);
+						}
+						break;
+					case sf::Keyboard::T:
+						damping -= 0.1;
+						if (damping < 0)
+						{
+							damping = 0;
+						}
+						for (auto& piece : pieces_)
+						{
+							setDamping(piece.refb2Body_, damping, damping);
+						}
+						break;
+					case sf::Keyboard::M:
+						if (connectedSpringIndex_ < int(matings_.size()))
+						{
+							putMatingSprings(matings_[connectedSpringIndex_]);
+							++connectedSpringIndex_;
+						}
+						break;
+					case sf::Keyboard::S:
+						for (auto& joint : joints_)
+						{
+
+							//joint->SetMinLength(joint->GetMinLength() - 0.1);
+							auto length = joint->GetMaxLength();
+							if (length>0.2f)
+							{
+
+								joint->SetMaxLength(length-0.1);
+							}
+						}
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	//while (!isFinished)

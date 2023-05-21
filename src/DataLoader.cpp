@@ -29,18 +29,19 @@ void flipAndCenterPolygon(Eigen::MatrixXd& coords)
 void DataLoader::coordsToEigenCoords(Eigen::MatrixXd& eigenCoords, std::vector<std::pair<double, double>>& coords)
 {
     eigenCoords = Eigen::Map<MatrixX2D_r const>(&(coords[0].first), coords.size(), 2).cast<double>();
-    eigenCoords = eigenCoords.rowwise() - eigenCoords.colwise().mean(); // put as comment for repair
+    //eigenCoords = eigenCoords.rowwise() - eigenCoords.colwise().mean(); // put as comment for repair
 }
 
-void DataLoader::loadPieces(std::vector<Piece>& olstPiece, bool isOfir)
+void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
 {
     /*
         Loads the computed pieces. The csv headers are the following: piece,x,y.
         Unfortunately, the piece ids were saved in double form so we convert them into int.
     */
 
-    std::string piecesFile = puzzleDirectoryPath_ + "/pieces.csv";
-    //std::string piecesFile = puzzleDirectoryPath_ + "/ground_truth_puzzle.csv";
+    //std::string piecesFile = pieces.csv"; //puzzleDirectoryPath_ + "/pieces.csv"; //"C:\\Users\\97254pieces.csv"; //puzzleDirectoryPath_ + "/pieces.csv"; //"C:\\Users\\97254\\Desktop\\msc\\RePAIR\\projects\\springs_assembler_sfml\\2D_puzzle_springs_assembler\\data\\ofir\\RePAIR\\group_39\\pieces.csv"; //puzzleDirectoryPath_ + "/pieces.csv";// + pieces_file_name;
+    std::string piecesFile = puzzleDirectoryPath_ + "/pieces.csv";// + pieces_file_name;
+    
     std::ifstream infile(piecesFile);
 
     if (!infile.is_open()) {
@@ -103,6 +104,11 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece, bool isOfir)
 
     Piece newPiece = Piece(currPieceId, rtData);
     olstPiece.push_back(newPiece);
+}
+
+void DataLoader::loadCoordinates_(std::string fileName, bool isOfir )
+{
+
 }
 
 void DataLoader::loadEdgeMatings(std::vector<EdgeMating>& olstMatings)

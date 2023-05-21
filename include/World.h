@@ -15,9 +15,8 @@ class World
 {
 public:
 	World(std::vector<Piece>& pieces,std::vector<VertexMating> &matings);
+	//b2World world_ = b2World(b2Vec2(0, 0.05));
 	b2World world_ = b2World(b2Vec2(0, 0));
-	//b2World world_ = b2World(b2Vec2(0, -2.0f)); // for first debugging
-	//b2World world_ = b2World(b2Vec2(0, -12.0f)); // for first debugging
 	std::vector<Piece> pieces_;
 	std::vector<Piece> rawPieces_;
 	//ScreenOpencv* screen_;
@@ -29,11 +28,13 @@ public:
 	int connectedSpringIndex_ = 0; // from the start
 
 	//double screenScale_ = 50; //10; //50;
-	int screenHeight_ = 1024; //880;
-	int screenWidth_ = 1024;
+	int screenHeight_ = 800; //1024; //880;
+	int screenWidth_ = 800;//1024;
 	//float wallWidth = 0.1;
-	float boardHeight_ = 17; //This fit my screeen...
-	float boardWidth_ = 28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
+	float boardHeight_ = 20; //10; //17; //This fit my screeen...
+	float boardWidth_ = 20;//10;//28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
+	float box2BodiesFactor_ = 0.001;
+
 
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
@@ -45,7 +46,7 @@ public:
 	void initBounds();
 	void Init();
 	void preProcess();
-	void Simulation(bool isAuto=true);
+	void Simulation(bool isAuto=false);
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
 	void setCollideOff(b2Body* body);
