@@ -318,9 +318,6 @@ void World::Simulation(bool isAuto)
 
 			//screen_->drawCircle(transform.p, 0.25, sf::Color(255, 0, 255));
 			screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
-		
-
-			
 			//screen_->writeText(std::to_string(pieceIt->id_), transform.p);
 		}
 
