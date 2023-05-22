@@ -31,8 +31,6 @@ public:
 	void drawCircle(const b2Vec2& center, float radius, sf::Color& color);
 	void drawLine(b2Vec2& point1, b2Vec2& point2, sf::Color& color, float thickness);
 
-	float castToImageY(float y);
-
 	bool pollEvent(sf::Event& event);
 	void closeWindow();
 

@@ -78,11 +78,6 @@ void SfmlScreen::drawBounds()
 	}
 }
 
-float SfmlScreen::castToImageY(float y)
-{
-	return height_ - y;
-}
-
 void SfmlScreen::drawPolygon(std::vector<b2Vec2>& coordinates, const b2Transform& trans, const b2Vec2& centerMass)
 {
 	// create an empty shape
