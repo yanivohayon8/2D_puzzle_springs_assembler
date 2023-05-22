@@ -191,8 +191,25 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 
 void World::putMatingSprings(VertexMating& mating)
 {
-	Piece* pieceA = &pieces_.at(mating.firstPieceId_);
-	Piece* pieceB = &pieces_.at(mating.secondPieceId_);
+
+	Piece* pieceA;
+	Piece* pieceB;
+
+	for (auto& piece: pieces_)
+	{
+		if (piece.id_ == mating.firstPieceId_)
+		{
+			pieceA = &piece;
+		}
+
+		if (piece.id_ == mating.secondPieceId_)
+		{
+			pieceB = &piece;
+		}
+	}
+
+	/*Piece* pieceA = mating.firstPiece_;
+	Piece* pieceB = mating.secondPiece_;*/
 
 	b2Body* bodyA = pieceA->refb2Body_;
 	b2Body* bodyB = pieceB->refb2Body_;
@@ -635,7 +652,7 @@ void World::saveFinalTransforms(const std::string& filename)
 	// Write each row of the matrix as a separate line in the CSV file
 	for (auto& piece : pieces_)
 	{
-		file << std::to_string(piece.id_) << "," << piece.finalTranslate_.x << "," << piece.finalTranslate_.y << "," << piece.finalRot_.s << "," << piece.finalRot_.c << std::endl;
+		file << piece.id_ << "," << piece.finalTranslate_.x << "," << piece.finalTranslate_.y << "," << piece.finalRot_.s << "," << piece.finalRot_.c << std::endl;
 	}
 
 	// Close the file
@@ -661,7 +678,7 @@ void World::saveFinalCoordinates(const std::string& filename)
 	for (auto& piece:pieces_)
 	{
 		for (int i = 0; i < piece.finalCoordinates_.rows(); ++i) {
-			file << std::to_string(piece.id_) <<"," << piece.finalCoordinates_(i, 0) << "," << piece.finalCoordinates_(i, 1) << std::endl;
+			file << piece.id_ <<"," << piece.finalCoordinates_(i, 0) << "," << piece.finalCoordinates_(i, 1) << std::endl;
 		}
 	}
 

@@ -51,23 +51,25 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
 
     
     std::string line;
-    double pieceId;
+    std::string pieceId;
     double x, y;
-    char comma;  // represent ',' in file, ignored.
+    std::string xStr, yStr;
     std::vector<std::pair<double,double>> coords;
-    int currPieceId = -1;
+    std::string currPieceId = "";
     std::getline(infile, line);//skip the first line because it is a header
 
 
     while (std::getline(infile, line)) {
-        std::istringstream iss(line);
+        
+        std::stringstream ss(line);
 
-        if (!(iss >> pieceId >> comma >> x >> comma >> y)) {
-            throw "Failed to read line: " + line;
-            continue;
-        }
+        std::getline(ss, pieceId, ',');
+        std::getline(ss, xStr, ',');
+        x = std::stod(xStr);
+        std::getline(ss, yStr, ',');
+        y = std::stod(yStr);
 
-        if (currPieceId==-1)
+        if (currPieceId=="")
         {
             currPieceId = pieceId;
         }
@@ -78,7 +80,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
             Eigen::MatrixXd rtData;
             coordsToEigenCoords(rtData, coords);
 
-            Piece newPiece = Piece(int(currPieceId), rtData);
+            Piece newPiece = Piece(currPieceId, rtData);
             olstPiece.push_back(newPiece);
             coords.clear();
         }
@@ -96,7 +98,6 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
         coord.second = y;
         coords.push_back(coord);
         currPieceId = pieceId;
-        //std::cout << pieceId << ", " << x << ", " << y << std::endl;
     }
 
     Eigen::MatrixXd rtData;
@@ -125,7 +126,9 @@ void DataLoader::loadEdgeMatings(std::vector<EdgeMating>& olstMatings)
     }
 
     std::string line;
-    int firstPieceId, secondPieceId, firstPieceEdge, secondPieceEdge;
+    //int firstPieceId, secondPieceId, firstPieceEdge, secondPieceEdge;
+    int firstPieceEdge, secondPieceEdge;
+    std::string firstPieceId, secondPieceId;
     char comma;  // represent ',' in file, ignored.
     std::getline(infile, line);//skip the first line because it is a header
 
@@ -157,18 +160,22 @@ void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings)
     }
 
     std::string line;
-    int firstPieceId, secondPieceId, firstPieceVertex, secondPieceVertex;
+    //int firstPieceId, secondPieceId, firstPieceVertex, secondPieceVertex;
+    int firstPieceVertex, secondPieceVertex;
+    std::string firstPieceVertexStr, secondPieceVertexStr;
+    std::string firstPieceId, secondPieceId;
     char comma;  // represent ',' in file, ignored.
     std::getline(infile, line);//skip the first line because it is a header
 
 
     while (std::getline(infile, line)) {
-        std::istringstream iss(line);
-
-        if (!(iss >> firstPieceId >> comma >> firstPieceVertex >> comma >> secondPieceId >> comma >> secondPieceVertex)) {
-            throw "Failed to read line: " + line;
-            continue;
-        }
+        std::stringstream ss(line);
+        std::getline(ss, firstPieceId, ',');
+        std::getline(ss, firstPieceVertexStr, ',');
+        firstPieceVertex = std::stoi(firstPieceVertexStr);
+        std::getline(ss, secondPieceId, ',');
+        std::getline(ss, secondPieceVertexStr, ',');
+        secondPieceVertex = std::stoi(secondPieceVertexStr);
 
         VertexMating mating(firstPieceId, firstPieceVertex, secondPieceId, secondPieceVertex);
         olstMatings.push_back(mating);
@@ -186,7 +193,10 @@ void DataLoader::loadExtraInfo(std::vector<Piece>& olstPiece)
     }
 
     std::string line;
-    int pieceId, is_rotated;
+    //int pieceId, is_rotated;
+    int is_rotated;
+    std::string pieceId;
+
     char comma;  // represent ',' in file, ignored.
     std::getline(infile, line);//skip the first line because it is a header
 

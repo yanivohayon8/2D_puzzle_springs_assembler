@@ -5,6 +5,8 @@
 #include <iostream>
 #include <fstream>
 #include "VertexMating.h"
+#include <sstream>
+
 
 class DataLoader
 {

@@ -1,6 +1,6 @@
 #include "EdgeMating.h"
 
-EdgeMating::EdgeMating(int firstPieceId, int firstPieceEdge, int secondPieceId, int secondPieceEdge)
+EdgeMating::EdgeMating(std::string firstPieceId, int firstPieceEdge, std::string secondPieceId, int secondPieceEdge)
 {
 	firstPieceId_ = firstPieceId;
 	secondPieceId_ = secondPieceId;

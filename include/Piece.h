@@ -10,7 +10,7 @@
 class Piece
 {
 public:
-	int id_;
+	std::string id_;
 	b2Body* refb2Body_;
 	cv::Mat cvCoords_;
 	cv::Scalar color_;
@@ -22,7 +22,7 @@ public:
 	b2Rot finalRot_;
 	bool isRotationFixed = false;
 
-	Piece(int pieceId,Eigen::MatrixX2d coordinates);
+	Piece(std::string pieceId,Eigen::MatrixX2d coordinates);
 	void printCoords();
 	std::pair<double, double> getVertexCoord(int iVertex);
 	int getNumCoords();

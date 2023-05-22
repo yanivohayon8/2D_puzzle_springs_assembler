@@ -1,7 +1,7 @@
 #include "Piece.h"
 #include <iostream>
 
-Piece::Piece(int pieceId, Eigen::MatrixX2d coordinates)
+Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates)
 {
 	id_ = pieceId;
 	localCoordinates_ = coordinates;

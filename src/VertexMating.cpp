@@ -1,6 +1,6 @@
 #include "VertexMating.h"
 
-VertexMating::VertexMating(int firstPieceId, int firstPieceVertex, int secondPieceId, int secondPieceVertex)
+VertexMating::VertexMating(std::string firstPieceId, int firstPieceVertex, std::string secondPieceId, int secondPieceVertex)
 {
 	firstPieceId_ = firstPieceId;
 	secondPieceId_ = secondPieceId;
