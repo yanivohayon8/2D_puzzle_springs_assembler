@@ -80,7 +80,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
             Eigen::MatrixXd rtData;
             coordsToEigenCoords(rtData, coords);
 
-            Piece newPiece = Piece(currPieceId, rtData);
+            Piece newPiece = Piece(currPieceId, rtData,puzzleDirectoryPath_ +"/"+pieceId+".png"); // Does all images are pngs? 
             olstPiece.push_back(newPiece);
             coords.clear();
         }
@@ -103,7 +103,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
     Eigen::MatrixXd rtData;
     coordsToEigenCoords(rtData, coords);
 
-    Piece newPiece = Piece(currPieceId, rtData);
+    Piece newPiece = Piece(currPieceId, rtData, puzzleDirectoryPath_ + "/" + pieceId + ".png");
     olstPiece.push_back(newPiece);
 }
 

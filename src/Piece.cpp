@@ -1,7 +1,7 @@
 #include "Piece.h"
 #include <iostream>
 
-Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates)
+Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imagePath)
 {
 	id_ = pieceId;
 	localCoordinates_ = coordinates;
@@ -16,6 +16,8 @@ Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates)
 		float y_ = static_cast<float>(coordinates.coeff(i, 1));
 		localCoordsAsVecs_.push_back(b2Vec2{ x_,y_ });
 	}
+
+	imagePath_ = imagePath;
 }
 
 void Piece::printCoords()

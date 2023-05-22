@@ -20,10 +20,12 @@ public:
 	float heightScale_;
 
 	void initDisplay();
+	void initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordinates);
+	void initSprites();
+
 	bool isWindowOpen();
 	void clearDisplay();
 	void updateDisplay();
-	void initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordinates);
 	void drawBounds();
 	void drawPolygon(std::vector<b2Vec2>& coordinates, const b2Transform& trans, const b2Vec2& centerMass);
 	void drawCircle(const b2Vec2& center, float radius, sf::Color& color);

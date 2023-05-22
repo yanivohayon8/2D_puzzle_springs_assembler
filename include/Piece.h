@@ -21,8 +21,9 @@ public:
 	b2Vec2 finalTranslate_;
 	b2Rot finalRot_;
 	bool isRotationFixed = false;
+	std::string imagePath_;
 
-	Piece(std::string pieceId,Eigen::MatrixX2d coordinates);
+	Piece(std::string pieceId,Eigen::MatrixX2d coordinates, std::string imagePath);
 	void printCoords();
 	std::pair<double, double> getVertexCoord(int iVertex);
 	int getNumCoords();
