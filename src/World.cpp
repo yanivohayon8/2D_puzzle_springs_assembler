@@ -399,7 +399,7 @@ void World::Simulation(bool isAuto)
 						for (auto& joint : joints_)
 						{
 							auto length = joint->GetMaxLength();
-							if (length > 0.3f) //0.2//0.3
+							if (length > 0.2f) //0.2//0.3
 							{
 								isJointShorted = false;
 								joint->SetMaxLength(length - 0.05);//0.2
@@ -414,6 +414,7 @@ void World::Simulation(bool isAuto)
 
 						for (auto& piece : pieces_)
 						{
+							setCollideOff(piece.refb2Body_);
 							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
 						}
 

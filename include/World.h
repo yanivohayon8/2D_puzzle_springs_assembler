@@ -38,7 +38,7 @@ public:
 
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
-		float minLength = 0.05f, float maxLength = 2.0f, float damping = 0.3, float stiffness = 0.5f);
+		float minLength = 0.15f, float maxLength = 2.0f, float damping = 0.3, float stiffness = 0.5f);
 	void putMatingSprings(VertexMating& mating);
 	void orderSpringsConnection();
 
