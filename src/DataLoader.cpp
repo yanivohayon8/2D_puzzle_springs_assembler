@@ -32,6 +32,11 @@ void DataLoader::coordsToEigenCoords(Eigen::MatrixXd& eigenCoords, std::vector<s
     //eigenCoords = eigenCoords.rowwise() - eigenCoords.colwise().mean(); // put as comment for repair
 }
 
+std::string DataLoader::getImagePath(std::string pieceId)
+{
+    return puzzleDirectoryPath_ + "/images/" + pieceId + ".png";
+}
+
 void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
 {
     /*
@@ -55,8 +60,8 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
     double x, y;
     std::string xStr, yStr;
     std::vector<std::pair<double,double>> coords;
-    std::string currPieceId = "";
     std::getline(infile, line);//skip the first line because it is a header
+    std::string currPieceId = "";
 
 
     while (std::getline(infile, line)) {
@@ -80,7 +85,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
             Eigen::MatrixXd rtData;
             coordsToEigenCoords(rtData, coords);
 
-            Piece newPiece = Piece(currPieceId, rtData,puzzleDirectoryPath_ +"/"+pieceId+".png"); // Does all images are pngs? 
+            Piece newPiece = Piece(currPieceId, rtData, getImagePath(currPieceId)); // Does all images are pngs? 
             olstPiece.push_back(newPiece);
             coords.clear();
         }
@@ -103,7 +108,7 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
     Eigen::MatrixXd rtData;
     coordsToEigenCoords(rtData, coords);
 
-    Piece newPiece = Piece(currPieceId, rtData, puzzleDirectoryPath_ + "/" + pieceId + ".png");
+    Piece newPiece = Piece(currPieceId, rtData, getImagePath(currPieceId));
     olstPiece.push_back(newPiece);
 }
 

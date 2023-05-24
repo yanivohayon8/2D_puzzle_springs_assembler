@@ -12,7 +12,7 @@ void generate2DVectors(std::vector<b2Vec2>&vectors,int n,int maxX,int maxY,int p
 		int y = distributionY(gen);
 		vectors.push_back(b2Vec2(x, y));
 	}
-
+	
 }
 
 void generateColors(std::vector<cv::Scalar>& oColors)

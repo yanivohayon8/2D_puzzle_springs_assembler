@@ -144,6 +144,11 @@ void World::InitPieces()
 	int seed = 0;
 	int padding = 2;
 	generate2DVectors(positions, rawPieces_.size(), boardWidth_, boardHeight_,padding, seed);
+
+	std::sort(positions.begin(), positions.end(), [](const b2Vec2& a, const b2Vec2& b)->bool {
+		return a.y > b.y || (a.y==b.y && a.x > b.x);
+		});
+
 	auto& initialPosIt = positions.begin();
 
 	for (auto pieceIt = rawPieces_.begin(); pieceIt != rawPieces_.end(); pieceIt++)
@@ -153,12 +158,16 @@ void World::InitPieces()
 		//body = this->createPieceBody(*pieceIt, b2Vec2(5,5));
 
 		pieceIt->refb2Body_ = body;
+		
+		pieceIt->computeBoundingBox();
+
+
 		pieces_.push_back(*pieceIt);
 		initialPosIt++;
 	}
 
 	// Assign color for debuging or rendring
-	std::vector<cv::Scalar> colors(std::size(pieces_));
+	/*std::vector<cv::Scalar> colors(std::size(pieces_));
 	generateColors(colors);
 
 	auto& pieceIt = pieces_.begin();
@@ -169,7 +178,7 @@ void World::InitPieces()
 		pieceIt->color_ = *colorIt;
 		++pieceIt;
 		++colorIt;
-	}
+	}*/
 
 }
 
@@ -247,12 +256,13 @@ void World::orderSpringsConnection()
 
 void World::explode(int MaxPower, int seed)
 {
-	int power = sampleIntUniformly(MaxPower, -MaxPower, seed);
-	b2Vec2 impulse(power, power);
-
+	int i = 0;
 	for (auto& piece: pieces_)
 	{
+		int power = sampleIntUniformly(MaxPower, -MaxPower, i);
+		b2Vec2 impulse(power, power);
 		piece.refb2Body_->ApplyLinearImpulseToCenter(impulse,true);
+		i++;
 	}
 }
 
@@ -303,20 +313,29 @@ void World::Simulation(bool isAuto)
 	cv::Scalar greenColor = { 0,255,0 };
 	//SpringMating* nextSpring;
 
-	int nIteration = 0;
+	int nIteration = -1;
 	bool isJointShorted = false;
 
 	screen_->initDisplay();
 	screen_->initBounds(boundsCoordinates_);
 
+	for (auto&piece:pieces_)
+	{
+		screen_->initSprite(piece);
+	}
+
+
 	if (isAuto)
 	{
-		explode(1, 0);
+		explode(1, -1);
 
 	}
 
-	while (!isFinished && screen_->isWindowOpen())
+	//while (!isFinished && screen_->isWindowOpen())
+	while (screen_->isWindowOpen())
 	{
+		nIteration++;
+
 		screen_->clearDisplay();
 		screen_->drawBounds();
 		world_.Step(timeStep, velocityIterations, positionIterations);
@@ -326,16 +345,15 @@ void World::Simulation(bool isAuto)
 			pieceIt->translate();
 
 			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
-			screen_->drawPolygon(pieceIt->localCoordsAsVecs_, transform, pieceIt->refb2Body_->GetLocalCenter()); //position
+			//screen_->drawPolygon(pieceIt->localCoordsAsVecs_, transform, pieceIt->refb2Body_->GetLocalCenter()); //position
+			screen_->drawSprite(pieceIt->id_, transform);
 
-			for (auto& cord:pieceIt->globalCoordinates_)
+			/*for (auto& cord:pieceIt->globalCoordinates_)
 			{
-				screen_->drawCircle(cord, 0.1, sf::Color(140, 140, 140));
+				screen_->drawCircle(cord, 0.1, sf::Color(255, 0, 255));
 			}
 
-			//screen_->drawCircle(transform.p, 0.25, sf::Color(255, 0, 255));
-			screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
-			//screen_->writeText(std::to_string(pieceIt->id_), transform.p);
+			screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));*/
 		}
 
 		for (auto& joint : joints_)
@@ -352,6 +370,74 @@ void World::Simulation(bool isAuto)
 		//}
 
 		screen_->updateDisplay();
+
+		if (isAuto)
+		{
+
+		
+
+			if (nIteration % 240 == 0) //45
+			{
+				// Still connecting the springs
+				if (connectedSpringIndex_ < int(matings_.size()))
+				{
+					putMatingSprings(matings_[connectedSpringIndex_]);
+					++connectedSpringIndex_;
+				}
+				else {
+					// Shorting the springs
+					if (!isJointShorted)
+					{
+						/*for (auto& joint : joints_)
+						{
+							joint->SetMinLength(0.01);
+							joint->SetMaxLength(0.05);
+						}
+						isJointShorted = true;*/
+
+						isJointShorted = true;
+						for (auto& joint : joints_)
+						{
+							auto length = joint->GetMaxLength();
+							if (length > 0.3f) //0.2//0.3
+							{
+								isJointShorted = false;
+								joint->SetMaxLength(length - 0.05);//0.2
+							}
+						}
+
+					}
+					else {
+
+						// start to slow down
+						double AveragedSpeed = 0;
+
+						for (auto& piece : pieces_)
+						{
+							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
+						}
+
+						AveragedSpeed /= pieces_.size();
+						double speedEpsilon = 0.1;
+
+						if (AveragedSpeed < speedEpsilon)
+						{
+							isFinished = true;
+							continue;
+						}
+
+
+						damping += 0.1;
+						for (auto& piece : pieces_)
+						{
+							setDamping(piece.refb2Body_, damping, damping);
+						}
+					}
+				}
+
+			}
+		}
+
 
 		sf::Event nextEvent;
 		while (screen_->pollEvent(nextEvent))
@@ -412,6 +498,8 @@ void World::Simulation(bool isAuto)
 				}
 			}
 		}
+
+		
 	}
 
 	//while (!isFinished)

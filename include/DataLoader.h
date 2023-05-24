@@ -23,5 +23,6 @@ public:
 
 private:
 	void loadCoordinates_(std::string fileName, bool isOfir = true);
+	std::string getImagePath(std::string pieceId);
 };
 

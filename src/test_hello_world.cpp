@@ -1,33 +1,33 @@
 #include <iostream>
 #include <stdio.h>
 #include <box2d/box2d.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/core/types_c.h>
+//#include <opencv2/opencv.hpp>
+//#include <opencv2/highgui/highgui.hpp>
+//#include <opencv2/core/types_c.h>
 
 //#include "earcut.hpp"
 #include "mapbox/earcut.hpp"
 
-using namespace cv;
+//using namespace cv;
 
 //#include <Eigen/src/Eigenvalues/
 #include <Eigen/Dense>
 
-int HelloWorldEarcut()
-{
-	// Define the input polygon as a list of vertices
-	std::vector<std::vector<std::array<double, 2>>> polygon;
-	polygon.push_back({ {100, 0}, {100, 100}, {0, 100}, {0, 0} });
-
-	// Triangulate the polygon
-	//std::vector<std::vector<std::size_t>> triangles;
-	std::vector<uint32_t> indices = mapbox::earcut(polygon);
-	//earcut(polygon, {}, {}, triangles);
-
-	
-
-	return 0;
-}
+//int HelloWorldEarcut()
+//{
+//	// Define the input polygon as a list of vertices
+//	std::vector<std::vector<std::array<double, 2>>> polygon;
+//	polygon.push_back({ {100, 0}, {100, 100}, {0, 100}, {0, 0} });
+//
+//	// Triangulate the polygon
+//	//std::vector<std::vector<std::size_t>> triangles;
+//	std::vector<uint32_t> indices = mapbox::earcut(polygon);
+//	//earcut(polygon, {}, {}, triangles);
+//
+//	
+//
+//	return 0;
+//}
 
 
 int EigenHelloWorld()
@@ -43,86 +43,6 @@ int EigenHelloWorld()
 }
 
 
-int hellowWorld()
-{
-	// Initialize Box2D world
-	b2Vec2 gravity(0.0f, -10.0f);
-	b2World world(gravity);
-
-	// Create the ground body
-	b2BodyDef groundBodyDef;
-	groundBodyDef.position.Set(0.0f, -10.0f);
-	b2Body* groundBody = world.CreateBody(&groundBodyDef);
-
-	// Define the ground shape
-	b2PolygonShape groundShape;
-	groundShape.SetAsBox(50.0f, 10.0f);
-
-	// Create the ground fixture
-	b2FixtureDef groundFixtureDef;
-	groundFixtureDef.shape = &groundShape;
-	groundBody->CreateFixture(&groundFixtureDef);
-
-	// Create the box body
-	b2BodyDef boxBodyDef;
-	boxBodyDef.type = b2_dynamicBody;
-	boxBodyDef.position.Set(0.0f, 20.0f);
-	b2Body* boxBody = world.CreateBody(&boxBodyDef);
-
-	// Define the box shape
-	b2PolygonShape boxShape;
-	boxShape.SetAsBox(1.0f, 1.0f);
-
-	// Create the box fixture
-	b2FixtureDef boxFixtureDef;
-	boxFixtureDef.shape = &boxShape;
-	boxFixtureDef.density = 1.0f;
-	boxFixtureDef.friction = 0.3f;
-	boxFixtureDef.restitution = 0.5f;
-	boxBody->CreateFixture(&boxFixtureDef);
-
-	// Set up OpenCV visualization
-	const float k_pixelsPerMeter = 10.0f;
-	cv::Mat image(600, 800, CV_8UC3);
-	cv::namedWindow("Box2D Simulation", cv::WINDOW_NORMAL);
-	cv::resizeWindow("Box2D Simulation", image.cols, image.rows);
-
-	// Step through the simulation
-	float timeStep = 1.0f / 60.0f;
-	int32 velocityIterations = 6;
-	int32 positionIterations = 2;
-	for (int32 i = 0; i < 99999999; ++i)
-	{
-		world.Step(timeStep, velocityIterations, positionIterations);
-
-		// Clear the image
-		image.setTo(cv::Scalar(255, 255, 255));
-
-		// Draw the ground
-		const b2Transform& groundTransform = groundBody->GetTransform();
-		for (b2Fixture* f = groundBody->GetFixtureList(); f; f = f->GetNext())
-		{
-			b2PolygonShape* polygonShape = dynamic_cast<b2PolygonShape*>(f->GetShape());
-			if (polygonShape)
-			{
-				b2Vec2 vertices[b2_maxPolygonVertices];
-				for (int i = 0; i < polygonShape->m_count; ++i)
-				{
-					vertices[i] = b2Mul(groundTransform, polygonShape->m_vertices[i]);
-				}
-				std::vector<cv::Point> points(polygonShape->m_count);
-				for (int i = 0; i < polygonShape->m_count; ++i)
-				{
-					points[i] = cv::Point(vertices[i].x * k_pixelsPerMeter, vertices[i].y * k_pixelsPerMeter);
-				}
-				cv::polylines(image, points, true, cv::Scalar(0, 0, 0), 2);
-			}
-		}
-
-	}
-
-	return 0;
-}
 
 int Box2dHelloWorld(int argc, char** argv)
 {
@@ -203,39 +123,11 @@ int Box2dHelloWorld(int argc, char** argv)
 	return 0;
 }
 
-int opencvHelloWorld()
-{
-
-
-	////create a gui window:
-	namedWindow("Output", 1);
-
-	//initialize a 120X350 matrix of black pixels:
-	Mat output = Mat::zeros(120, 350, CV_8UC3);
-
-	//write text on the matrix:
-	putText(output,
-		"Hello World :)",
-		cvPoint(15, 70),
-		FONT_HERSHEY_PLAIN,
-		3,
-		cvScalar(0, 255, 0),
-		4);
-
-	//display the image:
-	imshow("Output", output);
-
-	//wait for the user to press any key:
-	cv::waitKey(0);
-
-	return 0;
-}
 
 int mainHelloWorld(int argc, char** argv)
 {
 	std::cout << "Hello World" << std::endl;
 	Box2dHelloWorld(argc, argv);
-	opencvHelloWorld();
 	EigenHelloWorld();
 	return 0;
 }

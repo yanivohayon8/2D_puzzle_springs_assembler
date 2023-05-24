@@ -4,6 +4,8 @@
 #include <SFML/Window.hpp>
 #include <box2d/box2d.h>
 # define M_PI           3.14159265358979323846  /* pi */
+#include "Piece.h"
+
 
 class SfmlScreen
 {
@@ -18,10 +20,12 @@ public:
 	float bodiesScale_ = 0.05;//0.1f; //
 	float widthScale_;
 	float heightScale_;
+	std::map<std::string, sf::Sprite> pieceId2Sprite_;
+	std::map<std::string, sf::Texture> pieceId2texture_;
 
 	void initDisplay();
 	void initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordinates);
-	void initSprites();
+	void initSprite(Piece& piece);
 
 	bool isWindowOpen();
 	void clearDisplay();
@@ -30,6 +34,8 @@ public:
 	void drawPolygon(std::vector<b2Vec2>& coordinates, const b2Transform& trans, const b2Vec2& centerMass);
 	void drawCircle(const b2Vec2& center, float radius, sf::Color& color);
 	void drawLine(b2Vec2& point1, b2Vec2& point2, sf::Color& color, float thickness);
+
+	void drawSprite(std::string pieceId, const b2Transform& trans);
 
 	bool pollEvent(sf::Event& event);
 	void closeWindow();

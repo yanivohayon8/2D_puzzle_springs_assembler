@@ -3,7 +3,7 @@
 #include <Piece.h>
 #include <EdgeMating.h>
 #include <VertexMating.h>
-#include "Screen.h"
+//#include "Screen.h"
 #include "SfmlScreen.h"
 #include <numeric>
 #include "Utils.h"
@@ -28,8 +28,8 @@ public:
 	int connectedSpringIndex_ = 0; // from the start
 
 	//double screenScale_ = 50; //10; //50;
-	int screenHeight_ = 800; //1024; //880;
-	int screenWidth_ = 800;//1024;
+	int screenHeight_ = 1380;//1024;//800; // //880;
+	int screenWidth_ = 1380;//1024; //800;//1024;
 	//float wallWidth = 0.1;
 	float boardHeight_ = 20; //10; //17; //This fit my screeen...
 	float boardWidth_ = 20;//10;//28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
@@ -46,7 +46,7 @@ public:
 	void initBounds();
 	void Init();
 	void preProcess();
-	void Simulation(bool isAuto=false);
+	void Simulation(bool isAuto=true);
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
 	void setCollideOff(b2Body* body);

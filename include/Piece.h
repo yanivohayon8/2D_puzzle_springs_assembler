@@ -1,8 +1,8 @@
 #pragma once
 #include <Eigen/Dense>
 #include <box2d/box2d.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/eigen.hpp>
+//#include <opencv2/opencv.hpp>
+//#include <opencv2/core/eigen.hpp>
 #include <vector>
 #include <algorithm>
 #include <Geometry.h>
@@ -12,8 +12,8 @@ class Piece
 public:
 	std::string id_;
 	b2Body* refb2Body_;
-	cv::Mat cvCoords_;
-	cv::Scalar color_;
+	//cv::Mat cvCoords_;
+	//cv::Scalar color_;
 	Eigen::MatrixX2d localCoordinates_;
 	Eigen::MatrixX2d finalCoordinates_;
 	std::vector<b2Vec2> localCoordsAsVecs_;
@@ -22,12 +22,13 @@ public:
 	b2Rot finalRot_;
 	bool isRotationFixed = false;
 	std::string imagePath_;
+	b2AABB aabb_;
 
 	Piece(std::string pieceId,Eigen::MatrixX2d coordinates, std::string imagePath);
 	void printCoords();
 	std::pair<double, double> getVertexCoord(int iVertex);
 	int getNumCoords();
-	double getArea();
+	//double getArea();
 	void rotate(const b2Rot& rot);
 	void translate();
 	std::pair<int, int> getEdgeVertexIndexes(int iEdge);
@@ -43,5 +44,10 @@ public:
 	void getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords);
 
 	void triangulated(std::vector<std::vector<b2Vec2>>& oTriangles);
+
+	void computeBoundingBox();
+
+	float getBodyBoundingBoxWidth();
+	float getBodyBoundingBoxHeight();
 };
 

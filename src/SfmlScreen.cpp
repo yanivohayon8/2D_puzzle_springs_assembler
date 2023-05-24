@@ -11,7 +11,7 @@ SfmlScreen::SfmlScreen(int width,int height, float widthScale,float heightScale)
 
 void SfmlScreen::initDisplay()
 {
-	window_.create(sf::VideoMode(width_, height_), "Vika");
+	window_.create(sf::VideoMode(width_, height_), "Physical Optimization");
 }
 
 bool SfmlScreen::pollEvent(sf::Event& nextEvent)
@@ -38,21 +38,74 @@ void SfmlScreen::initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordina
 
 	for (auto& bound: boundsBodyCoordinates)
 	{
-		/*float rectangleWidth = (bound.at(1).x - bound.at(0).x)* widthScale_;
-		float rectangleHeight = (bound.at(3).y - bound.at(0).y)*heightScale_;*/
+
 		float rectangleWidth = (bound.at(1).x - bound.at(0).x);
 		float rectangleHeight = (bound.at(3).y - bound.at(0).y);
 		sf::RectangleShape rectangle(sf::Vector2f(rectangleWidth, rectangleHeight));
 		rectangle.setScale(sf::Vector2f(widthScale_, heightScale_));
-		rectangle.setFillColor(debugColors[iColor++]);
+		//rectangle.setFillColor(debugColors[iColor++]);
 		rectangle.setPosition(sf::Vector2f(widthScale_ *bound.at(0).x, heightScale_ *bound.at(0).y));
-		//rectangle.setOrigin(rectangle.getSize().x/2, rectangle.getSize().y/2);
 		rectangle.setOrigin(0, 0);
 		boundsRectangles_.push_back(rectangle);
 	}
+}
+
+void SfmlScreen::initSprite(Piece& piece)
+{
+	
+	sf::Texture texture;
+	if (!texture.loadFromFile(piece.imagePath_))
+	//if (!texture.loadFromFile("C:\\Users\\97254\\Desktop\\msc\\RePAIR\\projects\\springs_assembler_sfml\\2D_puzzle_springs_assembler\\data\\ofir\\RePAIR\\group_39\\images\\RPf_00309_intact_mesh.png"))
+	{
+		throw std::runtime_error("Could not open file " + piece.imagePath_);
+	}
+
+	sf::Sprite sprite;
+	sprite.setTexture(texture);
 
 
+	//float bodyHeight = piece.getBodyBoundingBoxHeight();
+	float bodyWidth = piece.getBodyBoundingBoxWidth();
+	float boundWidth = sprite.getGlobalBounds().width/1000.f;//sprite.getLocalBounds().width;
+	//float boundHeight = sprite.getLocalBounds().height;
+	float tmp = bodyWidth / boundWidth;
 
+	float hand_made_scale = widthScale_ / 1000 * 3; //0.165;//2*widthScale_ * tmp/1000;///1000; //widthScale_/1000; //0.125;
+
+	//sprite.setScale(widthScale_*0.01,heightScale_* 0.01); // Divided by 1000 because we divide it as the dataloader
+	sprite.setScale(hand_made_scale, hand_made_scale); // Divided by 1000 because we divide it as the dataloader
+
+	float debugX = texture.getSize().x/2;
+	float debugY = texture.getSize().y/2;
+	sprite.setOrigin(sprite.getLocalBounds().width / 2.f, sprite.getLocalBounds().height / 2.f);
+
+	pieceId2Sprite_.insert({ piece.id_,sprite });
+	pieceId2texture_.insert({ piece.id_, texture });
+	//window_.draw(sprite);
+}
+
+void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
+{
+	sf::Sprite& sprite = pieceId2Sprite_.at(pieceId);
+	sprite.setTexture(pieceId2texture_.at(pieceId));
+	double rotateRadians = trans.q.GetAngle();
+	double rotateDegrees = rotateRadians * 180.0 / M_PI;
+	//sprite.rotate(rotateDegrees);
+	sprite.setRotation(rotateDegrees);
+
+	auto& position = trans.p;
+	sprite.setPosition(sf::Vector2f(widthScale_ * position.x, heightScale_ * position.y));
+
+	/*sf::RectangleShape debugBoundingBox(sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height));
+	debugBoundingBox.rotate(rotateDegrees);
+	debugBoundingBox.setPosition(sf::Vector2f(widthScale_ * position.x, heightScale_ * position.y));
+	debugBoundingBox.setOrigin(debugBoundingBox.getSize().x / 2, debugBoundingBox.getSize().y / 2);
+	debugBoundingBox.setScale(widthScale_, heightScale_);
+	debugBoundingBox.setFillColor(sf::Color(0, 0, 0));
+	debugBoundingBox.setOutlineThickness(2.f);
+	debugBoundingBox.setOutlineColor(sf::Color(sf::Color::Red));*/
+	//window_.draw(debugBoundingBox);
+	window_.draw(sprite);
 }
 
 void SfmlScreen::clearDisplay()
@@ -100,6 +153,18 @@ void SfmlScreen::drawPolygon(std::vector<b2Vec2>& coordinates, const b2Transform
 	convex.setPosition(sf::Vector2f(widthScale_ * position.x, heightScale_ * position.y));
 
 	convex.setScale(widthScale_,heightScale_);
+
+	
+	//sf::RectangleShape debugBoundingBox(sf::Vector2f(convex.getGlobalBounds().width, convex.getGlobalBounds().height));
+	//debugBoundingBox.rotate(rotateDegrees);
+	//debugBoundingBox.setPosition(sf::Vector2f(widthScale_ * position.x, heightScale_ * position.y));
+	//debugBoundingBox.setOrigin(debugBoundingBox.getSize().x / 2, debugBoundingBox.getSize().y / 2);
+	////debugBoundingBox.setScale(widthScale_, heightScale_);
+	//debugBoundingBox.setFillColor(sf::Color(0, 0, 0));
+	//debugBoundingBox.setOutlineThickness(2.f);
+	//debugBoundingBox.setOutlineColor(sf::Color(sf::Color::Red));
+	//window_.draw(debugBoundingBox);
+
 	window_.draw(convex);
 }
 
