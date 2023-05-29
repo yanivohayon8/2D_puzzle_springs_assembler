@@ -31,9 +31,7 @@ public:
 	void sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map);
 	void getGlobalCoordsMoved(Eigen::MatrixX2d &oCoords, b2Vec2 translate);
 	void getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords);
-
 	void computeBoundingBox();
-
 	float getBodyBoundingBoxWidth();
 	float getBodyBoundingBoxHeight();
 };

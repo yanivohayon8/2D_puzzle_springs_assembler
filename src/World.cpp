@@ -145,6 +145,7 @@ void World::InitPieces()
 	{
 		b2Body* body;
 		body = this->createPieceBody(*pieceIt, *initialPosIt);
+		//body = this->createPieceBody(*pieceIt, b2Vec2(5,5));
 		pieceIt->refb2Body_ = body;
 		
 		pieceIt->computeBoundingBox();
@@ -162,14 +163,19 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
 	jointDef.collideConnected = true;
-	//jointDef.minLength = minLength; //0.05f; //0.05f;
-	//jointDef.maxLength = maxLength;//0.2f; //0.5f;
-	//jointDef.damping = damping; //0.3f; //1.0f;
-	//jointDef.stiffness = stiffness; //0.5f;
-	jointDef.length = 0.1;
-	float frequencyHertz = 2;//4;
-	float dampingRatio = 0;//0.5f;
-	b2LinearStiffness(stiffness, damping, frequencyHertz, dampingRatio, bodyA, bodyB);
+	jointDef.minLength = 0.1f;//0;// 0.1f;
+	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
+	jointDef.length = 0.1f;
+	
+	// the stifness correponds to the score of the pairwise?
+	jointDef.stiffness = stiffness;
+	jointDef.damping = damping;
+	
+	// more natural springs
+	//float frequencyHertz = 5;//0.5f; // "Speed of oscillation" 1-5 typical
+	//float dampingRatio = 1;//0.1f; // typical 0-1, at 1 all oscillation vanish
+	//b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
+	
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
 
 	joints_.push_back(joint);
@@ -291,6 +297,7 @@ void World::Simulation(bool isAuto)
 	for (auto&piece:pieces_)
 	{
 		screen_->initSprite(piece);
+		setCollideOff(piece.refb2Body_);
 	}
 
 
@@ -332,12 +339,6 @@ void World::Simulation(bool isAuto)
 			auto& anchorB = joint->GetAnchorB();
 			screen_->drawLine(anchorA, anchorB, redColor, -1);
 		}
-
-		////for debug
-		//for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
-		//{
-		//	std::cout << "collide" << contact->GetFixtureA() << std::endl;
-		//}
 
 		screen_->updateDisplay();
 

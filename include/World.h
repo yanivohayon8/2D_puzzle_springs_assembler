@@ -29,7 +29,7 @@ public:
 	
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
-		float minLength = 0, float maxLength = 2.5f, float damping = 1, float stiffness = 0);//stif=0.5
+		float minLength = 0, float maxLength = 2.5f, float damping = 1, float stiffness = 1);//stif=0.5
 	void putMatingSprings(VertexMating& mating);
 	void orderSpringsConnection();
 
@@ -37,7 +37,7 @@ public:
 	void initBounds();
 	void Init();
 	void preProcess();
-	void Simulation(bool isAuto=false);
+	void Simulation(bool isAuto=true);
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
 	void setCollideOff(b2Body* body);
