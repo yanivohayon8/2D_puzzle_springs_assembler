@@ -3,7 +3,6 @@
 #include <Piece.h>
 #include <EdgeMating.h>
 #include <VertexMating.h>
-//#include "Screen.h"
 #include "SfmlScreen.h"
 #include <numeric>
 #include "Utils.h"
@@ -19,23 +18,16 @@ public:
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> pieces_;
 	std::vector<Piece> rawPieces_;
-	//ScreenOpencv* screen_;
 	SfmlScreen* screen_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	std::vector< b2DistanceJoint*> joints_;
-	std::vector<VertexMating> matings_; // might be unnessary
-	std::vector<SpringEdgeMating> springs_;
-	int connectedSpringIndex_ = 0; // from the start
-
-	//double screenScale_ = 50; //10; //50;
-	int screenHeight_ = 1380;//1024;//800; // //880;
-	int screenWidth_ = 1380;//1024; //800;//1024;
-	//float wallWidth = 0.1;
-	float boardHeight_ = 20; //10; //17; //This fit my screeen...
-	float boardWidth_ = 20;//10;//28.5; //This fit my screeen... note also the recommondation of static bodies (no more than 50!)
-	float box2BodiesFactor_ = 0.001;
-
-
+	std::vector<VertexMating> matings_; 
+	int connectedSpringIndex_ = 0; 
+	int screenHeight_ = 1380;
+	int screenWidth_ = 1380;
+	float boardHeight_ = 20; 
+	float boardWidth_ = 20;//note also the recommondation of static bodies (no more than 50!)
+	
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
 		float minLength = 0, float maxLength = 2.5f, float damping = 1, float stiffness = 0);//stif=0.5

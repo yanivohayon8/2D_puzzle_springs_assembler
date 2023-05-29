@@ -5,10 +5,6 @@ Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imag
 {
 	id_ = pieceId;
 	localCoordinates_ = coordinates;
-	//finalCoordinates_ = coordinates;
-	/*
-	cv::eigen2cv(coordinates, cvCoords_);
-	cvCoords_.convertTo(cvCoords_, CV_32F);*/
 
 	for (int i = 0; i < coordinates.rows(); i++)
 	{
@@ -40,11 +36,6 @@ int Piece::getNumCoords()
 {
 	return localCoordinates_.rows();
 }
-
-//double Piece::getArea()
-//{
-//	return cv::contourArea(cvCoords_);
-//}
 
 void Piece::rotate(const b2Rot& rot)
 {

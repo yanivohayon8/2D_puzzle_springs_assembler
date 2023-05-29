@@ -12,27 +12,17 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = initialPosition; //b2Vec2{ 3, 2.5};
+	bodyDef.position = initialPosition; 
 	bodyDef.fixedRotation = piece.isRotationFixed;
-	//bodyDef.linearVelocity.Set(1, 0); // debug
 
 	b2PolygonShape shape;
-	/*std::vector<b2Vec2>& b2Poly = piece.localCoordsAsVecs_;
-	int numCoords = piece.getNumCoords();
-
-	for (int i = 0; i < numCoords; i++)
-	{
-		auto [x, y] = piece.getVertexCoord(i);
-		float x_ = static_cast<float>(x);
-		float y_ = static_cast<float>(y);
-		b2Poly.push_back(b2Vec2{ x_,y_});
-	}*/
+	
 	std::vector<b2Vec2> localCoords;
 
 	for (int i = 0; i < piece.localCoordsAsVecs_.size(); i++)
 	{
-		float xFactored = piece.localCoordsAsVecs_[i].x;// * box2BodiesFactor_;
-		float yFactored = piece.localCoordsAsVecs_[i].y;// *box2BodiesFactor_;
+		float xFactored = piece.localCoordsAsVecs_[i].x;
+		float yFactored = piece.localCoordsAsVecs_[i].y;
 		localCoords.push_back(b2Vec2(xFactored, yFactored));
 	}
 
@@ -286,11 +276,9 @@ void World::setDamping(b2Body* body, double linearDamping,double angularDamping)
 
 void World::Simulation(bool isAuto)
 {
-
-	// The following params make as parameters to the function
-	double timeStep = 1.0F / 60.0F;//1.0F / 120.0F; //1.0F / 60.0F;
-	int velocityIterations = 6;//6; //3;//
-	int positionIterations = 2;//2; //1;//
+	double timeStep = 1.0F / 60.0F;
+	int velocityIterations = 6;
+	int positionIterations = 2;
 	bool isFinished = false;
 	float damping = 0;
 	auto redColor = sf::Color::Red;
@@ -501,7 +489,6 @@ void World::moveAssemblyToOrigin()
 	}
 }
 
-
 b2Vec2 World::getCenterOfMass(std::vector<Piece>& pieces)
 {
 	// Compute total mass
@@ -523,7 +510,6 @@ b2Vec2 World::getCenterOfMass(std::vector<Piece>& pieces)
 
 	return centreOfMass;
 }
-
 
 void World::saveFinalTransforms(const std::string& filename)
 {
