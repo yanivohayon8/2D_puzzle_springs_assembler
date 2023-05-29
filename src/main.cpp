@@ -3,7 +3,6 @@
 #include <EdgeMating.h>
 #include <World.h>
 #include <VertexMating.h>
-//#include "mapbox/earcut.hpp"
 
 int main(int argc, char** argv)
 {
