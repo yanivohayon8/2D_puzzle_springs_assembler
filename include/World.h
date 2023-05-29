@@ -6,7 +6,6 @@
 #include "SfmlScreen.h"
 #include <numeric>
 #include "Utils.h"
-#include "DebugVisualize.h"
 #include <iostream>
 #include <fstream>
 
