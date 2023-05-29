@@ -134,10 +134,7 @@ void Piece::getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords)
 	}
 }
 
-void Piece::triangulated(std::vector<std::vector<b2Vec2>>& oTriangles)
-{
-	triangulate(oTriangles, localCoordsAsVecs_);
-}
+
 
 void Piece::computeBoundingBox()
 {

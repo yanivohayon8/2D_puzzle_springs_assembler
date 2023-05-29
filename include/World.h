@@ -38,7 +38,7 @@ public:
 
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
-		float minLength = 0.15f, float maxLength = 2.0f, float damping = 0.3, float stiffness = 0.5f);
+		float minLength = 0, float maxLength = 2.5f, float damping = 1, float stiffness = 0);//stif=0.5
 	void putMatingSprings(VertexMating& mating);
 	void orderSpringsConnection();
 
@@ -46,7 +46,7 @@ public:
 	void initBounds();
 	void Init();
 	void preProcess();
-	void Simulation(bool isAuto=true);
+	void Simulation(bool isAuto=false);
 	void explode(int MaxPower, int seed);
 	void switchColide(b2Body* body);
 	void setCollideOff(b2Body* body);
@@ -57,5 +57,5 @@ public:
 
 	void saveFinalCoordinates(const std::string& filename);
 	void saveFinalTransforms(const std::string& filename);
-
+	void moveAssemblyToOrigin();
 };

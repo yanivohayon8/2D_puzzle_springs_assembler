@@ -5,7 +5,7 @@
 //#include <opencv2/core/eigen.hpp>
 #include <vector>
 #include <algorithm>
-#include <Geometry.h>
+//#include <Geometry.h>
 
 class Piece
 {
@@ -42,8 +42,6 @@ public:
 	//void coordsMoved(Eigen::MatrixX2d oCoordsCopy, b2Vec2 translate);
 	void getGlobalCoordsMoved(Eigen::MatrixX2d &oCoords, b2Vec2 translate);
 	void getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords);
-
-	void triangulated(std::vector<std::vector<b2Vec2>>& oTriangles);
 
 	void computeBoundingBox();
 

@@ -55,7 +55,6 @@ void SfmlScreen::initSprite(Piece& piece)
 	
 	sf::Texture texture;
 	if (!texture.loadFromFile(piece.imagePath_))
-	//if (!texture.loadFromFile("C:\\Users\\97254\\Desktop\\msc\\RePAIR\\projects\\springs_assembler_sfml\\2D_puzzle_springs_assembler\\data\\ofir\\RePAIR\\group_39\\images\\RPf_00309_intact_mesh.png"))
 	{
 		throw std::runtime_error("Could not open file " + piece.imagePath_);
 	}
@@ -63,14 +62,13 @@ void SfmlScreen::initSprite(Piece& piece)
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
 
-
 	//float bodyHeight = piece.getBodyBoundingBoxHeight();
 	float bodyWidth = piece.getBodyBoundingBoxWidth();
 	float boundWidth = sprite.getGlobalBounds().width/1000.f;//sprite.getLocalBounds().width;
 	//float boundHeight = sprite.getLocalBounds().height;
 	float tmp = bodyWidth / boundWidth;
 
-	float hand_made_scale = widthScale_ / 1000 * 3; //0.165;//2*widthScale_ * tmp/1000;///1000; //widthScale_/1000; //0.125;
+	float hand_made_scale = widthScale_ / 1000 * 2.8;//widthScale_ / 1000 * 3; //0.165;//2*widthScale_ * tmp/1000;///1000; //widthScale_/1000; //0.125;
 
 	//sprite.setScale(widthScale_*0.01,heightScale_* 0.01); // Divided by 1000 because we divide it as the dataloader
 	sprite.setScale(hand_made_scale, hand_made_scale); // Divided by 1000 because we divide it as the dataloader
@@ -190,7 +188,6 @@ void SfmlScreen::drawLine(b2Vec2& point1, b2Vec2& point2, sf::Color& color, floa
 		sf::Vertex(sf::Vector2f(widthScale_*point1.x,heightScale_*point1.y),color),
 		sf::Vertex(sf::Vector2f(widthScale_*point2.x,heightScale_*point2.y),color)
 	};
-
 
 	window_.draw(line, 2, sf::Lines);
 }

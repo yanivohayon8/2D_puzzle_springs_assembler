@@ -8,8 +8,6 @@
 int main(int argc, char** argv)
 {
 	std::string puzzleDirectory = "../data/ofir/RePAIR/group_39";
-	//std::string puzzleDirectory = "../data/ofir/RePAIR/group_39";
-	//std::string puzzleDirectory = "../data/ofir/Roman_fresco_Villa_dei_Misteri_Pompeii_009/Puzzle1/0";
 	bool isOfir = true;
 	DataLoader dataLoader(puzzleDirectory);
 	std::vector<Piece> pieces;
@@ -17,7 +15,6 @@ int main(int argc, char** argv)
 	//dataLoader.loadExtraInfo(pieces);
 	std::vector<VertexMating> matings;
 	dataLoader.loadVertexMatings(matings);
-
 	World world(pieces,matings);
 	world.Init();
 	world.Simulation();

@@ -155,8 +155,6 @@ void World::InitPieces()
 	{
 		b2Body* body;
 		body = this->createPieceBody(*pieceIt, *initialPosIt);
-		//body = this->createPieceBody(*pieceIt, b2Vec2(5,5));
-
 		pieceIt->refb2Body_ = body;
 		
 		pieceIt->computeBoundingBox();
@@ -165,21 +163,6 @@ void World::InitPieces()
 		pieces_.push_back(*pieceIt);
 		initialPosIt++;
 	}
-
-	// Assign color for debuging or rendring
-	/*std::vector<cv::Scalar> colors(std::size(pieces_));
-	generateColors(colors);
-
-	auto& pieceIt = pieces_.begin();
-	auto colorIt = colors.begin();
-
-	while(pieceIt!=pieces_.end())
-	{
-		pieceIt->color_ = *colorIt;
-		++pieceIt;
-		++colorIt;
-	}*/
-
 }
 
 void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
@@ -189,11 +172,16 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
 	jointDef.collideConnected = true;
-	jointDef.minLength = minLength; //0.05f; //0.05f;
-	jointDef.maxLength = maxLength;//0.2f; //0.5f;
-	jointDef.damping = damping; //0.3f; //1.0f;
-	jointDef.stiffness = stiffness; //0.5f;
+	//jointDef.minLength = minLength; //0.05f; //0.05f;
+	//jointDef.maxLength = maxLength;//0.2f; //0.5f;
+	//jointDef.damping = damping; //0.3f; //1.0f;
+	//jointDef.stiffness = stiffness; //0.5f;
+	jointDef.length = 0.1;
+	float frequencyHertz = 2;//4;
+	float dampingRatio = 0;//0.5f;
+	b2LinearStiffness(stiffness, damping, frequencyHertz, dampingRatio, bodyA, bodyB);
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
+
 	joints_.push_back(joint);
 }
 
@@ -216,9 +204,6 @@ void World::putMatingSprings(VertexMating& mating)
 			pieceB = &piece;
 		}
 	}
-
-	/*Piece* pieceA = mating.firstPiece_;
-	Piece* pieceB = mating.secondPiece_;*/
 
 	b2Body* bodyA = pieceA->refb2Body_;
 	b2Body* bodyB = pieceB->refb2Body_;
@@ -293,7 +278,6 @@ void World::setCollideOn(b2Body* body)
 	body->GetFixtureList()->SetFilterData(filter);
 }
 
-
 void World::setDamping(b2Body* body, double linearDamping,double angularDamping)
 {
 	body->SetLinearDamping(linearDamping);
@@ -305,14 +289,11 @@ void World::Simulation(bool isAuto)
 
 	// The following params make as parameters to the function
 	double timeStep = 1.0F / 60.0F;//1.0F / 120.0F; //1.0F / 60.0F;
-	int velocityIterations = 6; //3;//
-	int positionIterations = 2; //1;//
+	int velocityIterations = 6;//6; //3;//
+	int positionIterations = 2;//2; //1;//
 	bool isFinished = false;
 	float damping = 0;
 	auto redColor = sf::Color::Red;
-	cv::Scalar greenColor = { 0,255,0 };
-	//SpringMating* nextSpring;
-
 	int nIteration = -1;
 	bool isJointShorted = false;
 
@@ -345,15 +326,16 @@ void World::Simulation(bool isAuto)
 			pieceIt->translate();
 
 			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
+
+			// FOR DEBUG
 			//screen_->drawPolygon(pieceIt->localCoordsAsVecs_, transform, pieceIt->refb2Body_->GetLocalCenter()); //position
+			//for (auto& cord:pieceIt->globalCoordinates_)
+			//{
+			//	screen_->drawCircle(cord, 0.1, sf::Color(255, 0, 255));
+			//}
+
+			//screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
 			screen_->drawSprite(pieceIt->id_, transform);
-
-			/*for (auto& cord:pieceIt->globalCoordinates_)
-			{
-				screen_->drawCircle(cord, 0.1, sf::Color(255, 0, 255));
-			}
-
-			screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));*/
 		}
 
 		for (auto& joint : joints_)
@@ -374,8 +356,6 @@ void World::Simulation(bool isAuto)
 		if (isAuto)
 		{
 
-		
-
 			if (nIteration % 240 == 0) //45
 			{
 				// Still connecting the springs
@@ -388,12 +368,6 @@ void World::Simulation(bool isAuto)
 					// Shorting the springs
 					if (!isJointShorted)
 					{
-						/*for (auto& joint : joints_)
-						{
-							joint->SetMinLength(0.01);
-							joint->SetMaxLength(0.05);
-						}
-						isJointShorted = true;*/
 
 						isJointShorted = true;
 						for (auto& joint : joints_)
@@ -414,7 +388,7 @@ void World::Simulation(bool isAuto)
 
 						for (auto& piece : pieces_)
 						{
-							setCollideOff(piece.refb2Body_);
+							//setCollideOff(piece.refb2Body_);
 							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
 						}
 
@@ -493,212 +467,38 @@ void World::Simulation(bool isAuto)
 							}
 						}
 						break;
+					case sf::Keyboard::C:
+						for (auto& piece : pieces_)
+						{
+							switchColide(piece.refb2Body_);
+						}
 					default:
 						break;
 					}
 				}
 			}
 		}
-
-		
 	}
+}
 
-	//while (!isFinished)
-	//{
-	//	screen_->clearDisplay();
-	//	screen_->drawBounds(&boundsCoordinates_);
+void World::moveAssemblyToOrigin()
+{
+	b2Vec2 centerOfMass = getCenterOfMass(pieces_);
 
-	//	world_.Step(timeStep, velocityIterations, positionIterations);
+	for (auto& piece:pieces_ )
+	{
+		piece.finalCoordinates_ = piece.localCoordinates_;
+		const b2Transform& transform = piece.refb2Body_->GetTransform();
+		Eigen::MatrixX2d rotation(2,2);
+		b2Vec2 finalTranslate = transform.p - centerOfMass;
 
-	//	for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
-	//	{
-	//		pieceIt->translate();
-	//		/*auto pos = pieceIt->refb2Body_->GetPosition();
-	//		screen_->pasteImage(int(pos.x),int(pos.y),100,100);*/
-	//		screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
-	//		const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
-	//		//screen_->drawCircle(transform.p, 3, redColor);
-	//		screen_->writeText(std::to_string(pieceIt->id_), transform.p);
-	//	}
-
-	//	for (auto& joint : joints_)
-	//	{
-	//		auto& anchorA = joint->GetAnchorA();
-	//		auto& anchorB = joint->GetAnchorB();
-	//		screen_->drawLine(anchorA, anchorB, redColor, 1);
-	//	}
-
-	//	//// for debug
-	//	//b2Vec2 centerOfMass = getCenterOfMass(pieces_);
-	//	//screen_->drawCircle(centerOfMass, 6, greenColor);
-
-
-	//	// for debug
-	//	/*for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
-	//	{
-	//		std::cout << "collide" << contact->GetFixtureA() << std::endl;
-	//	}*/
-
-	//	int pressedKey = screen_->updateDisplay();
-
-	//	//if (isAuto)
-	//	//{
-
-	//	//
-
-	//	//	if (nIteration % 45 == 0)
-	//	//	{
-	//	//		// Still connecting the springs
-	//	//		if (connectedSpringIndex_ < int(matings_.size()))
-	//	//		{
-	//	//			putMatingSprings(matings_[connectedSpringIndex_]);
-	//	//			++connectedSpringIndex_;
-	//	//		}
-	//	//		else {
-	//	//			// Shorting the springs
-	//	//			if (!isJointShorted)
-	//	//			{
-	//	//				/*for (auto& joint : joints_)
-	//	//				{
-	//	//					joint->SetMinLength(0.01);
-	//	//					joint->SetMaxLength(0.05);
-	//	//				}
-	//	//				isJointShorted = true;*/
-
-	//	//				isJointShorted = true;
-	//	//				for (auto& joint : joints_)
-	//	//				{
-	//	//					auto length = joint->GetMaxLength();
-	//	//					if (length > 0.2f)
-	//	//					{
-	//	//						isJointShorted = false;
-	//	//						joint->SetMaxLength(length - 0.2);
-	//	//					}
-	//	//				}
-
-	//	//			}
-	//	//			else {
-
-	//	//				// start to slow down
-	//	//				double AveragedSpeed = 0;
-
-	//	//				for (auto& piece : pieces_)
-	//	//				{
-	//	//					AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
-	//	//				}
-
-	//	//				AveragedSpeed /= pieces_.size();
-	//	//				double speedEpsilon = 0.1;
-
-	//	//				if (AveragedSpeed < speedEpsilon)
-	//	//				{
-	//	//					isFinished = true;
-	//	//					continue;
-	//	//				}
-
-
-	//	//				damping += 0.1;
-	//	//				for (auto& piece : pieces_)
-	//	//				{
-	//	//					setDamping(piece.refb2Body_, damping, damping);
-	//	//				}
-	//	//			}
-	//	//		}
-
-	//	//	}
-	//	//}
-
-	//	//switch (pressedKey)
-	//	//{
-	//	//case 'c':
-	//	//	for (auto& piece : pieces_)
-	//	//	{
-	//	//		switchColide(piece.refb2Body_);
-	//	//	}
-	//	//	break;
-	//	//case 'e':
-	//	//	explode(5, 0);
-	//	//	break;
-	//	//case 'E':
-	//	//	explode(50, -1);
-	//	//	break;
-	//	//case 'd':
-	//	//	damping += 0.1;
-	//	//	for (auto& piece : pieces_)
-	//	//	{
-	//	//		setDamping(piece.refb2Body_, damping, damping);
-	//	//	}
-	//	//	break;
-	//	//case 'D':
-	//	//	damping -= 0.1;
-	//	//	if (damping < 0)
-	//	//	{
-	//	//		damping = 0;
-	//	//	}
-	//	//	for (auto& piece : pieces_)
-	//	//	{
-	//	//		setDamping(piece.refb2Body_, damping, damping);
-	//	//	}
-	//	//	break;
-	//	//case 'm':
-	//	//	if (connectedSpringIndex_ < int(matings_.size()))
-	//	//	{
-	//	//		putMatingSprings(matings_[connectedSpringIndex_]);
-	//	//		++connectedSpringIndex_;
-	//	//	}
-	//	//	break;
-	//	//case 's':
-	//	//	for (auto& joint : joints_)
-	//	//	{
-	//	//		auto length = joint->GetMinLength();
-	//	//		if (length>0.05)
-	//	//		{
-	//	//			joint->SetMinLength(length-0.1);
-	//	//		}
-	//	//		//joint->SetMaxLength(0.05);
-	//	//	}
-	//	//	break;
-	//	//case 'S':
-	//	//	for (auto& joint : joints_)
-	//	//	{
-
-	//	//		//joint->SetMinLength(joint->GetMinLength() - 0.1);
-	//	//		auto length = joint->GetMaxLength();
-	//	//		if (length>0.2f)
-	//	//		{
-
-	//	//			joint->SetMaxLength(length-0.1);
-	//	//		}
-	//	//	}
-	//	//	break;
-	//	//case 'q':
-	//	//	isFinished = true;
-	//	//	break;
-	//	//default:
-	//	//	break;
-	//	//}
-
-	//	nIteration++;
-	//}
-
-	//screen_->finishDisplay();
-
-	//b2Vec2 centerOfMass = getCenterOfMass(pieces_);
-
-	//for (auto& piece:pieces_ )
-	//{
-	//	piece.finalCoordinates_ = piece.localCoordinates_;
-	//	const b2Transform& transform = piece.refb2Body_->GetTransform();
-	//	Eigen::MatrixX2d rotation(2,2);
-	//	b2Vec2 finalTranslate = transform.p - centerOfMass;
-
-	//	piece.finalRot_ = transform.q;
-	//	piece.finalTranslate_ = finalTranslate;
-	//	
-	//	getRoatationMatrix(rotation, transform.q);
-	//	piece.finalCoordinates_*= rotation;
-	//	piece.finalCoordinates_ = piece.finalCoordinates_.rowwise() + Eigen::RowVector2d(finalTranslate.x,finalTranslate.y);
-	//}
+		piece.finalRot_ = transform.q;
+		piece.finalTranslate_ = finalTranslate;
+		
+		getRoatationMatrix(rotation, transform.q);
+		piece.finalCoordinates_*= rotation;
+		piece.finalCoordinates_ = piece.finalCoordinates_.rowwise() + Eigen::RowVector2d(finalTranslate.x,finalTranslate.y);
+	}
 }
 
 
