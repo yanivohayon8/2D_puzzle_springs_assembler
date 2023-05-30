@@ -26,6 +26,9 @@ public:
 	int screenWidth_ = 1380;
 	float boardHeight_ = 20; 
 	float boardWidth_ = 20;//note also the recommondation of static bodies (no more than 50!)
+
+	bool isDrawPolygons_ = false;
+	bool isDrawSprites_ = true;
 	
 	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,

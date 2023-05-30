@@ -22,16 +22,19 @@ public:
 	float heightScale_;
 	std::map<std::string, sf::Sprite> pieceId2Sprite_;
 	std::map<std::string, sf::Texture> pieceId2texture_;
+	std::map<std::string, sf::ConvexShape> pieceId2Polygon_;
+
 
 	void initDisplay();
 	void initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordinates);
 	void initSprite(Piece& piece);
+	void initPolygon(Piece& piece);
 
 	bool isWindowOpen();
 	void clearDisplay();
 	void updateDisplay();
 	void drawBounds();
-	void drawPolygon(std::vector<b2Vec2>& coordinates, const b2Transform& trans, const b2Vec2& centerMass);
+	void drawPolygon(std::string pieceId, const b2Transform& trans);
 	void drawCircle(const b2Vec2& center, float radius, sf::Color& color);
 	void drawLine(b2Vec2& point1, b2Vec2& point2, sf::Color& color, float thickness);
 

@@ -297,6 +297,7 @@ void World::Simulation(bool isAuto)
 	for (auto&piece:pieces_)
 	{
 		screen_->initSprite(piece);
+		screen_->initPolygon(piece);
 		setCollideOff(piece.refb2Body_);
 	}
 
@@ -323,14 +324,24 @@ void World::Simulation(bool isAuto)
 			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
 
 			// FOR DEBUG
-			screen_->drawPolygon(pieceIt->localCoordsAsVecs_, transform, pieceIt->refb2Body_->GetLocalCenter()); //position
-			for (auto& cord:pieceIt->globalCoordinates_)
+			
+			if (isDrawPolygons_)
 			{
-				screen_->drawCircle(cord, 0.1, sf::Color(255, 0, 255));
+				screen_->drawPolygon(pieceIt->id_, transform); //position
 			}
 
-			screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
-			//screen_->drawSprite(pieceIt->id_, transform);
+			/*for (auto& cord:pieceIt->globalCoordinates_)
+			{
+				screen_->drawCircle(cord, 0.05, sf::Color(255, 0, 255));
+			}*/
+
+			//screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
+
+			if (isDrawSprites_)
+			{
+				screen_->drawSprite(pieceIt->id_, transform);
+			}
+
 		}
 
 		for (auto& joint : joints_)
@@ -415,6 +426,12 @@ void World::Simulation(bool isAuto)
 				{
 					switch (nextEvent.key.code)
 					{
+					case sf::Keyboard::P:
+						isDrawPolygons_ = !isDrawPolygons_;
+						break;
+					case sf::Keyboard::O:
+						isDrawSprites_ = !isDrawSprites_;
+						break;
 					case sf::Keyboard::E:
 						explode(20, -1);
 						break;
