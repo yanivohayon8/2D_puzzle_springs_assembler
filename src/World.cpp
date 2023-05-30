@@ -332,8 +332,6 @@ void World::Simulation(bool isAuto)
 				screen_->drawPolygonDots(pieceIt->id_, pieceIt->globalCoordinates_);
 			}
 
-			
-
 			//screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
 
 			if (isDrawSprites_)
@@ -457,19 +455,6 @@ void World::Simulation(bool isAuto)
 						{
 							putMatingSprings(matings_[connectedSpringIndex_]);
 							++connectedSpringIndex_;
-						}
-						break;
-					case sf::Keyboard::S:
-						for (auto& joint : joints_)
-						{
-
-							//joint->SetMinLength(joint->GetMinLength() - 0.1);
-							auto length = joint->GetMaxLength();
-							if (length>0.2f)
-							{
-
-								joint->SetMaxLength(length-0.1);
-							}
 						}
 						break;
 					case sf::Keyboard::C:
