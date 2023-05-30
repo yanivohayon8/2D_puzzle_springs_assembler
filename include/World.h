@@ -24,8 +24,8 @@ public:
 	int connectedSpringIndex_ = 0; 
 	int screenHeight_ = 1380;
 	int screenWidth_ = 1380;
-	float boardHeight_ = 20; 
-	float boardWidth_ = 20;//note also the recommondation of static bodies (no more than 50!)
+	float boardHeight_ = 10;//20; 
+	float boardWidth_ = 10;//20;//note also the recommondation of static bodies (no more than 50!)
 
 	bool isDrawPolygons_ = false;
 	bool isDrawSprites_ = true;

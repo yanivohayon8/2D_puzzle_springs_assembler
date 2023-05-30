@@ -24,6 +24,7 @@ public:
 	std::map<std::string, sf::Texture> pieceId2texture_;
 	std::map<std::string, sf::ConvexShape> pieceId2Polygon_;
 	std::map<std::string, std::vector<sf::CircleShape>> pieceId2PolygonsCoords_;
+	std::map<std::string, sf::CircleShape> pieceId2PolygonCenter_;
 
 
 	void initDisplay();
@@ -31,6 +32,8 @@ public:
 	void initSprite(Piece& piece);
 	void initPolygon(Piece& piece);
 	void initPolygonCoordsDots(Piece& piece, float radius, sf::Color& color);
+	void initPolygonCenter(Piece& piece, float radius, sf::Color& color);
+	sf::CircleShape initCircle(const b2Vec2& center, float radius, sf::Color color);
 
 	bool isWindowOpen();
 	void clearDisplay();
@@ -39,7 +42,9 @@ public:
 	void drawPolygon(std::string pieceId, const b2Transform& trans);
 	void drawPolygonDots(std::string pieceId, std::vector<b2Vec2>& coordinates);
 	void drawLine(b2Vec2& point1, b2Vec2& point2, sf::Color& color, float thickness);
-	void drawSprite(std::string pieceId, const b2Transform& trans);
+	void drawSprite(std::string pieceId, const b2Transform& trans,const b2Vec2& posDebug);
+	
+	void drawCircle(const b2Vec2& center, float radius, sf::Color color);
 
 	bool pollEvent(sf::Event& event);
 	void closeWindow();

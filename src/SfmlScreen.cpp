@@ -6,7 +6,6 @@ SfmlScreen::SfmlScreen(int width,int height, float widthScale,float heightScale)
 	height_ = height;
 	widthScale_ = widthScale;
 	heightScale_ = heightScale;
-	//sf::RenderWindow window_(sf::VideoMode(width_, height_), "Vika");
 }
 
 void SfmlScreen::initDisplay()
@@ -69,14 +68,15 @@ void SfmlScreen::initSprite(Piece& piece)
 	//float boundHeight = sprite.getLocalBounds().height;
 	float tmp = bodyWidth / boundWidth;
 
-	float hand_made_scale = widthScale_ / 1000 * 3.3; //* 2.8;//widthScale_ / 1000 * 3; //0.165;//2*widthScale_ * tmp/1000;///1000; //widthScale_/1000; //0.125;
-	
+	//float hand_made_scale = widthScale_ / 1000 * 3.3; //* 2.8;//widthScale_ / 1000 * 3; //0.165;//2*widthScale_ * tmp/1000;///1000; //widthScale_/1000; //0.125;
+	float hand_made_scale = widthScale_/1000; // this works for the synthesis puzzles
+
 	//sprite.setScale(widthScale_*0.01,heightScale_* 0.01); // Divided by 1000 because we divide it as the dataloader
 	sprite.setScale(hand_made_scale, hand_made_scale); // Divided by 1000 because we divide it as the dataloader
 
 	float debugX = texture.getSize().x/2;
 	float debugY = texture.getSize().y/2;
-	sprite.setOrigin(sprite.getLocalBounds().width / 2.f, sprite.getLocalBounds().height / 2.f);
+	//sprite.setOrigin(sprite.getLocalBounds().width / 2.f, sprite.getLocalBounds().height / 2.f);
 
 	pieceId2Sprite_.insert({ piece.id_,sprite });
 	pieceId2texture_.insert({ piece.id_, texture });
@@ -84,12 +84,8 @@ void SfmlScreen::initSprite(Piece& piece)
 
 void SfmlScreen::initPolygon(Piece& piece)
 {
-
 	const b2Transform& trans = piece.refb2Body_->GetTransform();
-	// create an empty shape
 	sf::ConvexShape convex;
-
-	// resize it to 5 points
 	convex.setPointCount(piece.localCoordsAsVecs_.size());
 
 	for (int i = 0; i < piece.localCoordsAsVecs_.size(); i++)
@@ -121,7 +117,7 @@ void SfmlScreen::initPolygon(Piece& piece)
 }
 
 
-void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
+void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans, const b2Vec2& posDebug)
 {
 	sf::Sprite& sprite = pieceId2Sprite_.at(pieceId);
 	sprite.setTexture(pieceId2texture_.at(pieceId));
@@ -131,7 +127,10 @@ void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
 	sprite.setRotation(rotateDegrees);
 
 	auto& position = trans.p;
+	//auto& position = posDebug;//trans.p;
+	//auto& position = posDebug;//trans.p;
 	sprite.setPosition(widthScale_ * position.x, heightScale_ * position.y);
+
 
 	/*sf::RectangleShape debugBoundingBox(sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height));
 	debugBoundingBox.rotate(rotateDegrees);
@@ -142,7 +141,20 @@ void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
 	debugBoundingBox.setOutlineThickness(2.f);
 	debugBoundingBox.setOutlineColor(sf::Color(sf::Color::Red));*/
 	//window_.draw(debugBoundingBox);
+
+
 	window_.draw(sprite);
+
+	////// debugging
+	//sf::Vector2f spritePos = sprite.getPosition();
+	//float radiusCircle = 0.025;
+	//sf::CircleShape circle(radiusCircle);
+	//circle.setOrigin(radiusCircle / 2, radiusCircle / 2);
+	//circle.setPosition(spritePos.x, spritePos.y );
+	//circle.setScale(sf::Vector2f(widthScale_, heightScale_));
+	//circle.setFillColor(sf::Color(255,255,0));
+	//window_.draw(circle);
+
 }
 
 void SfmlScreen::clearDisplay()
@@ -213,6 +225,20 @@ void SfmlScreen::drawPolygonDots(std::string pieceId, std::vector<b2Vec2>& coord
 	}
 }
 
+void initPolygonCenter(Piece& piece, float radius, sf::Color& color)
+{
+
+}
+
+sf::CircleShape SfmlScreen::initCircle(const b2Vec2& center, float radius, sf::Color color)
+{
+	sf::CircleShape circle(radius);
+	circle.setOrigin(radius / 2, radius / 2);
+	circle.setPosition(center.x * widthScale_, center.y * widthScale_);
+	circle.setScale(sf::Vector2f(widthScale_, heightScale_));
+	circle.setFillColor(color);
+	return circle;
+}
 
 void SfmlScreen::drawLine(b2Vec2& point1, b2Vec2& point2, sf::Color& color, float thickness)
 {
@@ -225,3 +251,12 @@ void SfmlScreen::drawLine(b2Vec2& point1, b2Vec2& point2, sf::Color& color, floa
 	window_.draw(line, 2, sf::Lines);
 }
 
+void SfmlScreen::drawCircle(const b2Vec2& center, float radius, sf::Color color)
+{
+	sf::CircleShape circle(radius);
+	circle.setOrigin(radius / 2, radius / 2);
+	circle.setPosition(center.x * widthScale_, center.y * widthScale_);
+	circle.setScale(sf::Vector2f(widthScale_, heightScale_));
+	circle.setFillColor(color);
+	window_.draw(circle);
+}

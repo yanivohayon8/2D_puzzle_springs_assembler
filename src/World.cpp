@@ -332,13 +332,14 @@ void World::Simulation(bool isAuto)
 				screen_->drawPolygonDots(pieceIt->id_, pieceIt->globalCoordinates_);
 			}
 
-			//screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
 
 			if (isDrawSprites_)
 			{
-				screen_->drawSprite(pieceIt->id_, transform);
+				screen_->drawSprite(pieceIt->id_, transform, pieceIt->refb2Body_->GetWorldCenter());
 			}
 
+			//screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.05, sf::Color(0, 0, 255));
+			//screen_->drawCircle(transform.p, 0.05, sf::Color(255, 0, 0));
 		}
 
 		for (auto& joint : joints_)
