@@ -64,12 +64,13 @@ void SfmlScreen::initSprite(Piece& piece)
 
 	//float bodyHeight = piece.getBodyBoundingBoxHeight();
 	float bodyWidth = piece.getBodyBoundingBoxWidth();
-	float boundWidth = sprite.getGlobalBounds().width/1000.f;//sprite.getLocalBounds().width;
+	float boundWidth = sprite.getGlobalBounds().width;//sprite.getLocalBounds().width;
+	boundWidth /= 1000;
 	//float boundHeight = sprite.getLocalBounds().height;
 	float tmp = bodyWidth / boundWidth;
 
-	float hand_made_scale = widthScale_ / 1000 * 2.8;//widthScale_ / 1000 * 3; //0.165;//2*widthScale_ * tmp/1000;///1000; //widthScale_/1000; //0.125;
-
+	float hand_made_scale = widthScale_ / 1000 * 3.3; //* 2.8;//widthScale_ / 1000 * 3; //0.165;//2*widthScale_ * tmp/1000;///1000; //widthScale_/1000; //0.125;
+	
 	//sprite.setScale(widthScale_*0.01,heightScale_* 0.01); // Divided by 1000 because we divide it as the dataloader
 	sprite.setScale(hand_made_scale, hand_made_scale); // Divided by 1000 because we divide it as the dataloader
 
@@ -79,7 +80,6 @@ void SfmlScreen::initSprite(Piece& piece)
 
 	pieceId2Sprite_.insert({ piece.id_,sprite });
 	pieceId2texture_.insert({ piece.id_, texture });
-	//window_.draw(sprite);
 }
 
 void SfmlScreen::initPolygon(Piece& piece)
@@ -103,7 +103,7 @@ void SfmlScreen::initPolygon(Piece& piece)
 	convex.rotate(rotateDegrees);
 
 	auto& position = trans.p;
-	convex.setPosition(sf::Vector2f(widthScale_ * position.x, heightScale_ * position.y));
+	convex.setPosition(widthScale_ * position.x, heightScale_ * position.y);
 	convex.setScale(widthScale_, heightScale_);
 
 
@@ -131,7 +131,7 @@ void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
 	sprite.setRotation(rotateDegrees);
 
 	auto& position = trans.p;
-	sprite.setPosition(sf::Vector2f(widthScale_ * position.x, heightScale_ * position.y));
+	sprite.setPosition(widthScale_ * position.x, heightScale_ * position.y);
 
 	/*sf::RectangleShape debugBoundingBox(sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height));
 	debugBoundingBox.rotate(rotateDegrees);
@@ -173,11 +173,10 @@ void SfmlScreen::drawPolygon(std::string pieceId, const b2Transform& trans)
 	sf::ConvexShape& convex = pieceId2Polygon_.at(pieceId);
 	double rotateRadians = trans.q.GetAngle();
 	double rotateDegrees = rotateRadians * 180.0 / M_PI;
-	//sprite.rotate(rotateDegrees);
 	convex.setRotation(rotateDegrees);
 
 	auto& position = trans.p;
-	convex.setPosition(sf::Vector2f(widthScale_ * position.x, heightScale_ * position.y));
+	convex.setPosition(widthScale_ * position.x, heightScale_ * position.y);
 	window_.draw(convex);
 }
 
@@ -192,11 +191,10 @@ void SfmlScreen::initPolygonCoordsDots(Piece& piece, float radius, sf::Color& co
 	{
 		sf::CircleShape dot(radius);
 		dot.setOrigin(radius / 2, radius / 2);
-		dot.setPosition(sf::Vector2f(cord.x * widthScale_, cord.y * widthScale_));
+		dot.setPosition(cord.x * widthScale_, cord.y * widthScale_);
 		dot.setScale(sf::Vector2f(widthScale_, heightScale_));
 		dot.setFillColor(color);
 		dots.push_back(dot);
-		//screen_->drawCircle(cord, 0.05, sf::Color(255, 0, 255));
 	}
 
 	pieceId2PolygonsCoords_.insert({ piece.id_,dots });
@@ -209,8 +207,7 @@ void SfmlScreen::drawPolygonDots(std::string pieceId, std::vector<b2Vec2>& coord
 	int i = 0;
 	for (auto &dot :dots)
 	{
-		// replace trans.p with the dot coordinates 
-		dot.setPosition(sf::Vector2f(coordinates[i].x * widthScale_, coordinates[i].y * widthScale_));
+		dot.setPosition(coordinates[i].x * widthScale_, coordinates[i].y * widthScale_);
 		window_.draw(dot);
 		++i;
 	}
