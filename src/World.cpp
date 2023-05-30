@@ -163,9 +163,9 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
 	jointDef.collideConnected = true;
-	jointDef.minLength = 0.1f;//0;// 0.1f;
+	jointDef.minLength = 0;// 0.1f;
 	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
-	jointDef.length = 0.1f;
+	jointDef.length = 0;
 	
 	// the stifness correponds to the score of the pairwise?
 	jointDef.stiffness = stiffness;
@@ -323,14 +323,14 @@ void World::Simulation(bool isAuto)
 			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
 
 			// FOR DEBUG
-			//screen_->drawPolygon(pieceIt->localCoordsAsVecs_, transform, pieceIt->refb2Body_->GetLocalCenter()); //position
-			//for (auto& cord:pieceIt->globalCoordinates_)
-			//{
-			//	screen_->drawCircle(cord, 0.1, sf::Color(255, 0, 255));
-			//}
+			screen_->drawPolygon(pieceIt->localCoordsAsVecs_, transform, pieceIt->refb2Body_->GetLocalCenter()); //position
+			for (auto& cord:pieceIt->globalCoordinates_)
+			{
+				screen_->drawCircle(cord, 0.1, sf::Color(255, 0, 255));
+			}
 
-			//screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
-			screen_->drawSprite(pieceIt->id_, transform);
+			screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
+			//screen_->drawSprite(pieceIt->id_, transform);
 		}
 
 		for (auto& joint : joints_)
