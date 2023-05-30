@@ -120,6 +120,7 @@ void SfmlScreen::initPolygon(Piece& piece)
 	pieceId2Polygon_.insert({ piece.id_,convex });
 }
 
+
 void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
 {
 	sf::Sprite& sprite = pieceId2Sprite_.at(pieceId);
@@ -180,18 +181,39 @@ void SfmlScreen::drawPolygon(std::string pieceId, const b2Transform& trans)
 	window_.draw(convex);
 }
 
-
-void SfmlScreen::drawCircle(const b2Vec2& center, float radius, sf::Color& color)
+void SfmlScreen::initPolygonCoordsDots(Piece& piece, float radius, sf::Color& color)
 {
-	sf::CircleShape shape(radius);
-	shape.setOrigin(shape.getRadius() / 2, shape.getRadius() / 2);
-	//shape.setPosition(sf::Vector2f(center.x* widthScale_, center.y* widthScale_));
-	shape.setPosition(sf::Vector2f(center.x* widthScale_, center.y* widthScale_));
-	shape.setScale(sf::Vector2f(widthScale_, heightScale_));
-	
+
+	std::vector<sf::CircleShape> dots;
+
 	// set the shape color to green
-	shape.setFillColor(color);
-	window_.draw(shape);
+
+	for (auto& cord : piece.globalCoordinates_)
+	{
+		sf::CircleShape dot(radius);
+		dot.setOrigin(radius / 2, radius / 2);
+		dot.setPosition(sf::Vector2f(cord.x * widthScale_, cord.y * widthScale_));
+		dot.setScale(sf::Vector2f(widthScale_, heightScale_));
+		dot.setFillColor(color);
+		dots.push_back(dot);
+		//screen_->drawCircle(cord, 0.05, sf::Color(255, 0, 255));
+	}
+
+	pieceId2PolygonsCoords_.insert({ piece.id_,dots });
+}
+
+void SfmlScreen::drawPolygonDots(std::string pieceId, std::vector<b2Vec2>& coordinates)
+{
+	std::vector<sf::CircleShape>& dots = pieceId2PolygonsCoords_.at(pieceId);
+
+	int i = 0;
+	for (auto &dot :dots)
+	{
+		// replace trans.p with the dot coordinates 
+		dot.setPosition(sf::Vector2f(coordinates[i].x * widthScale_, coordinates[i].y * widthScale_));
+		window_.draw(dot);
+		++i;
+	}
 }
 
 

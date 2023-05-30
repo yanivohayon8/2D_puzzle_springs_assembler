@@ -298,6 +298,7 @@ void World::Simulation(bool isAuto)
 	{
 		screen_->initSprite(piece);
 		screen_->initPolygon(piece);
+		screen_->initPolygonCoordsDots(piece, 0.05, sf::Color(0, 255,0 ));
 		setCollideOff(piece.refb2Body_);
 	}
 
@@ -327,13 +328,11 @@ void World::Simulation(bool isAuto)
 			
 			if (isDrawPolygons_)
 			{
-				screen_->drawPolygon(pieceIt->id_, transform); //position
+				screen_->drawPolygon(pieceIt->id_, transform);
+				screen_->drawPolygonDots(pieceIt->id_, pieceIt->globalCoordinates_);
 			}
 
-			/*for (auto& cord:pieceIt->globalCoordinates_)
-			{
-				screen_->drawCircle(cord, 0.05, sf::Color(255, 0, 255));
-			}*/
+			
 
 			//screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.15, sf::Color(0, 0, 255));
 
