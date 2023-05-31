@@ -60,23 +60,10 @@ void SfmlScreen::initSprite(Piece& piece)
 
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
-
-	//float bodyHeight = piece.getBodyBoundingBoxHeight();
-	float bodyWidth = piece.getBodyBoundingBoxWidth();
-	float boundWidth = sprite.getGlobalBounds().width;//sprite.getLocalBounds().width;
-	boundWidth /= 1000;
-	//float boundHeight = sprite.getLocalBounds().height;
-	float tmp = bodyWidth / boundWidth;
-
-	//float hand_made_scale = widthScale_ / 1000 * 3.3; //* 2.8;//widthScale_ / 1000 * 3; //0.165;//2*widthScale_ * tmp/1000;///1000; //widthScale_/1000; //0.125;
-	float hand_made_scale = widthScale_/1000; // this works for the synthesis puzzles
-
-	//sprite.setScale(widthScale_*0.01,heightScale_* 0.01); // Divided by 1000 because we divide it as the dataloader
-	sprite.setScale(hand_made_scale, hand_made_scale); // Divided by 1000 because we divide it as the dataloader
+	sprite.setScale(widthScale_ / 1000, heightScale_/1000); // Divided by 1000 because we divide it as the dataloader
 
 	float debugX = texture.getSize().x/2;
 	float debugY = texture.getSize().y/2;
-	//sprite.setOrigin(sprite.getLocalBounds().width / 2.f, sprite.getLocalBounds().height / 2.f);
 
 	pieceId2Sprite_.insert({ piece.id_,sprite });
 	pieceId2texture_.insert({ piece.id_, texture });
@@ -102,59 +89,22 @@ void SfmlScreen::initPolygon(Piece& piece)
 	convex.setPosition(widthScale_ * position.x, heightScale_ * position.y);
 	convex.setScale(widthScale_, heightScale_);
 
-
-	//sf::RectangleShape debugBoundingBox(sf::Vector2f(convex.getGlobalBounds().width, convex.getGlobalBounds().height));
-	//debugBoundingBox.rotate(rotateDegrees);
-	//debugBoundingBox.setPosition(sf::Vector2f(widthScale_ * position.x, heightScale_ * position.y));
-	//debugBoundingBox.setOrigin(debugBoundingBox.getSize().x / 2, debugBoundingBox.getSize().y / 2);
-	////debugBoundingBox.setScale(widthScale_, heightScale_);
-	//debugBoundingBox.setFillColor(sf::Color(0, 0, 0));
-	//debugBoundingBox.setOutlineThickness(2.f);
-	//debugBoundingBox.setOutlineColor(sf::Color(sf::Color::Red));
-	//window_.draw(debugBoundingBox);
-
 	pieceId2Polygon_.insert({ piece.id_,convex });
 }
 
 
-void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans, const b2Vec2& posDebug)
+void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
 {
 	sf::Sprite& sprite = pieceId2Sprite_.at(pieceId);
 	sprite.setTexture(pieceId2texture_.at(pieceId));
 	double rotateRadians = trans.q.GetAngle();
 	double rotateDegrees = rotateRadians * 180.0 / M_PI;
-	//sprite.rotate(rotateDegrees);
 	sprite.setRotation(rotateDegrees);
 
 	auto& position = trans.p;
-	//auto& position = posDebug;//trans.p;
-	//auto& position = posDebug;//trans.p;
 	sprite.setPosition(widthScale_ * position.x, heightScale_ * position.y);
 
-
-	/*sf::RectangleShape debugBoundingBox(sf::Vector2f(sprite.getGlobalBounds().width, sprite.getGlobalBounds().height));
-	debugBoundingBox.rotate(rotateDegrees);
-	debugBoundingBox.setPosition(sf::Vector2f(widthScale_ * position.x, heightScale_ * position.y));
-	debugBoundingBox.setOrigin(debugBoundingBox.getSize().x / 2, debugBoundingBox.getSize().y / 2);
-	debugBoundingBox.setScale(widthScale_, heightScale_);
-	debugBoundingBox.setFillColor(sf::Color(0, 0, 0));
-	debugBoundingBox.setOutlineThickness(2.f);
-	debugBoundingBox.setOutlineColor(sf::Color(sf::Color::Red));*/
-	//window_.draw(debugBoundingBox);
-
-
 	window_.draw(sprite);
-
-	////// debugging
-	//sf::Vector2f spritePos = sprite.getPosition();
-	//float radiusCircle = 0.025;
-	//sf::CircleShape circle(radiusCircle);
-	//circle.setOrigin(radiusCircle / 2, radiusCircle / 2);
-	//circle.setPosition(spritePos.x, spritePos.y );
-	//circle.setScale(sf::Vector2f(widthScale_, heightScale_));
-	//circle.setFillColor(sf::Color(255,255,0));
-	//window_.draw(circle);
-
 }
 
 void SfmlScreen::clearDisplay()

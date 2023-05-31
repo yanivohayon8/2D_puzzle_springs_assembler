@@ -335,9 +335,10 @@ void World::Simulation(bool isAuto)
 
 			if (isDrawSprites_)
 			{
-				screen_->drawSprite(pieceIt->id_, transform, pieceIt->refb2Body_->GetWorldCenter());
+				screen_->drawSprite(pieceIt->id_, transform);
 			}
 
+			// Debug Graphics
 			//screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.05, sf::Color(0, 0, 255));
 			//screen_->drawCircle(transform.p, 0.05, sf::Color(255, 0, 0));
 		}
