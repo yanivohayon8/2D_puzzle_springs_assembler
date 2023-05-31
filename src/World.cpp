@@ -162,19 +162,20 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 {
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
-	jointDef.collideConnected = true;
+	//jointDef.collideConnected = true;
+	jointDef.collideConnected = false;
 	jointDef.minLength = 0;// 0.1f;
 	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
 	jointDef.length = 0;
 	
 	// the stifness correponds to the score of the pairwise?
-	jointDef.stiffness = stiffness;
-	jointDef.damping = damping;
+	//jointDef.stiffness = stiffness;
+	//jointDef.damping = damping;
 	
 	// more natural springs
-	//float frequencyHertz = 5;//0.5f; // "Speed of oscillation" 1-5 typical
-	//float dampingRatio = 1;//0.1f; // typical 0-1, at 1 all oscillation vanish
-	//b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
+	float frequencyHertz = 4;//0.5f; // "Speed of oscillation" 1-5 typical
+	float dampingRatio = 1;//0.1f; // typical 0-1, at 1 all oscillation vanish
+	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
 	
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
 
@@ -298,7 +299,7 @@ void World::Simulation(bool isAuto)
 	{
 		screen_->initSprite(piece);
 		screen_->initPolygon(piece);
-		screen_->initPolygonCoordsDots(piece, 0.05, sf::Color(0, 255,0 ));
+		screen_->initPolygonCoordsDots(piece, 0.01, sf::Color(0, 255,0 ));
 		setCollideOff(piece.refb2Body_);
 	}
 
@@ -329,7 +330,7 @@ void World::Simulation(bool isAuto)
 			if (isDrawPolygons_)
 			{
 				screen_->drawPolygon(pieceIt->id_, transform);
-				//screen_->drawPolygonDots(pieceIt->id_, pieceIt->globalCoordinates_);
+				screen_->drawPolygonDots(pieceIt->id_, pieceIt->globalCoordinates_);
 			}
 
 
@@ -392,8 +393,9 @@ void World::Simulation(bool isAuto)
 						continue;
 					}
 
+					// damping += 0.1;
+					damping = 0.1;
 
-					damping += 0.1;
 					for (auto& piece : pieces_)
 					{
 						setDamping(piece.refb2Body_, damping, damping);
