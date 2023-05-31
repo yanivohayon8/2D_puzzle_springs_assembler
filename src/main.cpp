@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	dataLoader.loadVertexMatings(matings);
 	World world(pieces,matings);
 	world.Init();
-	world.Simulation();
+	world.Simulation(isSimulationAuto);
 	world.saveFinalTransforms(puzzleDirectory + "/final_transforms.csv");
 	std::cout << "Finish" << std::endl;
 

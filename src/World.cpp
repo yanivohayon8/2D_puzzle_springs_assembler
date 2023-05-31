@@ -311,7 +311,7 @@ void World::Simulation(bool isAuto)
 	}
 
 	//while (!isFinished && screen_->isWindowOpen())
-	while (screen_->isWindowOpen())
+	while ((!isFinished || !isAuto) && screen_->isWindowOpen())
 	{
 		nIteration++;
 
