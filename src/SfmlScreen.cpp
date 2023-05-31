@@ -210,3 +210,10 @@ void SfmlScreen::drawCircle(const b2Vec2& center, float radius, sf::Color color)
 	circle.setFillColor(color);
 	window_.draw(circle);
 }
+
+void SfmlScreen::screenShot(std::string fileName)
+{
+	sf::Image image;
+	image = window_.capture();
+	image.saveToFile(fileName);
+}

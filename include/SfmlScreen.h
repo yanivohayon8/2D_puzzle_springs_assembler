@@ -49,5 +49,7 @@ public:
 	bool pollEvent(sf::Event& event);
 	void closeWindow();
 
+	void screenShot(std::string fileName);
+
 };
 

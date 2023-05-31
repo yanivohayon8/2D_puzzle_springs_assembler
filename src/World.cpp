@@ -356,6 +356,10 @@ void World::Simulation(bool isAuto)
 
 		if (isAuto)
 		{
+			if (isMovedToOrigin)
+			{
+				isFinished = true;
+			}
 
 			if (nIteration % 240 == 0) //45
 			{
@@ -382,13 +386,11 @@ void World::Simulation(bool isAuto)
 					if (!isMovedToOrigin)
 					{
 
-
 						// start to slow down
 						double AveragedSpeed = 0;
 
 						for (auto& piece : pieces_)
 						{
-							//setCollideOff(piece.refb2Body_);
 							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
 						}
 
@@ -397,10 +399,8 @@ void World::Simulation(bool isAuto)
 
 						if (AveragedSpeed < speedEpsilon)
 						{
-							//isFinished = true;
 							moveAssemblyToOrigin(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
 							isMovedToOrigin = true;
-							continue;
 						}
 
 					}
@@ -469,6 +469,9 @@ void World::Simulation(bool isAuto)
 			}
 		}
 	}
+
+	screen_->screenShot("../data/ofir/RePAIR/group_39/assembly.png");
+	screen_->closeWindow();
 }
 
 void World::moveAssemblyToOrigin(b2Vec2 & centerPosition)
