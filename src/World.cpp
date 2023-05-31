@@ -305,7 +305,7 @@ void World::Simulation(bool isAuto)
 
 	if (isAuto)
 	{
-		explode(1, -1);
+		explode(20, -1);
 
 	}
 
@@ -329,7 +329,7 @@ void World::Simulation(bool isAuto)
 			if (isDrawPolygons_)
 			{
 				screen_->drawPolygon(pieceIt->id_, transform);
-				screen_->drawPolygonDots(pieceIt->id_, pieceIt->globalCoordinates_);
+				//screen_->drawPolygonDots(pieceIt->id_, pieceIt->globalCoordinates_);
 			}
 
 
@@ -362,51 +362,43 @@ void World::Simulation(bool isAuto)
 				{
 					putMatingSprings(matings_[connectedSpringIndex_]);
 					++connectedSpringIndex_;
-				}
-				else {
-					// Shorting the springs
-					if (!isJointShorted)
+					
+					if (connectedSpringIndex_ == int(matings_.size()))
 					{
-
-						isJointShorted = true;
-						for (auto& joint : joints_)
+						for (auto& piece:pieces_)
 						{
-							auto length = joint->GetMaxLength();
-							if (length > 0.2f) //0.2//0.3
-							{
-								isJointShorted = false;
-								joint->SetMaxLength(length - 0.05);//0.2
-							}
-						}
-
-					}
-					else {
-
-						// start to slow down
-						double AveragedSpeed = 0;
-
-						for (auto& piece : pieces_)
-						{
-							//setCollideOff(piece.refb2Body_);
-							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
-						}
-
-						AveragedSpeed /= pieces_.size();
-						double speedEpsilon = 0.1;
-
-						if (AveragedSpeed < speedEpsilon)
-						{
-							isFinished = true;
-							continue;
-						}
-
-
-						damping += 0.1;
-						for (auto& piece : pieces_)
-						{
-							setDamping(piece.refb2Body_, damping, damping);
+							setCollideOn(piece.refb2Body_);
 						}
 					}
+				}
+				
+				else {
+
+					// start to slow down
+					double AveragedSpeed = 0;
+
+					for (auto& piece : pieces_)
+					{
+						//setCollideOff(piece.refb2Body_);
+						AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
+					}
+
+					AveragedSpeed /= pieces_.size();
+					double speedEpsilon = 0.1;
+
+					if (AveragedSpeed < speedEpsilon)
+					{
+						isFinished = true;
+						continue;
+					}
+
+
+					damping += 0.1;
+					for (auto& piece : pieces_)
+					{
+						setDamping(piece.refb2Body_, damping, damping);
+					}
+					
 				}
 
 			}
