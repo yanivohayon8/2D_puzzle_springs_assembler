@@ -399,7 +399,7 @@ void World::Simulation(bool isAuto)
 
 						if (AveragedSpeed < speedEpsilon)
 						{
-							moveAssemblyToOrigin(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+							//moveAssemblyToOrigin(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
 							isMovedToOrigin = true;
 						}
 
