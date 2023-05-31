@@ -5,7 +5,7 @@
 #include <box2d/box2d.h>
 # define M_PI           3.14159265358979323846  /* pi */
 #include "Piece.h"
-
+#include "Global_Parameters.h"
 
 class SfmlScreen
 {

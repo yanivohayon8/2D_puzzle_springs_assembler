@@ -95,8 +95,10 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
         if (isOfir)
         {
             // Hardcoded to ofir puzzle types
-            x /= 1000; // The scale shouldbe 0.x...
-            y /= 1000; // because of the input is in hundreds..
+            //x /= 1000; // The scale shouldbe 0.x...
+            //y /= 1000; // because of the input is in hundreds..
+            x *= SCALE_IMAGE_COORDINATES_TO_BOX2D;
+            y *= SCALE_IMAGE_COORDINATES_TO_BOX2D;
         }
 
         coord.first = x;

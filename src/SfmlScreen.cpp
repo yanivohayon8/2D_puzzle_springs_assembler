@@ -60,7 +60,7 @@ void SfmlScreen::initSprite(Piece& piece)
 
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
-	sprite.setScale(widthScale_ / 1000, heightScale_/1000); // Divided by 1000 because we divide it as the dataloader
+	sprite.setScale(widthScale_ * SCALE_IMAGE_COORDINATES_TO_BOX2D, heightScale_* SCALE_IMAGE_COORDINATES_TO_BOX2D); 
 
 	float debugX = texture.getSize().x/2;
 	float debugY = texture.getSize().y/2;
