@@ -290,7 +290,7 @@ void World::Simulation(bool isAuto)
 	float damping = 0;
 	auto redColor = sf::Color::Red;
 	int nIteration = -1;
-	bool isJointShorted = false;
+	bool isMovedToOrigin = false;
 
 	screen_->initDisplay();
 	screen_->initBounds(boundsCoordinates_);
@@ -309,6 +309,7 @@ void World::Simulation(bool isAuto)
 		explode(20, -1);
 
 	}
+
 
 	//while (!isFinished && screen_->isWindowOpen())
 	while ((!isFinished || !isAuto) && screen_->isWindowOpen())
@@ -366,39 +367,42 @@ void World::Simulation(bool isAuto)
 					
 					if (connectedSpringIndex_ == int(matings_.size()))
 					{
+						// damping += 0.1;
+						damping = 0.1;
+
 						for (auto& piece:pieces_)
 						{
+							setDamping(piece.refb2Body_, damping, damping);
 							setCollideOn(piece.refb2Body_);
 						}
 					}
 				}
 				
 				else {
-
-					// start to slow down
-					double AveragedSpeed = 0;
-
-					for (auto& piece : pieces_)
+					if (!isMovedToOrigin)
 					{
-						//setCollideOff(piece.refb2Body_);
-						AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
-					}
 
-					AveragedSpeed /= pieces_.size();
-					double speedEpsilon = 0.1;
 
-					if (AveragedSpeed < speedEpsilon)
-					{
-						isFinished = true;
-						continue;
-					}
+						// start to slow down
+						double AveragedSpeed = 0;
 
-					// damping += 0.1;
-					damping = 0.1;
+						for (auto& piece : pieces_)
+						{
+							//setCollideOff(piece.refb2Body_);
+							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
+						}
 
-					for (auto& piece : pieces_)
-					{
-						setDamping(piece.refb2Body_, damping, damping);
+						AveragedSpeed /= pieces_.size();
+						double speedEpsilon = 0.1;
+
+						if (AveragedSpeed < speedEpsilon)
+						{
+							//isFinished = true;
+							moveAssemblyToOrigin(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+							isMovedToOrigin = true;
+							continue;
+						}
+
 					}
 					
 				}
@@ -467,23 +471,16 @@ void World::Simulation(bool isAuto)
 	}
 }
 
-void World::moveAssemblyToOrigin()
+void World::moveAssemblyToOrigin(b2Vec2 & centerPosition)
 {
 	b2Vec2 centerOfMass = getCenterOfMass(pieces_);
+	b2Vec2 finalTranslate = centerOfMass - centerPosition;
 
 	for (auto& piece:pieces_ )
 	{
 		piece.finalCoordinates_ = piece.localCoordinates_;
 		const b2Transform& transform = piece.refb2Body_->GetTransform();
-		Eigen::MatrixX2d rotation(2,2);
-		b2Vec2 finalTranslate = transform.p - centerOfMass;
-
-		piece.finalRot_ = transform.q;
-		piece.finalTranslate_ = finalTranslate;
-		
-		getRoatationMatrix(rotation, transform.q);
-		piece.finalCoordinates_*= rotation;
-		piece.finalCoordinates_ = piece.finalCoordinates_.rowwise() + Eigen::RowVector2d(finalTranslate.x,finalTranslate.y);
+		piece.refb2Body_->SetTransform(transform.p - finalTranslate, 0);
 	}
 }
 

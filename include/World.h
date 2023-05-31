@@ -51,5 +51,5 @@ public:
 
 	void saveFinalCoordinates(const std::string& filename);
 	void saveFinalTransforms(const std::string& filename);
-	void moveAssemblyToOrigin();
+	void moveAssemblyToOrigin(b2Vec2& centerPosition);
 };
