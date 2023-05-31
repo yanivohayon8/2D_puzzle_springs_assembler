@@ -1,6 +1,5 @@
 #include <DataLoader.h>
 #include <Piece.h>
-#include <EdgeMating.h>
 #include <World.h>
 #include <VertexMating.h>
 

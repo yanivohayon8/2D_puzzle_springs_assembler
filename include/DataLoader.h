@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include "Piece.h"
-#include "EdgeMating.h"
 #include <iostream>
 #include <fstream>
 #include "VertexMating.h"
@@ -16,7 +15,6 @@ public:
 
 	DataLoader(std::string puzzleDirectoryPath);
 	void loadPieces(std::vector<Piece> &olstPiece,bool isOfir = true);
-	//void loadEdgeMatings(std::vector<EdgeMating>& olstMatings);
 	void coordsToEigenCoords(Eigen::MatrixXd &eigenCoords,std::vector<std::pair<double, double>>& coords);
 	
 	void loadVertexMatings(std::vector<VertexMating>& olstMatings);//, const std::vector<Piece>& pieces
