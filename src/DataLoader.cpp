@@ -119,39 +119,39 @@ void DataLoader::loadCoordinates_(std::string fileName, bool isOfir )
 
 }
 
-void DataLoader::loadEdgeMatings(std::vector<EdgeMating>& olstMatings)
-{
-    /*
-        Loads the matings between the edges. The csv headers are piece1,edge1,piece2,edge2. All of them are int.
-    */
-    std::string piecesFile = puzzleDirectoryPath_ + "/ground_truth_rels.csv";
-    std::ifstream infile(piecesFile);
-
-    if (!infile.is_open()) {
-        std::cerr << "Failed to open file: " << piecesFile << std::endl;
-        return;
-    }
-
-    std::string line;
-    //int firstPieceId, secondPieceId, firstPieceEdge, secondPieceEdge;
-    int firstPieceEdge, secondPieceEdge;
-    std::string firstPieceId, secondPieceId;
-    char comma;  // represent ',' in file, ignored.
-    std::getline(infile, line);//skip the first line because it is a header
-
-
-    while (std::getline(infile, line)) {
-        std::istringstream iss(line);
-
-        if (!(iss >> firstPieceId >> comma >> firstPieceEdge >> comma >> secondPieceId >> comma >> secondPieceEdge)) {
-            throw "Failed to read line: " + line;
-            continue;
-        }
-
-        EdgeMating mating(firstPieceId, firstPieceEdge, secondPieceId, secondPieceEdge);
-        olstMatings.push_back(mating);
-    }
-}
+//void DataLoader::loadEdgeMatings(std::vector<EdgeMating>& olstMatings)
+//{
+//    /*
+//        Loads the matings between the edges. The csv headers are piece1,edge1,piece2,edge2. All of them are int.
+//    */
+//    std::string piecesFile = puzzleDirectoryPath_ + "/ground_truth_rels.csv";
+//    std::ifstream infile(piecesFile);
+//
+//    if (!infile.is_open()) {
+//        std::cerr << "Failed to open file: " << piecesFile << std::endl;
+//        return;
+//    }
+//
+//    std::string line;
+//    //int firstPieceId, secondPieceId, firstPieceEdge, secondPieceEdge;
+//    int firstPieceEdge, secondPieceEdge;
+//    std::string firstPieceId, secondPieceId;
+//    char comma;  // represent ',' in file, ignored.
+//    std::getline(infile, line);//skip the first line because it is a header
+//
+//
+//    while (std::getline(infile, line)) {
+//        std::istringstream iss(line);
+//
+//        if (!(iss >> firstPieceId >> comma >> firstPieceEdge >> comma >> secondPieceId >> comma >> secondPieceEdge)) {
+//            throw "Failed to read line: " + line;
+//            continue;
+//        }
+//
+//        EdgeMating mating(firstPieceId, firstPieceEdge, secondPieceId, secondPieceEdge);
+//        olstMatings.push_back(mating);
+//    }
+//}
 
 void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings)
 {

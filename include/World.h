@@ -1,7 +1,7 @@
 #pragma once
 #include <box2d/box2d.h>
 #include <Piece.h>
-#include <EdgeMating.h>
+//#include <EdgeMating.h>
 #include <VertexMating.h>
 #include "SfmlScreen.h"
 #include <numeric>
