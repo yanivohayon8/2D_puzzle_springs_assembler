@@ -9,6 +9,8 @@
 #include <iostream>
 #include <fstream>
 
+//enum AutoAssemblyPhase { connectingSprings, delayConvergence, };
+
 class World
 {
 public:
@@ -46,6 +48,7 @@ public:
 	void setCollideOff(b2Body* body);
 	void setCollideOn(b2Body* body);
 	void setDamping(b2Body* body, double linearDamping, double angularDamping);
+	void switchJointCollide(b2Joint& joint);
 
 	b2Vec2 getCenterOfMass(std::vector<Piece>& pieces);
 

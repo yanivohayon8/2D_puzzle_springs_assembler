@@ -164,17 +164,18 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
 	//jointDef.collideConnected = true;
 	jointDef.collideConnected = false;
-	jointDef.minLength = 0;// 0.1f;
+	jointDef.minLength = 0;//0.05;// 0.1f;
 	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
-	jointDef.length = 0;
+	jointDef.length = 0.01;// 0.05;
 	
 	// the stifness correponds to the score of the pairwise?
 	//jointDef.stiffness = stiffness;
 	//jointDef.damping = damping;
 	
 	// more natural springs
-	float frequencyHertz = 4;//0.5f; // "Speed of oscillation" 1-5 typical
-	float dampingRatio = 1;//0.1f; // typical 0-1, at 1 all oscillation vanish
+
+	float frequencyHertz = 0.1;//1.5;//0.5f;//5;//0.5f; // "Speed of oscillation" 1-5 typical. if it is lower then it is stiffer?
+	float dampingRatio = 0.1; //1;//0.1f; // typical 0-1, at 1 all oscillation vanish
 	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
 	
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
@@ -182,6 +183,10 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 	joints_.push_back(joint);
 }
 
+void World::switchJointCollide(b2Joint& joint)
+{
+	//joint.
+}
 
 void World::putMatingSprings(VertexMating& mating)
 {
@@ -283,7 +288,7 @@ void World::setDamping(b2Body* body, double linearDamping,double angularDamping)
 
 void World::Simulation(bool isAuto)
 {
-	double timeStep = 1.0F / 60.0F;
+	double timeStep = 1 / 60.0F; //1.0F / 60.0F;
 	int velocityIterations = 6;
 	int positionIterations = 2;
 	bool isFinished = false;
@@ -295,24 +300,37 @@ void World::Simulation(bool isAuto)
 	screen_->initDisplay();
 	screen_->initBounds(boundsCoordinates_);
 
+	int impulseIndex = 0;
+	float power = 0.2;
+	std::vector<b2Vec2> initialImpulses = {
+		{power,power},
+		{-power,power},
+		{-power,-power},
+		{-power,power}
+	};
+	int numInitialImpulses = initialImpulses.size();
+
 	for (auto&piece:pieces_)
 	{
 		screen_->initSprite(piece);
 		screen_->initPolygon(piece);
 		screen_->initPolygonCoordsDots(piece, 0.01, sf::Color(0, 255,0 ));
 		setCollideOff(piece.refb2Body_);
+		//setDamping(piece.refb2Body_, 0, 0.05); // to prevent the bodies spining like centrifugot
+		piece.refb2Body_->ApplyLinearImpulseToCenter(initialImpulses[++impulseIndex%numInitialImpulses], true);
 	}
-
 
 	if (isAuto)
 	{
-		explode(20, -1);
-
+		while (connectedSpringIndex_ < int(matings_.size()))
+		{
+			putMatingSprings(matings_[connectedSpringIndex_]);
+			++connectedSpringIndex_;
+		}
 	}
 
-
-	//while (!isFinished && screen_->isWindowOpen())
-	while ((!isFinished || !isAuto) && screen_->isWindowOpen())
+	//while ((!isFinished || !isAuto) && screen_->isWindowOpen())
+	while (screen_->isWindowOpen())
 	{
 		nIteration++;
 
@@ -356,58 +374,68 @@ void World::Simulation(bool isAuto)
 
 		if (isAuto)
 		{
-			if (isMovedToOrigin)
+			// Hand made
+			if (nIteration == pieces_.size()*200)
 			{
-				isFinished = true;
-			}
-
-			if (nIteration % 240 == 0) //45
-			{
-				// Still connecting the springs
-				if (connectedSpringIndex_ < int(matings_.size()))
+				for (auto& piece : pieces_)
 				{
-					putMatingSprings(matings_[connectedSpringIndex_]);
-					++connectedSpringIndex_;
-					
-					if (connectedSpringIndex_ == int(matings_.size()))
-					{
-						// damping += 0.1;
-						damping = 0.1;
-
-						for (auto& piece:pieces_)
-						{
-							setDamping(piece.refb2Body_, damping, damping);
-							setCollideOn(piece.refb2Body_);
-						}
-					}
+					//setDamping(piece.refb2Body_, 0.025, 0.05);
+					setCollideOn(piece.refb2Body_);
 				}
-				
-				else {
-					if (!isMovedToOrigin)
-					{
-
-						// start to slow down
-						double AveragedSpeed = 0;
-
-						for (auto& piece : pieces_)
-						{
-							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
-						}
-
-						AveragedSpeed /= pieces_.size();
-						double speedEpsilon = 0.1;
-
-						if (AveragedSpeed < speedEpsilon)
-						{
-							//moveAssemblyToOrigin(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-							isMovedToOrigin = true;
-						}
-
-					}
-					
-				}
-
 			}
+
+			//if (isMovedToOrigin)
+			//{
+			//	isFinished = true;
+			//}
+
+			//if (nIteration % 240 == 0) //45
+			//{
+			//	// Still connecting the springs
+			//	if (connectedSpringIndex_ < int(matings_.size()))
+			//	{
+			//		putMatingSprings(matings_[connectedSpringIndex_]);
+			//		++connectedSpringIndex_;
+			//		
+			//		if (connectedSpringIndex_ == int(matings_.size()))
+			//		{
+			//			// damping += 0.1;
+			//			damping = 0.1;
+
+			//			for (auto& piece:pieces_)
+			//			{
+			//				//setDamping(piece.refb2Body_, damping, damping);
+			//				setCollideOn(piece.refb2Body_);
+			//			}
+			//		}
+			//	}
+			//	
+			//	else {
+			//		if (!isMovedToOrigin)
+			//		{
+
+			//			//// start to slow down
+			//			//double AveragedSpeed = 0;
+
+			//			//for (auto& piece : pieces_)
+			//			//{
+			//			//	AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
+			//			//}
+
+			//			//AveragedSpeed /= pieces_.size();
+			//			//double speedEpsilon = 0.1;
+
+			//			//if (AveragedSpeed < speedEpsilon)
+			//			//{
+			//			//	//moveAssemblyToOrigin(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+			//			//	isMovedToOrigin = true;
+			//			//}
+
+			//		}
+			//		
+			//	}
+
+			//}
 		}
 
 
@@ -430,7 +458,7 @@ void World::Simulation(bool isAuto)
 						isDrawSprites_ = !isDrawSprites_;
 						break;
 					case sf::Keyboard::E:
-						explode(20, -1);
+						explode(5, -1);
 						break;
 					case sf::Keyboard::R:
 						damping += 0.1;
@@ -483,7 +511,8 @@ void World::moveAssemblyToOrigin(b2Vec2 & centerPosition)
 	{
 		piece.finalCoordinates_ = piece.localCoordinates_;
 		const b2Transform& transform = piece.refb2Body_->GetTransform();
-		piece.refb2Body_->SetTransform(transform.p - finalTranslate, 0);
+		//piece.refb2Body_->SetTransform(transform.p - finalTranslate, 0);
+		piece.refb2Body_->SetLinearVelocity(0.1*finalTranslate);
 	}
 }
 
