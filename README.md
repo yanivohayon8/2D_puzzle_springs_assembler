@@ -70,4 +70,3 @@ This command will run the project using the puzzle files located in the data/exa
 
 If you encounter an error related to DLL missing, a workaround is to switch the running mode to `RelWithDebInfo` in CMake, instead of the default `Debug` mode.
 
-Please note that no license is currently specified for this project. All rights are reserved, and no distribution or modification of the code is permitted without explicit permission from the author.
