@@ -1,14 +1,19 @@
 #include "Piece.h"
 #include <iostream>
 
-Piece::Piece(int pieceId, Eigen::MatrixX2d coordinates)
+Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imagePath)
 {
 	id_ = pieceId;
 	localCoordinates_ = coordinates;
-	//finalCoordinates_ = coordinates;
-	
-	cv::eigen2cv(coordinates, cvCoords_);
-	cvCoords_.convertTo(cvCoords_, CV_32F);
+
+	for (int i = 0; i < coordinates.rows(); i++)
+	{
+		float x_ = static_cast<float>(coordinates.coeff(i, 0));
+		float y_ = static_cast<float>(coordinates.coeff(i, 1));
+		localCoordsAsVecs_.push_back(b2Vec2{ x_,y_ });
+	}
+
+	imagePath_ = imagePath;
 }
 
 void Piece::printCoords()
@@ -30,11 +35,6 @@ std::pair<double, double> Piece::getVertexCoord(int iVertex)
 int Piece::getNumCoords()
 {
 	return localCoordinates_.rows();
-}
-
-double Piece::getArea()
-{
-	return cv::contourArea(cvCoords_);
 }
 
 void Piece::rotate(const b2Rot& rot)
@@ -123,4 +123,41 @@ void Piece::getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords)
 		oCoords(coordIndex, 0) = globalCoordinates_.at(coordIndex).x;
 		oCoords(coordIndex, 1) = globalCoordinates_.at(coordIndex).y;
 	}
+}
+
+
+
+void Piece::computeBoundingBox()
+{
+	const b2Fixture* fixture = refb2Body_->GetFixtureList();
+	const b2Shape* shape = fixture->GetShape();
+
+	for (int childIndex = 0; childIndex < shape->GetChildCount(); ++childIndex)
+	{
+		b2AABB shapeAABB;
+		shape->ComputeAABB(&shapeAABB, refb2Body_->GetTransform(), childIndex);
+
+		if (childIndex == 0)
+		{
+			aabb_ = shapeAABB;
+		}
+		else
+		{
+			aabb_.lowerBound.x = std::min(aabb_.lowerBound.x, shapeAABB.lowerBound.x);
+			aabb_.lowerBound.y = std::min(aabb_.lowerBound.y, shapeAABB.lowerBound.y);
+			aabb_.upperBound.x = std::max(aabb_.upperBound.x, shapeAABB.upperBound.x);
+			aabb_.upperBound.y = std::max(aabb_.upperBound.y, shapeAABB.upperBound.y);
+		}
+	}
+
+}
+
+float Piece::getBodyBoundingBoxWidth()
+{
+	return aabb_.upperBound.x - aabb_.lowerBound.x;
+}
+
+float Piece::getBodyBoundingBoxHeight()
+{
+	return std::abs(aabb_.upperBound.y - aabb_.lowerBound.y);
 }

@@ -1,9 +1,10 @@
 #include "World.h"
 
-World::World(std::vector<Piece>& pieces,std::vector<EdgeMating>& matings)
+World::World(std::vector<Piece>& pieces,std::vector<VertexMating>& matings)
 {
 	matings_ = matings;
 	rawPieces_ = pieces;
+	screen_ = new SfmlScreen(screenWidth_,screenHeight_, screenWidth_ / boardWidth_,screenHeight_ / boardHeight_);
 }
 
 b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
@@ -11,21 +12,22 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = initialPosition; //b2Vec2{ 3, 2.5};
-	//bodyDef.linearVelocity.Set(1, 0); // debug
+	bodyDef.position = initialPosition; 
+	bodyDef.fixedRotation = piece.isRotationFixed;
 
 	b2PolygonShape shape;
-	std::vector<b2Vec2>& b2Poly = piece.localCoordsAsVecs_;
-	int numCoords = piece.getNumCoords();
+	
+	std::vector<b2Vec2> localCoords;
 
-	for (int i = 0; i < numCoords; i++)
+	for (int i = 0; i < piece.localCoordsAsVecs_.size(); i++)
 	{
-		auto [x, y] = piece.getVertexCoord(i);
-		float x_ = static_cast<float>(x);
-		float y_ = static_cast<float>(y);
-		b2Poly.push_back(b2Vec2{ x_,y_});
+		float xFactored = piece.localCoordsAsVecs_[i].x;
+		float yFactored = piece.localCoordsAsVecs_[i].y;
+		localCoords.push_back(b2Vec2(xFactored, yFactored));
 	}
-	shape.Set(b2Poly.data(), b2Poly.size());
+
+	shape.Set(localCoords.data(), localCoords.size());
+
 	/*if (is_polygon_degenerate(points)) {
 		s.SetAsBox(b2_linearSlop * 2,
 			b2_linearSlop * 2);
@@ -34,6 +36,7 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 		s.Set(points.data(), points.size());
 	}*/
 
+	
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
@@ -43,9 +46,9 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	b2Body* oBody = world_.CreateBody(&bodyDef);
 	oBody->CreateFixture(&fixture);
 
-	for (int i = 0; i < numCoords; i++)
+	for (int i = 0; i < localCoords.size(); i++)
 	{
-		b2Vec2& localPoint = b2Poly.at(i);
+		b2Vec2& localPoint = localCoords.at(i);
 		b2Vec2& globalPoint = oBody->GetWorldPoint(localPoint);
 		piece.globalCoordinates_.push_back(globalPoint);
 	}
@@ -59,39 +62,9 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 	return oBody;
 }
 
-void World::preProcess()
-{
-	// Sort the edges of the pieces counter clockwise
-	// And update the mating indexes of the edges
-	for (auto& piece:rawPieces_)
-	{
-		std::vector<int> index_map;
-		piece.sortVerticesCCW(piece.localCoordinates_, index_map);
-
-		for (auto& mating: matings_ )
-		{
-			if (mating.firstPieceId_==piece.id_)
-			{
-				int oldIndex = mating.firstPieceEdge_;
-				mating.firstPieceEdge_ = index_map[oldIndex];
-			}
-			else
-			{
-
-				if (mating.secondPieceId_==piece.id_)
-				{
-					int oldIndex = mating.secondPieceEdge_;
-					mating.secondPieceEdge_ = index_map[oldIndex];
-				}
-			}
-
-		}
-	}
-}
 
 void World::Init()
 {
-	//preProcess();
 	initBounds();
 	InitPieces();
 	orderSpringsConnection();
@@ -100,16 +73,17 @@ void World::Init()
 void World::initBounds()
 {
 	float wallWidth = 0.1;
-	screen_ = new Screen(screenHeight_, screenWidth_, screenScale_);
+	float padding = wallWidth;
 
 	float originX = 0;
 	float originY = 0;
 	
+	// X_origin,Y_origin,width,height
 	const std::vector<std::vector<float>> boundaries{ 
 		{originX,originY, boardWidth_, wallWidth}, // from bottom left to the horizontal line
-		{boardWidth_,originY,wallWidth,boardHeight_}, // from bottom right along the vertical line
+		{boardWidth_-padding,originY,wallWidth,boardHeight_}, // from bottom right along the vertical line
 		{originX,originY,wallWidth,boardHeight_}, // from bottom left along the vertical line
-		{originX,boardHeight_,boardWidth_,wallWidth} // from top left along the horizontal line
+		{originX,boardHeight_-padding,boardWidth_,wallWidth} // from top left along the horizontal line
 	};
 
 	for (auto& bound = boundaries.begin(); bound != boundaries.end(); bound++)
@@ -160,30 +134,26 @@ void World::InitPieces()
 	int seed = 0;
 	int padding = 2;
 	generate2DVectors(positions, rawPieces_.size(), boardWidth_, boardHeight_,padding, seed);
+
+	std::sort(positions.begin(), positions.end(), [](const b2Vec2& a, const b2Vec2& b)->bool {
+		return a.y > b.y || (a.y==b.y && a.x > b.x);
+		});
+
 	auto& initialPosIt = positions.begin();
 
 	for (auto pieceIt = rawPieces_.begin(); pieceIt != rawPieces_.end(); pieceIt++)
 	{
-		b2Body* body = this->createPieceBody(*pieceIt,*initialPosIt);
+		b2Body* body;
+		body = this->createPieceBody(*pieceIt, *initialPosIt);
+		//body = this->createPieceBody(*pieceIt, b2Vec2(5,5));
 		pieceIt->refb2Body_ = body;
+		
+		pieceIt->computeBoundingBox();
+
+
 		pieces_.push_back(*pieceIt);
 		initialPosIt++;
 	}
-
-	// Assign color for debuging or rendring
-	std::vector<cv::Scalar> colors(std::size(pieces_));
-	generateColors(colors);
-
-	auto& pieceIt = pieces_.begin();
-	auto colorIt = colors.begin();
-
-	while(pieceIt!=pieces_.end())
-	{
-		pieceIt->color_ = *colorIt;
-		++pieceIt;
-		++colorIt;
-	}
-
 }
 
 void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
@@ -192,98 +162,65 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 {
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
-	jointDef.collideConnected = true;
-	jointDef.minLength = minLength; //0.05f; //0.05f;
-	jointDef.maxLength = maxLength;//0.2f; //0.5f;
-	jointDef.damping = damping; //0.3f; //1.0f;
-	jointDef.stiffness = stiffness; //0.5f;
+	//jointDef.collideConnected = true;
+	jointDef.collideConnected = false;
+	jointDef.minLength = 0;//0.05;// 0.1f;
+	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
+	jointDef.length = 0.01;// 0.05;
+	
+	// the stifness correponds to the score of the pairwise?
+	//jointDef.stiffness = stiffness;
+	//jointDef.damping = damping;
+	
+	// more natural springs
+
+	float frequencyHertz = 0.1;//1.5;//0.5f;//5;//0.5f; // "Speed of oscillation" 1-5 typical. if it is lower then it is stiffer?
+	float dampingRatio = 0.1; //1;//0.1f; // typical 0-1, at 1 all oscillation vanish
+	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
+	
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
+
 	joints_.push_back(joint);
 }
 
-
-void World::putMatingSprings(EdgeMating& mating)
+void World::switchJointCollide(b2Joint& joint)
 {
-	Piece* pieceA = &pieces_.at(mating.firstPieceId_);
-	Piece* pieceB = &pieces_.at(mating.secondPieceId_);
+	//joint.
+}
+
+void World::putMatingSprings(VertexMating& mating)
+{
+
+	Piece* pieceA;
+	Piece* pieceB;
+
+	for (auto& piece: pieces_)
+	{
+		if (piece.id_ == mating.firstPieceId_)
+		{
+			pieceA = &piece;
+		}
+
+		if (piece.id_ == mating.secondPieceId_)
+		{
+			pieceB = &piece;
+		}
+	}
 
 	b2Body* bodyA = pieceA->refb2Body_;
 	b2Body* bodyB = pieceB->refb2Body_;
 
-	b2Vec2 firstVertexGlobalA;
-	b2Vec2 secondVertexGlobalA;
+	b2Vec2 vertexGlobalA;
+	pieceA->getVeterxGlobalCoords(vertexGlobalA, mating.firstPieceVertex_);
+	b2Vec2 vertexGlobalB;
+	pieceB->getVeterxGlobalCoords(vertexGlobalB, mating.secondPieceVertex_);
+	connectSpringsToPieces(bodyA, bodyB, &vertexGlobalA, &vertexGlobalB);
 
-	std::pair<int, int> vertsPieceA = pieceA->getEdgeVertexIndexes(mating.firstPieceEdge_);
-	//b2Vec2* firstVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.first);
-	//b2Vec2* secondVertexGlobalA = pieceA->getVeterxGlobalCoords(vertsPieceA.second);
-	pieceA->getVeterxGlobalCoords(firstVertexGlobalA, vertsPieceA.first);
-	pieceA->getVeterxGlobalCoords(secondVertexGlobalA, vertsPieceA.second);
-
-	b2Vec2 firstVertexGlobalB;
-	b2Vec2 secondVertexGlobalB;
-	std::pair<int, int> vertsPieceB = pieceB->getEdgeVertexIndexes(mating.secondPieceEdge_);
-	pieceB->getVeterxGlobalCoords(firstVertexGlobalB, vertsPieceB.first);
-	pieceB->getVeterxGlobalCoords(secondVertexGlobalB, vertsPieceB.second);
-
-	//connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
-	//connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
-
-	//b2Vec2 anchorA = 0.5*secondVertexGlobalA + 0.5*firstVertexGlobalA;
-	//b2Vec2 anchorB = 0.5*secondVertexGlobalB + 0.5*firstVertexGlobalB;
-	//connectSpringsToPieces(bodyA, bodyB, &anchorA, &anchorB);
-
-	// init coords
-	Eigen::MatrixX2d coordsA;
-	pieceA->getVertexGlobalCoordsAsEigen(coordsA);
-	Eigen::MatrixX2d coordsB;
-	pieceB->getVertexGlobalCoordsAsEigen(coordsB);
-
-	// set firstVertexGlobalA as origin
-	pieceA->getGlobalCoordsMoved(coordsA, firstVertexGlobalA);
-	pieceB->getGlobalCoordsMoved(coordsB, firstVertexGlobalA);
-
-	// move B polygon to set firstVertexGlobalB on firstVertexGlobalA
-	b2Vec2 transFirstAtoFirstB = { float(coordsB(vertsPieceB.first,0)),float(coordsB(vertsPieceB.first,1)) };
-	pieceB->getGlobalCoordsMoved(coordsB, transFirstAtoFirstB);
-
-	b2Vec2 secondVertAMoved = { float(coordsA(vertsPieceA.second,0)), float(coordsA(vertsPieceA.second,1)) };
-	secondVertAMoved.Normalize();
-	b2Vec2 secondVertBMoved = { float(coordsB(vertsPieceB.second,0)),float(coordsB(vertsPieceB.second,1)) };
-	secondVertBMoved.Normalize();
-	double dotProduct = secondVertAMoved.x * secondVertBMoved.x + secondVertAMoved.y * secondVertBMoved.y;
-	double angle = std::acos(dotProduct)*180.0/ 3.14159265; // divided by pi
-
-	Eigen::MatrixX2d R(2,2);
-	getRoatationMatrix(R, -angle);
-	coordsB = coordsB * R;
-
-	cv::Mat cvCoordsA;
-	cv::eigen2cv(coordsA, cvCoordsA);
-	cvCoordsA.convertTo(cvCoordsA, CV_32F);
-	cv::Mat cvCoordsB;
-	cv::eigen2cv(coordsB, cvCoordsB);
-	cvCoordsB.convertTo(cvCoordsB, CV_32F);
-	double intersectArea = cv::intersectConvexConvex(cvCoordsA, cvCoordsB, cv::noArray());
-
-	double epsilon = 0.01;
-
-	if (intersectArea < epsilon)
-	{
-
-		connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &firstVertexGlobalB);
-		connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &secondVertexGlobalB);
-	}
-	else
-	{
-		connectSpringsToPieces(bodyA, bodyB, &firstVertexGlobalA, &secondVertexGlobalB);
-		connectSpringsToPieces(bodyA, bodyB, &secondVertexGlobalA, &firstVertexGlobalB);
-
-	}
 }
 
 void World::orderSpringsConnection()
 {
-	std::vector<EdgeMating> orderedMatings;
+	std::vector<VertexMating> orderedMatings;
 
 	for (auto& piece:pieces_)
 	{
@@ -306,12 +243,13 @@ void World::orderSpringsConnection()
 
 void World::explode(int MaxPower, int seed)
 {
-	int power = sampleIntUniformly(MaxPower, -MaxPower, seed);
-	b2Vec2 impulse(power, power);
-
+	int i = 0;
 	for (auto& piece: pieces_)
 	{
+		int power = sampleIntUniformly(MaxPower, -MaxPower, i);
+		b2Vec2 impulse(power, power);
 		piece.refb2Body_->ApplyLinearImpulseToCenter(impulse,true);
+		i++;
 	}
 }
 
@@ -342,7 +280,6 @@ void World::setCollideOn(b2Body* body)
 	body->GetFixtureList()->SetFilterData(filter);
 }
 
-
 void World::setDamping(b2Body* body, double linearDamping,double angularDamping)
 {
 	body->SetLinearDamping(linearDamping);
@@ -351,189 +288,233 @@ void World::setDamping(b2Body* body, double linearDamping,double angularDamping)
 
 void World::Simulation(bool isAuto)
 {
-
-	// The following params make as parameters to the function
-	double timeStep = 1.0F / 60.0F;
+	double timeStep = 1 / 60.0F; //1.0F / 60.0F;
 	int velocityIterations = 6;
 	int positionIterations = 2;
 	bool isFinished = false;
 	float damping = 0;
-	cv::Scalar redColor = { 0,0,255 };
-	cv::Scalar greenColor = { 0,255,0 };
-	//SpringMating* nextSpring;
-
-	int nIteration = 0;
-	bool isJointShorted = false;
+	auto redColor = sf::Color::Red;
+	int nIteration = -1;
+	bool isMovedToOrigin = false;
 
 	screen_->initDisplay();
-	explode(1, 0);
+	screen_->initBounds(boundsCoordinates_);
 
-	while (!isFinished)
+	int impulseIndex = 0;
+	float power = 0.2;
+	std::vector<b2Vec2> initialImpulses = {
+		{power,power},
+		{-power,power},
+		{-power,-power},
+		{-power,power}
+	};
+	int numInitialImpulses = initialImpulses.size();
+
+	for (auto&piece:pieces_)
 	{
-		screen_->clearDisplay();
-		screen_->drawBounds(&boundsCoordinates_);
+		screen_->initSprite(piece);
+		screen_->initPolygon(piece);
+		screen_->initPolygonCoordsDots(piece, 0.01, sf::Color(0, 255,0 ));
+		setCollideOff(piece.refb2Body_);
+		//setDamping(piece.refb2Body_, 0, 0.05); // to prevent the bodies spining like centrifugot
+		piece.refb2Body_->ApplyLinearImpulseToCenter(initialImpulses[++impulseIndex%numInitialImpulses], true);
+	}
 
+	if (isAuto)
+	{
+		while (connectedSpringIndex_ < int(matings_.size()))
+		{
+			putMatingSprings(matings_[connectedSpringIndex_]);
+			++connectedSpringIndex_;
+		}
+	}
+
+	//while ((!isFinished || !isAuto) && screen_->isWindowOpen())
+	while (screen_->isWindowOpen())
+	{
+		nIteration++;
+
+		screen_->clearDisplay();
+		screen_->drawBounds();
 		world_.Step(timeStep, velocityIterations, positionIterations);
 
 		for (auto pieceIt = pieces_.begin(); pieceIt != pieces_.end(); pieceIt++)
 		{
 			pieceIt->translate();
-			screen_->drawPolygon(pieceIt->globalCoordinates_, pieceIt->color_);
-			const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
-			screen_->drawCircle(transform.p, 3, redColor);
+
+			const b2Transform &transform = pieceIt->refb2Body_->GetTransform();
+
+			// FOR DEBUG
+			
+			if (isDrawPolygons_)
+			{
+				screen_->drawPolygon(pieceIt->id_, transform);
+				screen_->drawPolygonDots(pieceIt->id_, pieceIt->globalCoordinates_);
+			}
+
+
+			if (isDrawSprites_)
+			{
+				screen_->drawSprite(pieceIt->id_, transform);
+			}
+
+			// Debug Graphics
+			//screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.05, sf::Color(0, 0, 255));
+			//screen_->drawCircle(transform.p, 0.05, sf::Color(255, 0, 0));
 		}
 
 		for (auto& joint : joints_)
 		{
 			auto& anchorA = joint->GetAnchorA();
 			auto& anchorB = joint->GetAnchorB();
-			screen_->drawLine(anchorA, anchorB, redColor, 1);
+			screen_->drawLine(anchorA, anchorB, redColor, -1);
 		}
 
-		//// for debug
-		//b2Vec2 centerOfMass = getCenterOfMass(pieces_);
-		//screen_->drawCircle(centerOfMass, 6, greenColor);
-
-
-		// for debug
-		/*for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
-		{
-			std::cout << "collide" << contact->GetFixtureA() << std::endl;
-		}*/
-
-		int pressedKey = screen_->updateDisplay();
+		screen_->updateDisplay();
 
 		if (isAuto)
 		{
-
-		
-
-			if (nIteration % 60 == 0)
+			// Hand made
+			if (nIteration == pieces_.size()*200)
 			{
-				// Still connecting the springs
-				if (connectedSpringIndex_ < int(matings_.size()))
+				for (auto& piece : pieces_)
 				{
-					putMatingSprings(matings_[connectedSpringIndex_]);
-					++connectedSpringIndex_;
+					//setDamping(piece.refb2Body_, 0.025, 0.05);
+					setCollideOn(piece.refb2Body_);
 				}
-				else {
-					// Shorting the springs
-					if (!isJointShorted)
+			}
+
+			//if (isMovedToOrigin)
+			//{
+			//	isFinished = true;
+			//}
+
+			//if (nIteration % 240 == 0) //45
+			//{
+			//	// Still connecting the springs
+			//	if (connectedSpringIndex_ < int(matings_.size()))
+			//	{
+			//		putMatingSprings(matings_[connectedSpringIndex_]);
+			//		++connectedSpringIndex_;
+			//		
+			//		if (connectedSpringIndex_ == int(matings_.size()))
+			//		{
+			//			// damping += 0.1;
+			//			damping = 0.1;
+
+			//			for (auto& piece:pieces_)
+			//			{
+			//				//setDamping(piece.refb2Body_, damping, damping);
+			//				setCollideOn(piece.refb2Body_);
+			//			}
+			//		}
+			//	}
+			//	
+			//	else {
+			//		if (!isMovedToOrigin)
+			//		{
+
+			//			//// start to slow down
+			//			//double AveragedSpeed = 0;
+
+			//			//for (auto& piece : pieces_)
+			//			//{
+			//			//	AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
+			//			//}
+
+			//			//AveragedSpeed /= pieces_.size();
+			//			//double speedEpsilon = 0.1;
+
+			//			//if (AveragedSpeed < speedEpsilon)
+			//			//{
+			//			//	//moveAssemblyToOrigin(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+			//			//	isMovedToOrigin = true;
+			//			//}
+
+			//		}
+			//		
+			//	}
+
+			//}
+		}
+
+
+		sf::Event nextEvent;
+		while (screen_->pollEvent(nextEvent))
+		{
+
+			if (nextEvent.type == sf::Event::Closed)
+				screen_->closeWindow();
+			else {
+
+				if (nextEvent.type == sf::Event::KeyPressed)
+				{
+					switch (nextEvent.key.code)
 					{
-						for (auto& joint : joints_)
-						{
-							joint->SetMinLength(0.01);
-							joint->SetMaxLength(0.05);
-						}
-						isJointShorted = true;
-					}
-					else {
-
-						// start to slow down
-						double AveragedSpeed = 0;
-
-						for (auto& piece : pieces_)
-						{
-							AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
-						}
-
-						AveragedSpeed /= pieces_.size();
-						double speedEpsilon = 0.1;
-
-						if (AveragedSpeed < speedEpsilon)
-						{
-							isFinished = true;
-							continue;
-						}
-
-
+					case sf::Keyboard::P:
+						isDrawPolygons_ = !isDrawPolygons_;
+						break;
+					case sf::Keyboard::O:
+						isDrawSprites_ = !isDrawSprites_;
+						break;
+					case sf::Keyboard::E:
+						explode(5, -1);
+						break;
+					case sf::Keyboard::R:
 						damping += 0.1;
 						for (auto& piece : pieces_)
 						{
 							setDamping(piece.refb2Body_, damping, damping);
 						}
+						break;
+					case sf::Keyboard::T:
+						damping -= 0.1;
+						if (damping < 0)
+						{
+							damping = 0;
+						}
+						for (auto& piece : pieces_)
+						{
+							setDamping(piece.refb2Body_, damping, damping);
+						}
+						break;
+					case sf::Keyboard::M:
+						if (connectedSpringIndex_ < int(matings_.size()))
+						{
+							putMatingSprings(matings_[connectedSpringIndex_]);
+							++connectedSpringIndex_;
+						}
+						break;
+					case sf::Keyboard::C:
+						for (auto& piece : pieces_)
+						{
+							switchColide(piece.refb2Body_);
+						}
+					default:
+						break;
 					}
 				}
-
 			}
 		}
-
-		switch (pressedKey)
-		{
-		case 'c':
-			for (auto& piece : pieces_)
-			{
-				switchColide(piece.refb2Body_);
-			}
-			break;
-		case 'e':
-			explode(5, 0);
-			break;
-		case 'E':
-			explode(50, -1);
-			break;
-		case 'd':
-			damping += 0.1;
-			for (auto& piece : pieces_)
-			{
-				setDamping(piece.refb2Body_, damping, damping);
-			}
-			break;
-		case 'D':
-			damping -= 0.1;
-			if (damping < 0)
-			{
-				damping = 0;
-			}
-			for (auto& piece : pieces_)
-			{
-				setDamping(piece.refb2Body_, damping, damping);
-			}
-			break;
-		case 'm':
-			if (connectedSpringIndex_ < int(matings_.size()))
-			{
-				putMatingSprings(matings_[connectedSpringIndex_]);
-				++connectedSpringIndex_;
-			}
-			break;
-		case 's':
-			for (auto& joint : joints_)
-			{
-				joint->SetMinLength(0.01);
-				joint->SetMaxLength(0.05);
-			}
-			break;
-		case 'q':
-			isFinished = true;
-			break;
-		default:
-			break;
-		}
-
-		nIteration++;
 	}
 
-	screen_->finishDisplay();
+	screen_->screenShot("../data/ofir/RePAIR/group_39/assembly.png");
+	screen_->closeWindow();
+}
 
+void World::moveAssemblyToOrigin(b2Vec2 & centerPosition)
+{
 	b2Vec2 centerOfMass = getCenterOfMass(pieces_);
+	b2Vec2 finalTranslate = centerOfMass - centerPosition;
 
 	for (auto& piece:pieces_ )
 	{
 		piece.finalCoordinates_ = piece.localCoordinates_;
 		const b2Transform& transform = piece.refb2Body_->GetTransform();
-		Eigen::MatrixX2d rotation(2,2);
-		b2Vec2 finalTranslate = transform.p - centerOfMass;
-
-		piece.finalRot_ = transform.q;
-		piece.finalTranslate_ = finalTranslate;
-		
-		getRoatationMatrix(rotation, transform.q);
-		piece.finalCoordinates_*= rotation;
-		piece.finalCoordinates_ = piece.finalCoordinates_.rowwise() + Eigen::RowVector2d(finalTranslate.x,finalTranslate.y);
+		//piece.refb2Body_->SetTransform(transform.p - finalTranslate, 0);
+		piece.refb2Body_->SetLinearVelocity(0.1*finalTranslate);
 	}
 }
-
 
 b2Vec2 World::getCenterOfMass(std::vector<Piece>& pieces)
 {
@@ -557,7 +538,6 @@ b2Vec2 World::getCenterOfMass(std::vector<Piece>& pieces)
 	return centreOfMass;
 }
 
-
 void World::saveFinalTransforms(const std::string& filename)
 {
 	// Open the CSV file for writing
@@ -574,7 +554,7 @@ void World::saveFinalTransforms(const std::string& filename)
 	// Write each row of the matrix as a separate line in the CSV file
 	for (auto& piece : pieces_)
 	{
-		file << std::to_string(piece.id_) << "," << piece.finalTranslate_.x << "," << piece.finalTranslate_.y << "," << piece.finalRot_.s << "," << piece.finalRot_.c << std::endl;
+		file << piece.id_ << "," << piece.finalTranslate_.x << "," << piece.finalTranslate_.y << "," << piece.finalRot_.s << "," << piece.finalRot_.c << std::endl;
 	}
 
 	// Close the file
@@ -600,7 +580,7 @@ void World::saveFinalCoordinates(const std::string& filename)
 	for (auto& piece:pieces_)
 	{
 		for (int i = 0; i < piece.finalCoordinates_.rows(); ++i) {
-			file << std::to_string(piece.id_) <<"," << piece.finalCoordinates_(i, 0) << "," << piece.finalCoordinates_(i, 1) << std::endl;
+			file << piece.id_ <<"," << piece.finalCoordinates_(i, 0) << "," << piece.finalCoordinates_(i, 1) << std::endl;
 		}
 	}
 
