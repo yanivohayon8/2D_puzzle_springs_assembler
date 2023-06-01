@@ -124,7 +124,7 @@ void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings)
     /*
         Loads the matings between the edges. The csv headers are piece1,vertex1,piece2,vertex2. All of them are int.
     */
-    std::string piecesFile = puzzleDirectoryPath_ + "/ground_truth_rels_vertex.csv";
+    std::string piecesFile = puzzleDirectoryPath_ + "/springs_anchors.csv";
     std::ifstream infile(piecesFile);
 
     if (!infile.is_open()) {
