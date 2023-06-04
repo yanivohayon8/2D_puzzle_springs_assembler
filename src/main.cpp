@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 	std::vector<VertexMating> trueMatings;
 	dataLoader.loadVertexMatings(trueMatings,"ground_truth_rels.csv");
 
-	World world(pieces,matings);
+	World world(pieces,matings,trueMatings);
 	world.Init();
 	world.Simulation(isSimulationAuto);
 	world.saveFinalTransforms(puzzleDirectory + "/final_transforms.csv");

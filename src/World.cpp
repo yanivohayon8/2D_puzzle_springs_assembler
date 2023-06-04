@@ -1,8 +1,9 @@
 #include "World.h"
 
-World::World(std::vector<Piece>& pieces,std::vector<VertexMating>& matings)
+World::World(std::vector<Piece>& pieces,std::vector<VertexMating>& matings, std::vector<VertexMating>& groundTruthMatings)
 {
 	matings_ = matings;
+	groundTruthMatings_ = groundTruthMatings;
 	rawPieces_ = pieces;
 	screen_ = new SfmlScreen(screenWidth_,screenHeight_, screenWidth_ / boardWidth_,screenHeight_ / boardHeight_);
 }
@@ -163,7 +164,7 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
 	//jointDef.collideConnected = true;
-	jointDef.collideConnected = false;
+	jointDef.collideConnected = true;
 	jointDef.minLength = 0;//0.05;// 0.1f;
 	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
 	jointDef.length = 0.01;// 0.05;
@@ -174,17 +175,17 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 	
 	// more natural springs
 
-	float frequencyHertz = 0.1;//1.5;//0.5f;//5;//0.5f; // "Speed of oscillation" 1-5 typical. if it is lower then it is stiffer?
-	float dampingRatio = 0.1; //1;//0.1f; // typical 0-1, at 1 all oscillation vanish
+	float frequencyHertz = 0.01;//1.5;//0.5f;//5;//0.5f; // "Speed of oscillation" 1-5 typical. if it is lower then it is stiffer?
+	float dampingRatio = 0.01; //1;//0.1f; // typical 0-1, at 1 all oscillation vanish
 	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
 	
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
-
 	joints_.push_back(joint);
 }
 
-void World::switchJointCollide(b2Joint& joint)
+void World::switchJointCollide(b2DistanceJoint& joint)
 {
+	//joint.
 	//joint.
 }
 
@@ -320,14 +321,14 @@ void World::Simulation(bool isAuto)
 		piece.refb2Body_->ApplyLinearImpulseToCenter(initialImpulses[++impulseIndex%numInitialImpulses], true);
 	}
 
-	if (isAuto)
-	{
+	/*if (isAuto)
+	{*/
 		while (connectedSpringIndex_ < int(matings_.size()))
 		{
 			putMatingSprings(matings_[connectedSpringIndex_]);
 			++connectedSpringIndex_;
 		}
-	}
+	//}
 
 	//while ((!isFinished || !isAuto) && screen_->isWindowOpen())
 	while (screen_->isWindowOpen())
