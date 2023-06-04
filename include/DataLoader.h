@@ -17,7 +17,7 @@ public:
 	void loadPieces(std::vector<Piece> &olstPiece,bool isOfir = true);
 	void coordsToEigenCoords(Eigen::MatrixXd &eigenCoords,std::vector<std::pair<double, double>>& coords);
 	
-	void loadVertexMatings(std::vector<VertexMating>& olstMatings);//, const std::vector<Piece>& pieces
+	void loadVertexMatings(std::vector<VertexMating>& olstMatings,std::string fileName="springs_anchors.csv");//, const std::vector<Piece>& pieces
 	void loadExtraInfo(std::vector<Piece>& olstPiece);
 
 private:

@@ -19,6 +19,9 @@ int main(int argc, char** argv)
 	//dataLoader.loadExtraInfo(pieces);
 	std::vector<VertexMating> matings;
 	dataLoader.loadVertexMatings(matings);
+	std::vector<VertexMating> trueMatings;
+	dataLoader.loadVertexMatings(trueMatings,"ground_truth_rels.csv");
+
 	World world(pieces,matings);
 	world.Init();
 	world.Simulation(isSimulationAuto);
