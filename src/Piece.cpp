@@ -149,7 +149,6 @@ void Piece::computeBoundingBox()
 			aabb_.upperBound.y = std::max(aabb_.upperBound.y, shapeAABB.upperBound.y);
 		}
 	}
-
 }
 
 float Piece::getBodyBoundingBoxWidth()
