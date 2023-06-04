@@ -383,60 +383,11 @@ void World::Simulation(bool isAuto)
 					//setDamping(piece.refb2Body_, 0.025, 0.05);
 					setCollideOn(piece.refb2Body_);
 				}
+
 			}
+			
+			
 
-			//if (isMovedToOrigin)
-			//{
-			//	isFinished = true;
-			//}
-
-			//if (nIteration % 240 == 0) //45
-			//{
-			//	// Still connecting the springs
-			//	if (connectedSpringIndex_ < int(matings_.size()))
-			//	{
-			//		putMatingSprings(matings_[connectedSpringIndex_]);
-			//		++connectedSpringIndex_;
-			//		
-			//		if (connectedSpringIndex_ == int(matings_.size()))
-			//		{
-			//			// damping += 0.1;
-			//			damping = 0.1;
-
-			//			for (auto& piece:pieces_)
-			//			{
-			//				//setDamping(piece.refb2Body_, damping, damping);
-			//				setCollideOn(piece.refb2Body_);
-			//			}
-			//		}
-			//	}
-			//	
-			//	else {
-			//		if (!isMovedToOrigin)
-			//		{
-
-			//			//// start to slow down
-			//			//double AveragedSpeed = 0;
-
-			//			//for (auto& piece : pieces_)
-			//			//{
-			//			//	AveragedSpeed += piece.refb2Body_->GetLinearVelocity().Length();
-			//			//}
-
-			//			//AveragedSpeed /= pieces_.size();
-			//			//double speedEpsilon = 0.1;
-
-			//			//if (AveragedSpeed < speedEpsilon)
-			//			//{
-			//			//	//moveAssemblyToOrigin(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-			//			//	isMovedToOrigin = true;
-			//			//}
-
-			//		}
-			//		
-			//	}
-
-			//}
 		}
 
 
@@ -499,7 +450,8 @@ void World::Simulation(bool isAuto)
 		}
 	}
 
-	screen_->screenShot("../data/ofir/RePAIR/group_39/assembly.png");
+	//screen_->screenShot("../data/ofir/RePAIR/group_39/assembly.png");
+	float sumErr = sumDistancesGroundTruthVertices();
 	screen_->closeWindow();
 }
 
@@ -589,4 +541,31 @@ void World::saveFinalCoordinates(const std::string& filename)
 	file.close();
 
 	std::cout << "Matrix data written to CSV file: " << filename << std::endl;
+}
+
+float World::sumDistancesGroundTruthVertices()
+{
+	float sum = 0;
+	for (auto& mating:groundTruthMatings_)
+	{
+		for (auto& pieceA:pieces_)
+		{
+			for (auto& pieceB : pieces_)
+			{
+				if (pieceA.id_ == mating.firstPieceId_ && pieceB.id_ == mating.secondPieceId_)
+				{
+					b2Vec2 vertexA;
+					pieceA.getVeterxGlobalCoords(vertexA, mating.firstPieceVertex_);
+					b2Vec2 vertexB;
+					pieceA.getVeterxGlobalCoords(vertexB, mating.secondPieceVertex_);
+
+					float xSquared = (vertexA.x - vertexB.x) * (vertexA.x - vertexB.x);
+					float ySquared = (vertexA.y - vertexB.y) * (vertexA.y - vertexB.y);
+					sum+= std::sqrt(xSquared + ySquared);
+				}
+			}
+		}
+	}
+
+	return sum;
 }

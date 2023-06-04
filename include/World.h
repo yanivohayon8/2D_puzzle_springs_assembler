@@ -14,7 +14,7 @@
 class World
 {
 public:
-	World(std::vector<Piece>& pieces,std::vector<VertexMating> &matings);
+	World(std::vector<Piece>& pieces,std::vector<VertexMating> &matings, std::vector<VertexMating>& groundTruthMatings);
 	//b2World world_ = b2World(b2Vec2(0, 0.05));
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> pieces_;
@@ -23,6 +23,7 @@ public:
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	std::vector< b2DistanceJoint*> joints_;
 	std::vector<VertexMating> matings_; 
+	std::vector<VertexMating> groundTruthMatings_;
 	int connectedSpringIndex_ = 0; 
 	int screenHeight_ = 1380;
 	int screenWidth_ = 1380;
@@ -48,11 +49,13 @@ public:
 	void setCollideOff(b2Body* body);
 	void setCollideOn(b2Body* body);
 	void setDamping(b2Body* body, double linearDamping, double angularDamping);
-	void switchJointCollide(b2Joint& joint);
+	void switchJointCollide(b2DistanceJoint& joint);
 
 	b2Vec2 getCenterOfMass(std::vector<Piece>& pieces);
 
 	void saveFinalCoordinates(const std::string& filename);
 	void saveFinalTransforms(const std::string& filename);
 	void moveAssemblyToOrigin(b2Vec2& centerPosition);
+
+	float sumDistancesGroundTruthVertices();
 };
