@@ -8,16 +8,11 @@ World::World(std::vector<Piece>& pieces,std::vector<VertexMating>& matings, std:
 	screen_ = new SfmlScreen(screenWidth_,screenHeight_, screenWidth_ / boardWidth_,screenHeight_ / boardHeight_);
 }
 
-b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
+b2Body* World::createPieceBody(Piece& piece, b2BodyDef& bodyDef, b2FixtureDef& fixture)
 {
 
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position = initialPosition; 
-	bodyDef.fixedRotation = piece.isRotationFixed;
-
-	b2PolygonShape shape;
 	
+	b2PolygonShape shape;
 	std::vector<b2Vec2> localCoords;
 
 	for (int i = 0; i < piece.localCoordsAsVecs_.size(); i++)
@@ -37,13 +32,7 @@ b2Body* World::createPieceBody(Piece& piece,b2Vec2& initialPosition)
 		s.Set(points.data(), points.size());
 	}*/
 
-	
-	b2FixtureDef fixture;
 	fixture.shape = &shape;
-	fixture.density = 1.0f;
-	fixture.friction = 0.5f;
-	fixture.filter.groupIndex = 2; //-2; // Don't collide
-
 	b2Body* oBody = world_.CreateBody(&bodyDef);
 	oBody->CreateFixture(&fixture);
 
@@ -145,7 +134,17 @@ void World::InitPieces()
 	for (auto pieceIt = rawPieces_.begin(); pieceIt != rawPieces_.end(); pieceIt++)
 	{
 		b2Body* body;
-		body = this->createPieceBody(*pieceIt, *initialPosIt);
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_dynamicBody;
+		bodyDef.position = *initialPosIt;
+		bodyDef.fixedRotation = false;//piece.isRotationFixed;
+
+		b2FixtureDef fixture;
+		fixture.density = 1.0f;
+		fixture.friction = 0.5f;
+		fixture.filter.groupIndex = 2; //-2; // Don't collide
+
+		body = this->createPieceBody(*pieceIt, bodyDef,fixture);
 		//body = this->createPieceBody(*pieceIt, b2Vec2(5,5));
 		pieceIt->refb2Body_ = body;
 		

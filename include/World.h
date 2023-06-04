@@ -33,7 +33,7 @@ public:
 	bool isDrawPolygons_ = false;
 	bool isDrawSprites_ = true;
 	
-	b2Body* createPieceBody(Piece& piece, b2Vec2& initialPosition);
+	b2Body* createPieceBody(Piece& piece, b2BodyDef &bodyDef, b2FixtureDef &fixture);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
 		float minLength = 0, float maxLength = 2.5f, float damping = 1, float stiffness = 1);//stif=0.5
 	void putMatingSprings(VertexMating& mating);
