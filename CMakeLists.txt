@@ -26,7 +26,20 @@ find_library(SFML_NETWORK_LIBRARY NAMES sfml-network PATHS "C:/src/vcpkg/install
 find_library(SFML_SYSTEM_LIBRARY NAMES sfml-system PATHS "C:/src/vcpkg/installed/x64-windows/lib")
 find_library(SFML_AUDIO_LIBRARY NAMES sfml-audio PATHS "C:/src/vcpkg/installed/x64-windows/lib")
 
+# Set the path to the Boost directory
+set(BOOST_ROOT "C:/Program Files/boost/boost_1_82_0")
+
+# Find the Boost libraries
+find_package(Boost 1.82.0 REQUIRED)
+
+if (Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+else()
+    message(FATAL_ERROR "Boost library not found")
+endif()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     box2d 
     Eigen3::Eigen
-	${SFML_GRAPHICS_LIBRARY} ${SFML_WINDOW_LIBRARY} ${SFML_NETWORK_LIBRARY} ${SFML_SYSTEM_LIBRARY} ${SFML_AUDIO_LIBRARY} ) 
+    ${SFML_GRAPHICS_LIBRARY} ${SFML_WINDOW_LIBRARY} ${SFML_NETWORK_LIBRARY} ${SFML_SYSTEM_LIBRARY} ${SFML_AUDIO_LIBRARY}
+    ${Boost_LIBRARIES} ) 

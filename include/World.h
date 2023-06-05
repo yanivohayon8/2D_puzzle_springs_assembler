@@ -58,4 +58,6 @@ public:
 	void moveAssemblyToOrigin(b2Vec2& centerPosition);
 
 	float sumDistancesGroundTruthVertices();
+
+	float computeOverlappingAreaPercentageBetweenPIeces();
 };

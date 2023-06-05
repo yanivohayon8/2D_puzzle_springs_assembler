@@ -174,7 +174,7 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 	
 	// more natural springs
 
-	float frequencyHertz = 0.01;//1.5;//0.5f;//5;//0.5f; // "Speed of oscillation" 1-5 typical. if it is lower then it is stiffer?
+	float frequencyHertz = 0.1;//1.5;//0.5f;//5;//0.5f; // "Speed of oscillation" 1-5 typical. if it is lower then it is stiffer?
 	float dampingRatio = 0.01; //1;//0.1f; // typical 0-1, at 1 all oscillation vanish
 	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
 	
@@ -377,6 +377,10 @@ void World::Simulation(bool isAuto)
 			// Hand made
 			if (nIteration == pieces_.size()*200)
 			{
+				float overlappingAreaPercentage = computeOverlappingAreaPercentageBetweenPIeces();
+				std::cout << "overlappingAreaPercentage  " << overlappingAreaPercentage << std::endl;
+
+
 				for (auto& piece : pieces_)
 				{
 					//setDamping(piece.refb2Body_, 0.025, 0.05);
@@ -451,6 +455,7 @@ void World::Simulation(bool isAuto)
 
 	//screen_->screenShot("../data/ofir/RePAIR/group_39/assembly.png");
 	float sumErr = sumDistancesGroundTruthVertices();
+	std::cout << "sumErr " << sumErr << std::endl;
 	screen_->closeWindow();
 }
 
@@ -567,4 +572,28 @@ float World::sumDistancesGroundTruthVertices()
 	}
 
 	return sum;
+}
+
+float World::computeOverlappingAreaPercentageBetweenPIeces()
+{
+
+	float totalArea = 0;
+	
+	for (auto &piece:pieces_)
+	{
+		piece.initBoostPolygon();
+		totalArea += piece.computeArea();
+	}
+	
+	float overlappingArea = 0; 
+
+	for (int i = 0; i < pieces_.size(); i++)
+	{
+		for (int j = i+1; j < pieces_.size(); j++)
+		{
+			overlappingArea += pieces_[i].computeOverlappingArea(pieces_[j].boostPolygonGlobalCoords_);	
+		}
+	}
+
+	return overlappingArea/totalArea*100;
 }
