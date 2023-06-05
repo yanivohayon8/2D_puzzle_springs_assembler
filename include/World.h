@@ -62,4 +62,6 @@ public:
 	float sumDistancesGroundTruthVertices();
 
 	float computeOverlappingAreaPercentageBetweenPIeces();
+
+	Piece* getPieceWithHighestMatings();
 };

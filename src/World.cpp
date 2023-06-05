@@ -53,11 +53,41 @@ b2Body* World::createPieceBody(Piece& piece, b2BodyDef& bodyDef, b2FixtureDef& f
 }
 
 
+Piece* World::getPieceWithHighestMatings()
+{
+	int maxMatings = 0;
+	Piece* maxPiece = &rawPieces_[0];
+	int countMatings = 0;
+	int i = 0;
+
+	for (auto& piece:rawPieces_)
+	{
+		countMatings = 0;
+
+		for (auto& mating:matings_)
+		{
+			if (mating.firstPieceId_ == piece.id_ || mating.secondPieceId_ == piece.id_)
+			{
+				countMatings++;
+			}
+		}
+
+		if (countMatings>maxMatings)
+		{
+			maxPiece = &piece;
+			maxMatings = countMatings;
+		}
+
+	}
+
+	return maxPiece;
+}
+
 void World::Init()
 {
 	initBounds();
 
-	Piece* fixedPiece = &rawPieces_[0];
+	Piece* fixedPiece = getPieceWithHighestMatings();
 	b2BodyDef fixedPieceBodyDef;
 	fixedPieceBodyDef.type = b2_staticBody;
 	fixedPieceBodyDef.position = b2Vec2(boardWidth_/2,boardHeight_/2);
@@ -74,9 +104,12 @@ void World::Init()
 	pieces_.push_back(*fixedPiece);
 	
 
-	for (int i = 1; i < rawPieces_.size(); i++)
+	for (int i = 0; i < rawPieces_.size(); i++)
 	{
-		movingPieces_.push_back(rawPieces_[i]);
+		if (&rawPieces_[i] != fixedPiece)
+		{
+			movingPieces_.push_back(rawPieces_[i]);
+		}
 	}
 
 	InitMovingPieces();
