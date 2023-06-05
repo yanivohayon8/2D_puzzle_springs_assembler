@@ -230,8 +230,8 @@ void World::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 	
 	// more natural springs
 
-	float frequencyHertz = 0.1;//1.5;//0.5f;//5;//0.5f; // "Speed of oscillation" 1-5 typical. if it is lower then it is stiffer?
-	float dampingRatio = 0.025; //1;//0.1f; // typical 0-1, at 1 all oscillation vanish
+	float frequencyHertz = 1;//0.01;//0.1*10;//1.5;//0.5f;//5;//0.5f; // "Speed of oscillation" 1-5 typical. if it is lower then it is stiffer?
+	float dampingRatio = 0.01; //1;//0.1f; // typical 0-1, at 1 all oscillation vanish
 	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
 	
 	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
@@ -372,7 +372,7 @@ void World::Simulation(bool isAuto)
 		screen_->initPolygon(piece);
 		screen_->initPolygonCoordsDots(piece, 0.01, sf::Color(0, 255,0 ));
 		setCollideOff(piece.refb2Body_);
-		setDamping(piece.refb2Body_, 0.005, 0.5); // to prevent the bodies spining like centrifugot
+		setDamping(piece.refb2Body_, 0, 0.01); // to prevent the bodies spining like centrifugot
 		piece.refb2Body_->ApplyLinearImpulseToCenter(initialImpulses[++impulseIndex%numInitialImpulses], true);
 	}
 
@@ -443,8 +443,6 @@ void World::Simulation(bool isAuto)
 				}
 
 			}
-			
-			
 
 		}
 
