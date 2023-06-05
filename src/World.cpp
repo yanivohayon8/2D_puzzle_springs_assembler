@@ -56,7 +56,30 @@ b2Body* World::createPieceBody(Piece& piece, b2BodyDef& bodyDef, b2FixtureDef& f
 void World::Init()
 {
 	initBounds();
-	InitPieces();
+
+	Piece* fixedPiece = &rawPieces_[0];
+	b2BodyDef fixedPieceBodyDef;
+	fixedPieceBodyDef.type = b2_staticBody;
+	fixedPieceBodyDef.position = b2Vec2(boardWidth_/2,boardHeight_/2);
+	//bodyDef.fixedRotation = true;//piece.isRotationFixed;
+
+	b2FixtureDef fixedPieceFixture;
+	fixedPieceFixture.density = 1.0f;
+	fixedPieceFixture.friction = 0.5f;
+	fixedPieceFixture.filter.groupIndex = 2; //-2; // Don't collide
+
+	b2Body* fixedPieceBody;
+	fixedPieceBody = this->createPieceBody(*fixedPiece,fixedPieceBodyDef ,fixedPieceFixture);
+	fixedPiece->refb2Body_ = fixedPieceBody;
+	pieces_.push_back(*fixedPiece);
+	
+
+	for (int i = 1; i < rawPieces_.size(); i++)
+	{
+		movingPieces_.push_back(rawPieces_[i]);
+	}
+
+	InitMovingPieces();
 	orderSpringsConnection();
 }
 
@@ -117,13 +140,13 @@ void World::initBounds()
 	}
 }
 
-void World::InitPieces()
+void World::InitMovingPieces()
 {
 	
 	std::vector<b2Vec2> positions;
 	int seed = 0;
 	int padding = 2;
-	generate2DVectors(positions, rawPieces_.size(), boardWidth_, boardHeight_,padding, seed);
+	generate2DVectors(positions, movingPieces_.size(), boardWidth_, boardHeight_, padding, seed);
 
 	std::sort(positions.begin(), positions.end(), [](const b2Vec2& a, const b2Vec2& b)->bool {
 		return a.y > b.y || (a.y==b.y && a.x > b.x);
@@ -131,7 +154,7 @@ void World::InitPieces()
 
 	auto& initialPosIt = positions.begin();
 
-	for (auto pieceIt = rawPieces_.begin(); pieceIt != rawPieces_.end(); pieceIt++)
+	for (auto pieceIt = movingPieces_.begin(); pieceIt != movingPieces_.end(); pieceIt++)
 	{
 		b2Body* body;
 		b2BodyDef bodyDef;

@@ -19,6 +19,7 @@ public:
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> pieces_;
 	std::vector<Piece> rawPieces_;
+	std::vector<Piece> movingPieces_;
 	SfmlScreen* screen_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	std::vector< b2DistanceJoint*> joints_;
@@ -29,9 +30,10 @@ public:
 	int screenWidth_ = 1380;
 	float boardHeight_ = 10;//20; 
 	float boardWidth_ = 10;//20;//note also the recommondation of static bodies (no more than 50!)
-
 	bool isDrawPolygons_ = false;
 	bool isDrawSprites_ = true;
+
+
 	
 	b2Body* createPieceBody(Piece& piece, b2BodyDef &bodyDef, b2FixtureDef &fixture);
 	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
@@ -39,7 +41,7 @@ public:
 	void putMatingSprings(VertexMating& mating);
 	void orderSpringsConnection();
 
-	void InitPieces();
+	void InitMovingPieces();
 	void initBounds();
 	void Init();
 	void preProcess();
