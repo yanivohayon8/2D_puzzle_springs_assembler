@@ -1,10 +1,11 @@
 #include "reconstruction.h"
 
 
-Reconstructor::Reconstructor(float boardWidth, float boardHeight)
+Reconstructor::Reconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_)
 {
 	boardWidth_ = boardWidth;
 	boardHeight_ = boardHeight;
+	screen_ = new SfmlScreen(screenWidth_, screenHeight_, screenWidth_ / boardWidth_, screenHeight_ / boardHeight_);
 }
 
 b2Body* Reconstructor::createPieceBody(Piece& piece, b2BodyDef& bodyDef, b2FixtureDef& fixture)
@@ -58,6 +59,49 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	piece.refb2Body_ = body;
 }
 
+void Reconstructor::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB, float frequencyHertz, float dampingRatio)
+{
+	b2DistanceJointDef jointDef;
+	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
+	jointDef.collideConnected = false;
+	jointDef.minLength = 0;//0.05;// 0.1f;
+	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
+	jointDef.length = 0.01;// 0.05;
+
+	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
+
+	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
+	joints_.push_back(joint);
+}
+
+void Reconstructor::putMatingSprings(VertexMating& mating)
+{
+	Piece* pieceA;
+	Piece* pieceB;
+
+	for (auto& piece : activePieces_)
+	{
+		if (piece.id_ == mating.firstPieceId_)
+		{
+			pieceA = &piece;
+		}
+
+		if (piece.id_ == mating.secondPieceId_)
+		{
+			pieceB = &piece;
+		}
+	}
+
+	b2Body* bodyA = pieceA->refb2Body_;
+	b2Body* bodyB = pieceB->refb2Body_;
+
+	b2Vec2 vertexGlobalA;
+	pieceA->getVeterxGlobalCoords(vertexGlobalA, mating.firstPieceVertex_);
+	b2Vec2 vertexGlobalB;
+	pieceB->getVeterxGlobalCoords(vertexGlobalB, mating.secondPieceVertex_);
+	connectSpringsToPieces(bodyA, bodyB, &vertexGlobalA, &vertexGlobalB);
+}
+
 Piece* Reconstructor::getMaxMatingsPiece()
 {
 	int maxMatings = 0;
@@ -87,7 +131,6 @@ Piece* Reconstructor::getMaxMatingsPiece()
 
 	return maxPiece;
 }
-
 
 void Reconstructor::init()
 {
@@ -148,6 +191,7 @@ void Reconstructor::init()
 
 void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<VertexMating>& activeMatings, int positionSeed, int positionPadding)
 {
+	// Init Bodies
 	activePieces_ = activePieces;
 	activeMatings_ = activeMatings;
 	Piece* fixedPiece = getMaxMatingsPiece();
@@ -167,6 +211,30 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 			initMovingBody(piece, *initialPosIt);
 			++initialPosIt;
 		}
+	}
+
+	// Apply impulse on bodies
+	int impulseIndex = 0;
+	float powerMagnitude = 0.2;
+	std::vector<b2Vec2> initialImpulses = {
+		{powerMagnitude,powerMagnitude},
+		{-powerMagnitude,powerMagnitude},
+		{-powerMagnitude,-powerMagnitude},
+		{-powerMagnitude,powerMagnitude}
+	};
+	int numInitialImpulses = initialImpulses.size();
+
+	for (auto& piece : activePieces_)
+	{
+		piece.setCollideOff();
+		piece.setAngularDamping(0.01);
+		auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
+		piece.applyLinearImpulse(power.x,power.y);
+	}
+
+	for (auto &mating:activeMatings_)
+	{
+		putMatingSprings(mating);
 	}
 }
 

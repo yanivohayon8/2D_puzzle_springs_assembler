@@ -48,5 +48,11 @@ public:
 	void initBoostPolygon();
 	float computeOverlappingArea(const BoostPolygon& otherPolyon);
 	float computeArea();
+
+	void setCollideOff();
+	void setCollideOn();
+	void setLinearDamping(double linearDamping);
+	void setAngularDamping(double angularDamping);
+	void applyLinearImpulse(int powerX, int powerY);
 };
 

@@ -26,6 +26,7 @@ void Puzzle::initPuzzle()
 	reconstructor_->init();
 }
 
+
 void Puzzle::initReconstruct(std::vector<VertexMating>& matings)
 {
 	std::vector<Piece> reconstructPieces;
@@ -49,4 +50,9 @@ void Puzzle::initReconstruct(std::vector<VertexMating>& matings)
 	reconstructor_->initRun(reconstructPieces, matings);
 }
 
+void Puzzle::reconstruct(std::vector<VertexMating>& matings)
+{
+	initReconstruct(matings);
+	reconstructor_->Run();
+}
 

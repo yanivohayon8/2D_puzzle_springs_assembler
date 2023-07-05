@@ -20,8 +20,8 @@ int main(int argc, char** argv)
 	
 	std::vector<VertexMating> Matings;
 	dataLoader.loadVertexMatings(Matings);
-	puzzle.initReconstruct(Matings);
-
+	puzzle.reconstruct(Matings);
+	
 
 	//std::vector<Piece> pieces;
 	//dataLoader.loadPieces(pieces);

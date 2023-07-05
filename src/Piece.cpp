@@ -194,3 +194,42 @@ float Piece::computeArea()
 {
 	return bg::area(boostPolygonGlobalCoords_);
 }
+
+void Piece::setCollideOff()
+{
+	b2Filter filter = refb2Body_->GetFixtureList()->GetFilterData();
+	if (filter.groupIndex > 0)
+	{
+		filter.groupIndex = filter.groupIndex * -1;
+	}
+	refb2Body_->GetFixtureList()->SetFilterData(filter);
+}
+
+
+void Piece::setCollideOn()
+{
+	b2Filter filter = refb2Body_->GetFixtureList()->GetFilterData();
+	if (filter.groupIndex < 0)
+	{
+		filter.groupIndex = filter.groupIndex * -1;
+	}
+	refb2Body_->GetFixtureList()->SetFilterData(filter);
+}
+
+void Piece::setLinearDamping(double linearDamping)
+{
+	refb2Body_->SetLinearDamping(linearDamping);
+}
+
+void Piece::setAngularDamping(double angularDamping)
+{
+	refb2Body_->SetAngularDamping(angularDamping);
+}
+
+void Piece::applyLinearImpulse(int powerX,int powerY)
+{
+	b2Vec2 impulse(powerX, powerY);
+	refb2Body_->ApplyLinearImpulseToCenter(impulse, true);
+}
+
+
