@@ -11,7 +11,7 @@ private:
 	std::map<std::string, Piece> id2piece_;
 	DataLoader dataLoader_;
 	std::vector<VertexMating> trueMatings_;
-	//World simulator_;
+	World simulator_;
 
 public:
 	Puzzle(DataLoader& dataLoader);
