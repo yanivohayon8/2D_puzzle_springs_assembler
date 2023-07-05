@@ -1,5 +1,10 @@
 #include "World.h"
 
+World::World()
+{
+
+}
+
 World::World(std::vector<Piece>& pieces,std::vector<VertexMating>& matings, std::vector<VertexMating>& groundTruthMatings)
 {
 	matings_ = matings;

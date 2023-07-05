@@ -14,13 +14,15 @@
 class World
 {
 public:
+	World();
 	World(std::vector<Piece>& pieces,std::vector<VertexMating> &matings, std::vector<VertexMating>& groundTruthMatings);
 	//b2World world_ = b2World(b2Vec2(0, 0.05));
 	b2World world_ = b2World(b2Vec2(0, 0));
+	
 	std::vector<Piece> pieces_;
 	std::vector<Piece> rawPieces_;
-	std::vector<Piece> movingPieces_;
-	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
+	std::vector<Piece> movingPieces_; //to reconstruction
+	std::vector<std::vector<b2Vec2>> boundsCoordinates_; 
 
 	std::vector<VertexMating> matings_; 
 	std::vector<VertexMating> groundTruthMatings_;
