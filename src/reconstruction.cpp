@@ -58,6 +58,36 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	piece.refb2Body_ = body;
 }
 
+Piece* Reconstructor::getMaxMatingsPiece()
+{
+	int maxMatings = 0;
+	Piece* maxPiece = &activePieces_[0];
+	int countMatings = 0;
+	int i = 0;
+
+	for (auto& piece : activePieces_)
+	{
+		countMatings = 0;
+
+		for (auto& mating : activeMatings_)
+		{
+			if (mating.firstPieceId_ == piece.id_ || mating.secondPieceId_ == piece.id_)
+			{
+				countMatings++;
+			}
+		}
+
+		if (countMatings > maxMatings)
+		{
+			maxPiece = &piece;
+			maxMatings = countMatings;
+		}
+
+	}
+
+	return maxPiece;
+}
+
 
 void Reconstructor::init()
 {
@@ -116,27 +146,31 @@ void Reconstructor::init()
 	}
 }
 
-void Reconstructor::initRun(std::vector<Piece>& movingPieces, Piece& staticPiece,int positionSeed, int positionPadding)
+void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<VertexMating>& activeMatings, int positionSeed, int positionPadding)
 {
-	initStaticBody(staticPiece, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-	ActivePieces_.push_back(staticPiece);
+	activePieces_ = activePieces;
+	activeMatings_ = activeMatings;
+	Piece* fixedPiece = getMaxMatingsPiece();
+	initStaticBody(*fixedPiece, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
 
 	std::vector<b2Vec2> positions;
-	generate2DVectors(positions, movingPieces.size(), boardWidth_, boardHeight_, positionPadding, positionSeed);
-
+	generate2DVectors(positions, activePieces_.size() - 1, boardWidth_, boardHeight_, positionPadding, positionSeed);
 	std::sort(positions.begin(), positions.end(), [](const b2Vec2& a, const b2Vec2& b)->bool {
 		return a.y > b.y || (a.y == b.y && a.x > b.x);
 	});
-
 	auto& initialPosIt = positions.begin();
 
-	for (auto& piece:movingPieces)
+	for (auto& piece:activePieces_)
 	{
-		initMovingBody(piece,*initialPosIt);
-		ActivePieces_.push_back(piece);
-		++initialPosIt;
+		if (piece.id_ != fixedPiece->id_)
+		{
+			initMovingBody(piece, *initialPosIt);
+			++initialPosIt;
+		}
 	}
 }
+
+
 
 //void Reconstructor::countMatings(std::vector<int>& oPiecesCounters)
 //{
@@ -164,3 +198,11 @@ void Reconstructor::initRun(std::vector<Piece>& movingPieces, Piece& staticPiece
 //		pieceIndex++;
 //	}*/
 //}
+
+void VisualReconstructor::Run()
+{
+}
+
+void SilentReconstructor::Run()
+{
+}

@@ -1,6 +1,6 @@
 #pragma once
 #include <Piece.h>
-#include <World.h>
+#include <reconstruction.h>
 #include <DataLoader.h>
 #include <string>
 
@@ -11,11 +11,11 @@ private:
 	std::map<std::string, Piece> id2piece_;
 	DataLoader dataLoader_;
 	std::vector<VertexMating> trueMatings_;
-	World simulator_;
-
+	Reconstructor* reconstructor_;
+	
 public:
-	Puzzle(DataLoader& dataLoader);
+	Puzzle(DataLoader& dataLoader, std::string mode="Visual");
 	void initPuzzle();
-	void reconstruct(std::vector<VertexMating>& matings);
+	void initReconstruct(std::vector<VertexMating>& matings);
 };
 
