@@ -170,39 +170,3 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 	}
 }
 
-
-
-//void Reconstructor::countMatings(std::vector<int>& oPiecesCounters)
-//{
-//
-//	
-//}
-//
-//void Reconstructor::initPieces()
-//{
-//	/*int pieceIndex = 0;
-//
-//	for (auto& piece : pieces_)
-//	{
-//
-//		piecesCounters[pieceIndex] = 0;
-//
-//		for (auto& mating : matings_)
-//		{
-//			if (mating.firstPieceId_ == piece.id_ || mating.secondPieceId_ == piece.id_)
-//			{
-//				++oPiecesCounters[pieceIndex];
-//			}
-//		}
-//
-//		pieceIndex++;
-//	}*/
-//}
-
-void VisualReconstructor::Run()
-{
-}
-
-void SilentReconstructor::Run()
-{
-}

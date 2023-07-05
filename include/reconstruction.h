@@ -36,14 +36,3 @@ public:
 	//void close(); // delete the matings and pieces...
 };
 
-
-class SilentReconstructor : public Reconstructor
-{
-	void Run();
-};
-
-
-class VisualReconstructor : public Reconstructor
-{
-	void Run();
-};
