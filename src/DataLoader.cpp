@@ -8,6 +8,11 @@ struct Row {
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, 2, Eigen::RowMajor> MatrixX2D_r;
 
+DataLoader::DataLoader()
+{
+
+}
+
 DataLoader::DataLoader(std::string puzzleDirectoryPath)
 {
     puzzleDirectoryPath_ = puzzleDirectoryPath;

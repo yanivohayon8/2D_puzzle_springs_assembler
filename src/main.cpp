@@ -3,6 +3,7 @@
 #include <World.h>
 #include <VertexMating.h>
 #include <ScriptInputParser.h>
+#include <Puzzle.h>
 
 int main(int argc, char** argv)
 {
@@ -14,19 +15,27 @@ int main(int argc, char** argv)
 	parseInput(isSimulationAuto,puzzleDirectory,argc,argv);
 
 	DataLoader dataLoader(puzzleDirectory);
-	std::vector<Piece> pieces;
-	dataLoader.loadPieces(pieces, isOfir);
-	//dataLoader.loadExtraInfo(pieces);
-	std::vector<VertexMating> matings;
-	dataLoader.loadVertexMatings(matings);
-	std::vector<VertexMating> trueMatings;
-	dataLoader.loadVertexMatings(trueMatings,"ground_truth_rels.csv");
+	Puzzle puzzle(dataLoader);
+	puzzle.initPuzzle();
+	
+	std::vector<VertexMating> Matings;
+	dataLoader.loadVertexMatings(Matings);
+	puzzle.reconstruct(Matings);
 
-	World world(pieces,matings,trueMatings);
-	world.Init();
-	world.Simulation(isSimulationAuto);
-	world.saveFinalTransforms(puzzleDirectory + "/final_transforms.csv");
-	std::cout << "Finish" << std::endl;
+
+	//std::vector<Piece> pieces;
+	//dataLoader.loadPieces(pieces);
+	////dataLoader.loadExtraInfo(pieces);
+	//std::vector<VertexMating> matings;
+	//dataLoader.loadVertexMatings(matings);
+	//std::vector<VertexMating> trueMatings;
+	//dataLoader.loadVertexMatings(trueMatings,"ground_truth_rels.csv");
+
+	//World world(pieces,matings,trueMatings);
+	//world.Init();
+	//world.Simulation(isSimulationAuto);
+	//world.saveFinalTransforms(puzzleDirectory + "/final_transforms.csv");
+	//std::cout << "Finish" << std::endl;
 
 	return 0;
 }

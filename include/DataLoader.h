@@ -11,6 +11,7 @@
 class DataLoader
 {
 public:
+	DataLoader();
 	std::string puzzleDirectoryPath_;
 
 	DataLoader(std::string puzzleDirectoryPath);
