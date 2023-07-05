@@ -6,6 +6,7 @@ void VisualReconstructor::Run()
 	screen_->initDisplay();
 	screen_->initBounds(boundsCoordinates_);
 	auto redColor = sf::Color::Red;
+	float linearDamping = 0;
 
 	for (auto& piece : activePieces_)
 	{
@@ -36,7 +37,6 @@ void VisualReconstructor::Run()
 				screen_->drawCircle(transform.p, 0.05, sf::Color(255, 0, 0));
 			}
 
-
 			if (isDrawSprites_)
 			{
 				screen_->drawSprite(pieceIt->id_, transform);
@@ -52,6 +52,63 @@ void VisualReconstructor::Run()
 		}
 
 		screen_->updateDisplay();
+
+		sf::Event nextEvent;
+		while (screen_->pollEvent(nextEvent))
+		{
+
+			if (nextEvent.type == sf::Event::Closed)
+				screen_->closeWindow();
+			else {
+
+				if (nextEvent.type == sf::Event::KeyPressed)
+				{
+					switch (nextEvent.key.code)
+					{
+					case sf::Keyboard::P:
+						isDebugDrawPolygons_ = !isDebugDrawPolygons_;
+						break;
+					case sf::Keyboard::O:
+						isDrawSprites_ = !isDrawSprites_;
+						break;
+					case sf::Keyboard::E:
+						for (auto& piece : activePieces_)
+						{
+							int power = sampleIntUniformly(5, -5, -1);
+							piece.applyLinearImpulse(power, power);
+						}
+						break;
+					case sf::Keyboard::R:
+						linearDamping += 0.1;
+						for (auto& piece : activePieces_)
+						{
+							piece.setLinearDamping(linearDamping);
+						}
+						break;
+					case sf::Keyboard::T:
+						linearDamping -= 0.1;
+						if (linearDamping < 0)
+						{
+							linearDamping = 0;
+						}
+						else {
+							for (auto& piece : activePieces_)
+							{
+								piece.setLinearDamping(linearDamping);
+							}
+						}
+						break;
+					case sf::Keyboard::C:
+						for (auto& piece : activePieces_)
+						{
+							piece.switchColide();
+						}
+					default:
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	screen_->closeWindow();

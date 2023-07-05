@@ -51,6 +51,7 @@ public:
 
 	void setCollideOff();
 	void setCollideOn();
+	void switchColide();
 	void setLinearDamping(double linearDamping);
 	void setAngularDamping(double angularDamping);
 	void applyLinearImpulse(int powerX, int powerY);

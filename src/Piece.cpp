@@ -205,7 +205,6 @@ void Piece::setCollideOff()
 	refb2Body_->GetFixtureList()->SetFilterData(filter);
 }
 
-
 void Piece::setCollideOn()
 {
 	b2Filter filter = refb2Body_->GetFixtureList()->GetFilterData();
@@ -213,6 +212,13 @@ void Piece::setCollideOn()
 	{
 		filter.groupIndex = filter.groupIndex * -1;
 	}
+	refb2Body_->GetFixtureList()->SetFilterData(filter);
+}
+
+void Piece::switchColide()
+{
+	b2Filter filter = refb2Body_->GetFixtureList()->GetFilterData();
+	filter.groupIndex = filter.groupIndex * -1;
 	refb2Body_->GetFixtureList()->SetFilterData(filter);
 }
 
