@@ -11,8 +11,7 @@ int main(int argc, char** argv)
 {
 	//std::string puzzleDirectory = "../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0";
 	//std::string puzzleDirectory = "../data/ofir/RePAIR/group_39";
-	//std::string puzzleDirectory; 
-	//bool isSimulationAuto = true;
+
 	std::map<std::string, std::string> param2Value;
 	parseInput(param2Value,argc,argv);
 
