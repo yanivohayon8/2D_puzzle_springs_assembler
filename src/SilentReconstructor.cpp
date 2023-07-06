@@ -4,7 +4,7 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 {
 	int iteration = 0;
 
-	if (iteration < 1000)
+	while (++iteration < 20000)
 	{
 		world_.Step(timeStep_, velocityIterations_, positionIterations_);
 
@@ -17,6 +17,8 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	if (resultScreenshotPath !="")
 	{
 		screen_->initDisplay();
+		screen_->clearDisplay();
+
 		for (auto& piece : activePieces_)
 		{
 			screen_->initSprite(piece);

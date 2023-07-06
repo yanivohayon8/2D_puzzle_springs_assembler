@@ -12,7 +12,6 @@ int main(int argc, char** argv)
 	//std::string puzzleDirectory = "../data/ofir/RePAIR/group_39";
 	std::string puzzleDirectory; 
 	bool isSimulationAuto = true;
-	bool isOfir = true;
 	parseInput(isSimulationAuto,puzzleDirectory,argc,argv);
 	DataLoader dataLoader(puzzleDirectory);
 
@@ -27,14 +26,21 @@ int main(int argc, char** argv)
 	std::vector<Piece> activePieces;
 	puzzle.findPiecesToReconstruct(activePieces, matings);
 	
-	VisualReconstructor reconstructor;
-	reconstructor.init();
-	reconstructor.initRun(activePieces, matings);
-	reconstructor.Run();
-	reconstructor.closeRun();
+	/*VisualReconstructor vsReconstructor;
+	vsReconstructor.init();
+	vsReconstructor.initRun(activePieces, matings);
+	vsReconstructor.Run();
+	vsReconstructor.closeRun();*/
+
+	SilentReconstructor silentReconstructor;
+	silentReconstructor.init();
+	silentReconstructor.initRun(activePieces, matings);
+	silentReconstructor.Run("../data/deleteme.png");
+	silentReconstructor.closeRun();
 	
 
 	//std::vector<Piece> pieces;
+	//bool isOfir = true;
 	//dataLoader.loadPieces(pieces);
 	////dataLoader.loadExtraInfo(pieces);
 	//std::vector<VertexMating> matings;
