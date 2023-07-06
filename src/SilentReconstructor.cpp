@@ -16,7 +16,8 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 
 	if (resultScreenshotPath !="")
 	{
-		screen_->initDisplay();
+		bool isScreenVisible = false;
+		screen_->initDisplay(isScreenVisible);
 		screen_->clearDisplay();
 
 		for (auto& piece : activePieces_)

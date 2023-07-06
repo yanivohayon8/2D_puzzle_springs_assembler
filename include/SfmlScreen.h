@@ -27,7 +27,7 @@ public:
 	std::map<std::string, sf::CircleShape> pieceId2PolygonCenter_;
 
 
-	void initDisplay();
+	void initDisplay(bool isVisible=true);
 	void initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordinates);
 	void initSprite(Piece& piece);
 	void initPolygon(Piece& piece);

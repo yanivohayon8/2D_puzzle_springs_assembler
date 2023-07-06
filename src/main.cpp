@@ -5,6 +5,7 @@
 #include <ScriptInputParser.h>
 #include <Puzzle.h>
 #include <reconstruction.h>
+#include <TestHandler.h>
 
 int main(int argc, char** argv)
 {
@@ -14,7 +15,13 @@ int main(int argc, char** argv)
 	//bool isSimulationAuto = true;
 	std::map<std::string, std::string> param2Value;
 	parseInput(param2Value,argc,argv);
-	DataLoader dataLoader(param2Value["puzzleDir"]);
+
+	if (param2Value.count("test")>0)
+	{
+		RouteTests(param2Value);
+	}
+
+	/*DataLoader dataLoader(param2Value["puzzleDir"]);
 
 	std::vector<VertexMating> trueMatings;
 	dataLoader.loadVertexMatings(trueMatings, "springs_anchors_correct.csv");
@@ -26,7 +33,7 @@ int main(int argc, char** argv)
 	dataLoader.loadVertexMatings(matings);
 	
 	std::vector<Piece> activePieces;
-	SilentReconstructor vsReconstructor;
+	VisualReconstructor vsReconstructor;
 	vsReconstructor.init();
 	
 	puzzle.findPiecesToReconstruct(activePieces, matings);
@@ -37,7 +44,7 @@ int main(int argc, char** argv)
 	puzzle.findPiecesToReconstruct(activePieces, trueMatings);
 	vsReconstructor.initRun(activePieces, trueMatings);
 	vsReconstructor.Run("../data/test2.png");
-	vsReconstructor.closeRun();
+	vsReconstructor.closeRun();*/
 
 	/*SilentReconstructor silentReconstructor;
 	silentReconstructor.init();
@@ -45,6 +52,8 @@ int main(int argc, char** argv)
 	silentReconstructor.Run("../data/deleteme.png");
 	silentReconstructor.closeRun();*/
 	
+
+
 
 	//std::vector<Piece> pieces;
 	//bool isOfir = true;

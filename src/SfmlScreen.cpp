@@ -8,9 +8,10 @@ SfmlScreen::SfmlScreen(int width,int height, float widthScale,float heightScale)
 	heightScale_ = heightScale;
 }
 
-void SfmlScreen::initDisplay()
+void SfmlScreen::initDisplay(bool isVisible)
 {
 	window_.create(sf::VideoMode(width_, height_), "Physical Optimization");
+	window_.setVisible(isVisible);
 }
 
 bool SfmlScreen::pollEvent(sf::Event& nextEvent)
