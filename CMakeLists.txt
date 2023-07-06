@@ -18,6 +18,12 @@ file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
 # Create the executable target
 add_executable(${PROJECT_NAME} ${SOURCES})
 
+set(HTTPLIB_DIR "cpp-httplib")
+add_library(httplib INTERFACE)
+target_include_directories(httplib INTERFACE ${HTTPLIB_DIR})
+
+
+
 set(SFML_DIR "C:/src/vcpkg/installed/x64-windows/share/sfml")
 
 find_library(SFML_GRAPHICS_LIBRARY NAMES sfml-graphics PATHS "C:/src/vcpkg/installed/x64-windows/lib")
@@ -42,4 +48,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     box2d 
     Eigen3::Eigen
     ${SFML_GRAPHICS_LIBRARY} ${SFML_WINDOW_LIBRARY} ${SFML_NETWORK_LIBRARY} ${SFML_SYSTEM_LIBRARY} ${SFML_AUDIO_LIBRARY}
-    ${Boost_LIBRARIES} ) 
+    ${Boost_LIBRARIES} 
+    httplib    
+) 
