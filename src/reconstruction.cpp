@@ -238,3 +238,20 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 	}
 }
 
+void Reconstructor::closeRun()
+{
+	for (auto& joint:joints_)
+	{
+		world_.DestroyJoint(joint);
+	}
+
+	for (int i=0;i<activePieces_.size();++i)
+	{
+		activePieces_[i].DestroyBody();
+	}
+
+	activePieces_.clear();
+	joints_.clear();
+	activeMatings_.clear();
+}
+

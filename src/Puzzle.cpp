@@ -54,5 +54,6 @@ void Puzzle::reconstruct(std::vector<VertexMating>& matings)
 {
 	initReconstruct(matings);
 	reconstructor_->Run();
+	reconstructor_->closeRun();
 }
 

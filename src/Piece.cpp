@@ -16,6 +16,11 @@ Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imag
 	imagePath_ = imagePath;
 }
 
+void Piece::DestroyBody()
+{
+	refb2Body_->GetWorld()->DestroyBody(refb2Body_);
+}
+
 void Piece::printCoords()
 {
 	for (int ii = 0; ii < localCoordinates_.rows(); ii++)

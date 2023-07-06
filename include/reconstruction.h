@@ -42,6 +42,6 @@ public:
 	void init();
 	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating>& activeMatings, int positionSeed = 0, int positionPadding = 2);
 	virtual void Run()=0;
-	//void close(); // delete the matings and pieces...
+	void closeRun(); // delete the matings and pieces...
 };
 

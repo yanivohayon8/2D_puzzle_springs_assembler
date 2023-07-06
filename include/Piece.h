@@ -30,6 +30,9 @@ public:
 	BoostPolygon boostPolygonGlobalCoords_;
 
 	Piece(std::string pieceId,Eigen::MatrixX2d coordinates, std::string imagePath);
+
+	void DestroyBody();
+
 	void printCoords();
 	std::pair<double, double> getVertexCoord(int iVertex);
 	int getNumCoords();
