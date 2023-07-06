@@ -30,7 +30,3 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	}
 
 }
-
-//void SilentReconstructor::Run(std::string resultScreenShotPath)
-//{
-//}

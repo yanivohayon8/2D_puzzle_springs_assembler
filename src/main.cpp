@@ -16,27 +16,33 @@ int main(int argc, char** argv)
 	DataLoader dataLoader(puzzleDirectory);
 
 	std::vector<VertexMating> trueMatings;
-	dataLoader.loadVertexMatings(trueMatings, "ground_truth_rels.csv");
+	dataLoader.loadVertexMatings(trueMatings, "springs_anchors_correct.csv");
 	std::vector<Piece> pieces;
 	dataLoader.loadPieces(pieces);
 	Puzzle puzzle(pieces,trueMatings);
 	
 	std::vector<VertexMating> matings;
 	dataLoader.loadVertexMatings(matings);
-	std::vector<Piece> activePieces;
-	puzzle.findPiecesToReconstruct(activePieces, matings);
 	
-	/*VisualReconstructor vsReconstructor;
+	std::vector<Piece> activePieces;
+	VisualReconstructor vsReconstructor;
 	vsReconstructor.init();
+	
+	puzzle.findPiecesToReconstruct(activePieces, matings);
 	vsReconstructor.initRun(activePieces, matings);
 	vsReconstructor.Run();
-	vsReconstructor.closeRun();*/
+	vsReconstructor.closeRun();
 
-	SilentReconstructor silentReconstructor;
+	puzzle.findPiecesToReconstruct(activePieces, trueMatings);
+	vsReconstructor.initRun(activePieces, trueMatings);
+	vsReconstructor.Run();
+	vsReconstructor.closeRun();
+
+	/*SilentReconstructor silentReconstructor;
 	silentReconstructor.init();
 	silentReconstructor.initRun(activePieces, matings);
 	silentReconstructor.Run("../data/deleteme.png");
-	silentReconstructor.closeRun();
+	silentReconstructor.closeRun();*/
 	
 
 	//std::vector<Piece> pieces;
