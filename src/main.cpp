@@ -4,6 +4,7 @@
 #include <VertexMating.h>
 #include <ScriptInputParser.h>
 #include <Puzzle.h>
+#include <reconstruction.h>
 
 int main(int argc, char** argv)
 {
@@ -13,14 +14,24 @@ int main(int argc, char** argv)
 	bool isSimulationAuto = true;
 	bool isOfir = true;
 	parseInput(isSimulationAuto,puzzleDirectory,argc,argv);
-
 	DataLoader dataLoader(puzzleDirectory);
-	Puzzle puzzle(dataLoader);
-	puzzle.initPuzzle();
+
+	std::vector<VertexMating> trueMatings;
+	dataLoader.loadVertexMatings(trueMatings, "ground_truth_rels.csv");
+	std::vector<Piece> pieces;
+	dataLoader.loadPieces(pieces);
+	Puzzle puzzle(pieces,trueMatings);
 	
-	std::vector<VertexMating> Matings;
-	dataLoader.loadVertexMatings(Matings);
-	puzzle.reconstruct(Matings);
+	std::vector<VertexMating> matings;
+	dataLoader.loadVertexMatings(matings);
+	std::vector<Piece> activePieces;
+	puzzle.findPiecesToReconstruct(activePieces, matings);
+	
+	VisualReconstructor reconstructor;
+	reconstructor.init();
+	reconstructor.initRun(activePieces, matings);
+	reconstructor.Run();
+	reconstructor.closeRun();
 	
 
 	//std::vector<Piece> pieces;

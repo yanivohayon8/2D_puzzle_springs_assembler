@@ -11,14 +11,10 @@ class Puzzle
 private:
 	std::vector<Piece> pieces_;
 	std::map<std::string, Piece> id2piece_;
-	DataLoader dataLoader_;
-	std::vector<VertexMating> trueMatings_;
-	Reconstructor* reconstructor_;
-	void initReconstruct(std::vector<VertexMating>& matings);
+	std::vector<VertexMating> groundTruthMatings_;
 	
 public:
-	Puzzle(DataLoader& dataLoader, std::string mode="Visual");
-	void initPuzzle();
-	void reconstruct(std::vector<VertexMating>& matings);
+	Puzzle(std::vector<Piece>& pieces, std::vector<VertexMating> groundTruthMatings);
+	void findPiecesToReconstruct(std::vector<Piece> &oReconstructPieces, std::vector<VertexMating>& matings);
 };
 

@@ -3,6 +3,6 @@
 
 class SilentReconstructor: public Reconstructor
 {
-	void Run();
+	void Run(std::string resultScreenshotPath="");
 };
 

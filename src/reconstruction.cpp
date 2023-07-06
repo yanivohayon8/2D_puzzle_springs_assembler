@@ -1,10 +1,12 @@
 #include "reconstruction.h"
 
 
-Reconstructor::Reconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_)
+Reconstructor::Reconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight)
 {
 	boardWidth_ = boardWidth;
 	boardHeight_ = boardHeight;
+	screenWidth_ = screenWidth;
+	screenHeight_ = screenHeight;
 	screen_ = new SfmlScreen(screenWidth_, screenHeight_, screenWidth_ / boardWidth_, screenHeight_ / boardHeight_);
 }
 
