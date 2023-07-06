@@ -8,7 +8,14 @@ void RouteTests(std::map<std::string, std::string>& param2Value)
 	if (testName == "VisualGroundTruth")
 	{
 		TestReconstructors tester;
-		tester.testVisualGroundTruth(param2Value["puzzleDir"]); //param2Value["puzzleDir"]
+		if (param2Value.count("puzzleDir"))
+		{
+			tester.testVisualGroundTruth(param2Value["puzzleDir"]);
+		}
+		else
+		{
+			tester.testVisualGroundTruth(); //Default Puzzle
+		}
 	}
 
 	if (testName == "VisualTwoReconstructs")
