@@ -10,10 +10,11 @@ int main(int argc, char** argv)
 {
 	//std::string puzzleDirectory = "../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0";
 	//std::string puzzleDirectory = "../data/ofir/RePAIR/group_39";
-	std::string puzzleDirectory; 
-	bool isSimulationAuto = true;
-	parseInput(isSimulationAuto,puzzleDirectory,argc,argv);
-	DataLoader dataLoader(puzzleDirectory);
+	//std::string puzzleDirectory; 
+	//bool isSimulationAuto = true;
+	std::map<std::string, std::string> param2Value;
+	parseInput(param2Value,argc,argv);
+	DataLoader dataLoader(param2Value["puzzleDir"]);
 
 	std::vector<VertexMating> trueMatings;
 	dataLoader.loadVertexMatings(trueMatings, "springs_anchors_correct.csv");
@@ -25,17 +26,17 @@ int main(int argc, char** argv)
 	dataLoader.loadVertexMatings(matings);
 	
 	std::vector<Piece> activePieces;
-	VisualReconstructor vsReconstructor;
+	SilentReconstructor vsReconstructor;
 	vsReconstructor.init();
 	
 	puzzle.findPiecesToReconstruct(activePieces, matings);
 	vsReconstructor.initRun(activePieces, matings);
-	vsReconstructor.Run();
+	vsReconstructor.Run("../data/test1.png");
 	vsReconstructor.closeRun();
 
 	puzzle.findPiecesToReconstruct(activePieces, trueMatings);
 	vsReconstructor.initRun(activePieces, trueMatings);
-	vsReconstructor.Run();
+	vsReconstructor.Run("../data/test2.png");
 	vsReconstructor.closeRun();
 
 	/*SilentReconstructor silentReconstructor;
