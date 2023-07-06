@@ -7,25 +7,25 @@ void parseInput(std::map<std::string, std::string> &oParam2Value, int argc, char
 	{
 		std::string token = argv[i];
 
-		if (token=="--test")
+		if (token.rfind("--",0)==0)
 		{
-			oParam2Value.insert({ "test",argv[i + 1] });
+			oParam2Value.insert({ token.substr(2,token.size()),argv[i + 1]});
+			++i;
 			continue;
 		}
 
-		if (token=="--puzzleDir")
-		{
-			//oPuzzleDirectory = argv[i + 1];			
-			oParam2Value.insert({ "puzzleDir",argv[i + 1] });
-			continue;
-		}
+		//if (token=="--test")
+		//{
+		//	oParam2Value.insert({ "test",argv[i + 1] });
+		//	continue;
+		//}
 
-		/*if (token == "--ManualSimulation")
-		{
-			oIsSimulationAuto = false;
-			param2value.insert({ "ManualSimulation","false" });
-			continue;
-		}*/
+		//if (token=="--puzzleDir")
+		//{
+		//	//oPuzzleDirectory = argv[i + 1];			
+		//	oParam2Value.insert({ "puzzleDir",argv[i + 1] });
+		//	continue;
+		//}
 
 	}
 }
