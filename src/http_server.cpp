@@ -10,7 +10,7 @@ HTTPServer::HTTPServer(int port)
 void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res)
 {
     std::string puzzleDirectory="";
-    std::vector<std::string> requestedParams = { "dataset","puzzle" };
+    std::vector<std::string> requestedParams = { "dataset" };
 
     for (auto& param : requestedParams)
     {
@@ -24,49 +24,26 @@ void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Respo
 
     if (req.get_param_value("dataset") == "ConvexDrawing")
     {
-        std::string reqPuzzleName = req.get_param_value("puzzle");
-        std::string delimiter = "-";
-
-        size_t pos = 0;
-        size_t lastPos = 0;
         std::string directory;
         std::string puzzleNum;
         std::string noise;
+        std::vector<std::string> requestedConvexDrawParams = { "image","num","noise"};
 
-        try
+        for (auto& param : requestedConvexDrawParams)
         {
-            std::vector<std::string> result;
-            std::string delimiter = "-";
-            std::size_t pos = 0;
-            std::size_t found;
-
-            while ((found = reqPuzzleName.find(delimiter, pos)) != std::string::npos) {
-                std::string token = reqPuzzleName.substr(pos, found - pos);
-                result.push_back(token);
-                pos = found + delimiter.length();
+            if (!req.has_param(param))
+            {
+                res.status = 400;
+                res.set_content("Please provide the " + param + " parameter", "text/plain");
+                return;
             }
-
-            std::string lastToken = reqPuzzleName.substr(pos);
-            result.push_back(lastToken);
-
-            if (result.size() != 3) {
-                throw std::runtime_error("Invalid input: Three dashes are required.");
-            }
-
-            directory = result[0];
-            puzzleNum = result[1];
-            noise = result[2];
-        }
-        catch (const std::exception& e) {
-            res.status = 400;
-            std::string mess = e.what();
-            res.set_content("For the puzzle parameter: " + mess, "text/plain");
-            return;
         }
 
-        //std::string puzzleDirectory = "../data/ofir/" + directory + "/" + puzzleNum + "/" + noise;
-        //std::cout << "Recieved simulation for puzzle in " << puzzleDirectory << std::endl;
-        puzzleDirectory = "../data/ofir/" + directory + "/" + puzzleNum + "/" + noise;
+        directory = req.get_param_value("image");
+        puzzleNum = req.get_param_value("num");
+        noise = req.get_param_value("noise");
+       
+        puzzleDirectory = "../data/ofir/" + directory + "/Puzzle" + puzzleNum + "/" + noise;
     }
 
     if (puzzleDirectory=="")
