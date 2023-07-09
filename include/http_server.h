@@ -2,10 +2,11 @@
 #define HTTP_SERVER_H
 //#ifndef VikaHTTPServer
 //#define VikaHTTPServer
-
+#include <string>
 
 class HTTPServer {
 private:
+    std::string versionPrefix_ = "/v0";
     int port_=8888;
     //httplib::Server server_;
 public:
