@@ -3,4 +3,4 @@ eigen-3.4.0/
 build/
 data/*
 !data/example/* 
-cpp-httplib/
+include/cpp-httplib/

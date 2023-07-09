@@ -6,6 +6,8 @@
 #include <Puzzle.h>
 #include <reconstruction.h>
 #include <TestHandler.h>
+//#include "my_http_server.h"
+#include "http_server.h"
 
 int main(int argc, char** argv)
 {
@@ -15,10 +17,23 @@ int main(int argc, char** argv)
 	std::map<std::string, std::string> param2Value;
 	parseInput(param2Value,argc,argv);
 
-	if (param2Value.count("test")>0)
+	if (param2Value.count("test") > 0)
 	{
+		//--test VisualTwoReconstructs --puzzleDir "../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0"
+		//--test VisualGroundTruth
 		RouteTests(param2Value);
+	} else {
+		if (param2Value.count("script") > 0)
+		{
+			if (param2Value["script"] == "http_server")
+			{
+				HTTPServer httpServer;
+				httpServer.run();
+			}
+		}
 	}
+
+
 
 	/*DataLoader dataLoader(param2Value["puzzleDir"]);
 
