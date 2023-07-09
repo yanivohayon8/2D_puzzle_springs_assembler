@@ -1,13 +1,13 @@
+#include "http_server.h"
 #include <DataLoader.h>
 #include <Piece.h>
-#include <World.h>
+////#include <World.h>
 #include <VertexMating.h>
 #include <ScriptInputParser.h>
 #include <Puzzle.h>
 #include <reconstruction.h>
 #include <TestHandler.h>
-//#include "my_http_server.h"
-#include "http_server.h"
+#include <cpp-httplib/httplib.h>
 
 int main(int argc, char** argv)
 {
@@ -31,9 +31,9 @@ int main(int argc, char** argv)
 			}
 		}*/
 
-		VisualReconstructor vsReconstructor;
+		/*VisualReconstructor vsReconstructor;
 		vsReconstructor.init();
-		Puzzle puzzle();
+		Puzzle puzzle();*/
 
 		int i = 0;
 		HTTPServer httpServer;
@@ -93,3 +93,4 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+

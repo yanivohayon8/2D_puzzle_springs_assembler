@@ -21,6 +21,8 @@ public:
 	void loadVertexMatings(std::vector<VertexMating>& olstMatings,std::string fileName="springs_anchors.csv");//, const std::vector<Piece>& pieces
 	void loadExtraInfo(std::vector<Piece>& olstPiece);
 
+	void setPuzzleDirectory(std::string path);
+
 private:
 	void loadCoordinates_(std::string fileName, bool isOfir = true);
 	std::string getImagePath(std::string pieceId);

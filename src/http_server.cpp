@@ -1,14 +1,15 @@
 #include "http_server.h"
-#include "cpp-httplib/httplib.h"
-#include "Puzzle.h"
+
+//#include "Puzzle.h"
 
 HTTPServer::HTTPServer(int port)
     : port_(port)
 {
 }
 
-void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string puzzleDirectory)
+void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res)
 {
+    std::string puzzleDirectory="";
     std::vector<std::string> requestedParams = { "dataset","puzzle" };
 
     for (auto& param : requestedParams)
@@ -68,10 +69,22 @@ void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, st
         puzzleDirectory = "../data/ofir/" + directory + "/" + puzzleNum + "/" + noise;
     }
 
+    if (puzzleDirectory=="")
+    {
+        res.status = 400;
+        std::string mess = "Could not find puzzle " + req.get_param_value("puzzle") + 
+                            " under dataset" + req.get_param_value("dataset");
+        res.set_content(mess, "text/plain");
+    }
+
     std::cout << "Recieved simulation for puzzle in " << puzzleDirectory << std::endl;
 
+    dataLoader_.setPuzzleDirectory(puzzleDirectory);
+    dataLoader_.loadVertexMatings(*puzzle_.getGroundTruthMatings(), "springs_anchors_correct.csv");
+    dataLoader_.loadPieces(*puzzle_.getPieces());
+
     res.status = 200;
-    res.set_content("<simulation id>", "text/plain");
+    res.set_content("Puzzle Loaded", "text/plain");
 }
 
 
@@ -92,11 +105,14 @@ void HTTPServer::run(int &i)
 
     int j = 10;
     std::string puzzleDir;
-    server_.Post(versionPrefix_+"/simulations", [&j,&puzzleDir](const httplib::Request& req, httplib::Response& res) {
+    /*server_.Post(versionPrefix_+"/simulations", [&j,&puzzleDir](const httplib::Request& req, httplib::Response& res) {
 
         std::cout << j++ << std::endl;
-        //handlePuzzleLoading(req, res, puzzleDir);
-        //stam();
+        handlePuzzleLoading(req, res, puzzleDir);
+    });*/
+
+    server_.Post(versionPrefix_ + "/simulations", [&](const httplib::Request & req, httplib::Response & res) {
+        handlePuzzleLoading(req, res);
     });
 
     std::cout << "HTTP server is listening on port " << port_ << std::endl;

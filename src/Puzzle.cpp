@@ -15,6 +15,15 @@ Puzzle::Puzzle(std::vector<Piece> &pieces, std::vector<VertexMating> groundTruth
 	}
 }
 
+std::vector<VertexMating>* Puzzle::getGroundTruthMatings()
+{
+	return &groundTruthMatings_;
+}
+
+std::vector<Piece>* Puzzle::getPieces()
+{
+	return &pieces_;
+}
 
 void Puzzle::findPiecesToReconstruct(std::vector<Piece> &oReconstructPieces,std::vector<VertexMating>& matings)
 {

@@ -18,6 +18,11 @@ DataLoader::DataLoader(std::string puzzleDirectoryPath)
     puzzleDirectoryPath_ = puzzleDirectoryPath;
 }
 
+void DataLoader::setPuzzleDirectory(std::string path) 
+{
+    puzzleDirectoryPath_ = path;
+}
+
 void flipAndCenterPolygon(Eigen::MatrixXd& coords)
 {
     // Compute center of mass
