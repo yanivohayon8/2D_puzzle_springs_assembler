@@ -1,5 +1,9 @@
 #include "Puzzle.h"
 
+Puzzle::Puzzle()
+{
+}
+
 Puzzle::Puzzle(std::vector<Piece> &pieces, std::vector<VertexMating> groundTruthMatings)
 {
 	pieces_ = pieces;

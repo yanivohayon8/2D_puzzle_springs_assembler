@@ -14,6 +14,7 @@ private:
 	std::vector<VertexMating> groundTruthMatings_;
 	
 public:
+	Puzzle();
 	Puzzle(std::vector<Piece>& pieces, std::vector<VertexMating> groundTruthMatings);
 	void findPiecesToReconstruct(std::vector<Piece> &oReconstructPieces, std::vector<VertexMating>& matings);
 };

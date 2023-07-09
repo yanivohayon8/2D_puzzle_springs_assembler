@@ -23,14 +23,22 @@ int main(int argc, char** argv)
 		//--test VisualGroundTruth
 		RouteTests(param2Value);
 	} else {
-		if (param2Value.count("script") > 0)
+		/*if (param2Value.count("script") > 0)
 		{
 			if (param2Value["script"] == "http_server")
 			{
-				HTTPServer httpServer;
-				httpServer.run();
+		
 			}
-		}
+		}*/
+
+		VisualReconstructor vsReconstructor;
+		vsReconstructor.init();
+		Puzzle puzzle();
+
+		int i = 0;
+		HTTPServer httpServer;
+		httpServer.run(i);
+		std::cout << i << std::endl;
 	}
 
 
@@ -43,13 +51,12 @@ int main(int argc, char** argv)
 	dataLoader.loadPieces(pieces);
 	Puzzle puzzle(pieces,trueMatings);
 	
-	std::vector<VertexMating> matings;
-	dataLoader.loadVertexMatings(matings);
-	
-	std::vector<Piece> activePieces;
 	VisualReconstructor vsReconstructor;
 	vsReconstructor.init();
 	
+	std::vector<VertexMating> matings;
+	dataLoader.loadVertexMatings(matings);
+	std::vector<Piece> activePieces;
 	puzzle.findPiecesToReconstruct(activePieces, matings);
 	vsReconstructor.initRun(activePieces, matings);
 	vsReconstructor.Run("../data/test1.png");

@@ -1,17 +1,17 @@
 #ifndef HTTP_SERVER_H
 #define HTTP_SERVER_H
-//#ifndef VikaHTTPServer
-//#define VikaHTTPServer
 #include <string>
 
 class HTTPServer {
 private:
     std::string versionPrefix_ = "/v0";
-    int port_=8888;
+    /*void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string puzzleDirectory);
+    Puzzle puzzle_;*/
     //httplib::Server server_;
 public:
+    int port_=8888;
     HTTPServer(int port = 8888);
-    void run();
+    void run(int& i);
 };
 
 #endif #HTTP_SERVER_H
