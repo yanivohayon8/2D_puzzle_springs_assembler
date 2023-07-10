@@ -24,7 +24,7 @@ private:
 public:
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> activePieces_;
-	std::vector<VertexMating> activeMatings_;
+	std::vector<VertexMating*> activeMatings_;
 	std::vector< b2DistanceJoint*> joints_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	float boardHeight_;//20; 
@@ -40,7 +40,7 @@ public:
 
 	Reconstructor(float boardWidth = 10,float boardHeight=10, int screenWidth_ = 1380, int screenHeight_ = 1380);
 	void init();
-	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating>& activeMatings, int positionSeed = 0, int positionPadding = 2);
+	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, int positionSeed = 0, int positionPadding = 2);
 	virtual void Run(std::string resultScreenshotPath = "")=0;
 	void closeRun(); // delete the matings and pieces...
 };

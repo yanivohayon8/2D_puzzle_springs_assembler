@@ -13,9 +13,14 @@ DataLoader::DataLoader()
 
 }
 
-DataLoader::DataLoader(std::string puzzleDirectoryPath)
+DataLoader::DataLoader(std::string puzzleDirectoryPath) : puzzleDirectoryPath_(puzzleDirectoryPath)
 {
-    puzzleDirectoryPath_ = puzzleDirectoryPath;
+    //puzzleDirectoryPath_ = puzzleDirectoryPath;
+}
+
+DataLoader::~DataLoader() 
+{
+
 }
 
 void DataLoader::setPuzzleDirectory(std::string path) 
@@ -129,7 +134,7 @@ void DataLoader::loadCoordinates_(std::string fileName, bool isOfir )
 
 }
 
-void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings, std::string fileName)
+void DataLoader::loadVertexMatings(std::vector<VertexMating*>& olstMatings, std::string fileName)
 {
     /*
         Loads the matings between the edges. The csv headers are piece1,vertex1,piece2,vertex2. All of them are int.
@@ -161,7 +166,7 @@ void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings, std::
         secondPieceVertex = std::stoi(secondPieceVertexStr);
 
         VertexMating mating(firstPieceId, firstPieceVertex, secondPieceId, secondPieceVertex);
-        olstMatings.push_back(mating);
+        olstMatings.push_back(&mating);
     }
 }
 

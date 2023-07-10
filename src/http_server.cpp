@@ -55,8 +55,13 @@ void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Respo
     std::cout << "Recieved simulation for puzzle in " << puzzleDirectory << std::endl;
 
     dataLoader_.setPuzzleDirectory(puzzleDirectory);
-    dataLoader_.loadVertexMatings(*puzzle_.getGroundTruthMatings(), "springs_anchors_correct.csv");
-    dataLoader_.loadPieces(*puzzle_.getPieces());
+
+    std::vector<Piece> tmpPieces;
+    std::vector<VertexMating*> tmpMatings;
+    dataLoader_.loadVertexMatings(tmpMatings, "springs_anchors_correct.csv");
+    dataLoader_.loadPieces(tmpPieces);    
+    puzzle_.setGroundTruthMatings(tmpMatings);
+    puzzle_.setPieces(tmpPieces);
 
     res.status = 200;
     res.set_content("Puzzle Loaded", "text/plain");
@@ -64,14 +69,17 @@ void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Respo
 
 void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res,std::string requestBody)//, Json::Value& bodyRequest
 {
-
+    std::cout << "Loading Matings" << std::endl;
     
-    std::vector<VertexMating*> matings;
+    activeMatings_.clear();
+    activePieces_.clear();
     size_t pos = 0;
+    std::string recordsDelimiter = "\r\n"; // ";"
+    requestBody += recordsDelimiter;// to include the last record if there is no delimiter there
 
     while (pos < requestBody.length())
     {
-        size_t semicolonm_pos = requestBody.find(";", pos);
+        size_t semicolonm_pos = requestBody.find(recordsDelimiter, pos);
 
         if (semicolonm_pos == std::string::npos)
             break;
@@ -92,13 +100,18 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
         }
 
         val = record.substr(prev_colum_pos, record.length() - prev_colum_pos);
+        matingValues.push_back(val);
         //std::cout << val << std::endl;
 
-        VertexMating* mating = new VertexMating(matingValues[0], std::stoi(matingValues[1]),
-            matingValues[2], std::stoi(val));
+        if (matingValues.size() == 4)
+        {
+            VertexMating* mating = new VertexMating(matingValues[0], std::stoi(matingValues[1]),
+                matingValues[2], std::stoi(matingValues[3]));
 
-        matings.push_back(mating);
-        pos += record.length() + 1;
+            activeMatings_.push_back(mating);
+        }
+
+        pos += record.length() + recordsDelimiter.length();
     }
 
     //puzzle_.findPiecesToReconstruct()
@@ -106,6 +119,22 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
        silentReconstructor.initRun(activePieces, matings);
        silentReconstructor.Run("../data/deleteme.png");
        silentReconstructor.closeRun()*/
+    
+    //puzzle_.findPiecesToReconstruct(pieces, matings);
+    //silentReconstructor_.initRun(pieces, matings);
+
+    puzzle_.findPiecesToReconstruct(activePieces_, activeMatings_);
+    std::cout << "Running Reconstructor" << std::endl;
+    silentReconstructor_.initRun(activePieces_, activeMatings_);
+    silentReconstructor_.Run(dataLoader_.puzzleDirectoryPath_ + "/assembly.png");
+    silentReconstructor_.closeRun();
+
+    for (auto& mating: activeMatings_)
+    {
+        delete &mating;
+    }
+
+    activeMatings_.clear();
 
     res.status = 200;
     res.set_content("Vika", "text/plain");
@@ -115,7 +144,6 @@ void HTTPServer::run()
 {
     silentReconstructor_.init();
 
-    httplib::Server server_;
     server_.Get(versionPrefix_+"/sanity", [&](const httplib::Request& req, httplib::Response& res) {
 
         std::cout << "Received request with params:" << std::endl;
@@ -142,7 +170,21 @@ void HTTPServer::run()
             return true;
         });
         
-        handleReconstruct(req, res, strRequestBody);
+        try
+        {
+
+            handleReconstruct(req, res, strRequestBody);
+        }
+        catch (const std::exception& ex)
+        {
+            std::string mess = ex.what();
+            std::cout << "Error: " << mess << std::endl;
+            throw ex;
+        }
+    });
+
+    server_.Delete(versionPrefix_ + "/simulations", [&](const httplib::Request& req, httplib::Response& res) {
+
     });
 
     std::cout << "HTTP server is listening on port " << port_ << std::endl;

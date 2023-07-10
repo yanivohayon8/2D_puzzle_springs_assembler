@@ -5,7 +5,7 @@ TestReconstructors::TestReconstructors(){}
 void TestReconstructors::testVisualGroundTruth(std::string puzzleDirectory)
 {
 	DataLoader dataLoader(puzzleDirectory);
-	std::vector<VertexMating> trueMatings;
+	std::vector<VertexMating*> trueMatings;
 	dataLoader.loadVertexMatings(trueMatings, "springs_anchors_correct.csv"); //"springs_anchors_correct.csv");
 	std::vector<Piece> pieces;
 	dataLoader.loadPieces(pieces);
@@ -21,7 +21,7 @@ void TestReconstructors::testVisualGroundTruth(std::string puzzleDirectory)
 void TestReconstructors::testVisualTwoReconstructs(std::string puzzleDirectory)
 {
 	DataLoader dataLoader(puzzleDirectory);
-	std::vector<VertexMating> trueMatings;
+	std::vector<VertexMating*> trueMatings;
 	dataLoader.loadVertexMatings(trueMatings, "springs_anchors_correct.csv");
 	std::vector<Piece> pieces;
 	dataLoader.loadPieces(pieces);
@@ -35,7 +35,7 @@ void TestReconstructors::testVisualTwoReconstructs(std::string puzzleDirectory)
 	vsReconstructor.closeRun();
 
 	// Second run with missing springs
-	std::vector<VertexMating> matings;
+	std::vector<VertexMating*> matings;
 	std::vector<Piece> filteredPieces;
 
 	/// Hard coded the springs_anchors_missing_springs.csv file
@@ -54,7 +54,7 @@ void TestReconstructors::testVisualTwoReconstructs(std::string puzzleDirectory)
 void TestReconstructors::testSilentGroundTruth(std::string puzzleDirectory)
 {
 	DataLoader dataLoader(puzzleDirectory);
-	std::vector<VertexMating> trueMatings;
+	std::vector<VertexMating*> trueMatings;
 	dataLoader.loadVertexMatings(trueMatings, "springs_anchors_correct.csv");
 	std::vector<Piece> pieces;
 	dataLoader.loadPieces(pieces);
