@@ -14,3 +14,5 @@ bool VertexMating::operator==(const VertexMating& other) const {
 		secondPieceId_ == other.secondPieceId_ &&
 		secondPieceVertex_ == other.secondPieceVertex_);
 }
+
+VertexMating::~VertexMating(){}

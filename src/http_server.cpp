@@ -1,7 +1,5 @@
 #include "http_server.h"
 
-//#include "Puzzle.h"
-
 HTTPServer::HTTPServer(int port)
     : port_(port)
 {
@@ -64,9 +62,22 @@ void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Respo
     res.set_content("Puzzle Loaded", "text/plain");
 }
 
-
-void HTTPServer::run(int &i)
+void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res)//, Json::Value& bodyRequest
 {
+
+    // TODO: Extract matings from body of the request
+       /*puzzle.findPiecesToReconstruct(activePieces, trueMatings)
+       silentReconstructor.initRun(activePieces, matings);
+       silentReconstructor.Run("../data/deleteme.png");
+       silentReconstructor.closeRun()*/
+    res.status = 200;
+    res.set_content("Vika", "text/plain");
+}
+
+void HTTPServer::run()
+{
+    silentReconstructor_.init();
+
     httplib::Server server_;
     server_.Get(versionPrefix_+"/sanity", [&](const httplib::Request& req, httplib::Response& res) {
 
@@ -80,16 +91,57 @@ void HTTPServer::run(int &i)
         res.set_content("Hello World", "text/plain");
     });
 
-    int j = 10;
-    std::string puzzleDir;
-    /*server_.Post(versionPrefix_+"/simulations", [&j,&puzzleDir](const httplib::Request& req, httplib::Response& res) {
-
-        std::cout << j++ << std::endl;
-        handlePuzzleLoading(req, res, puzzleDir);
-    });*/
-
     server_.Post(versionPrefix_ + "/simulations", [&](const httplib::Request & req, httplib::Response & res) {
         handlePuzzleLoading(req, res);
+    });
+
+    server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
+        // For simplicity of development the scheme is 
+        // firstPieceId,firstPieceVertexIndex,secondPieceId,secondPieceVertexIndex;
+        std::string strRequestBody;
+
+        content_reader([&](const char* data, size_t dataLength) {
+            strRequestBody.append(data, dataLength);
+            return true;
+        });
+        
+        std::vector<VertexMating*> matings;
+        size_t pos = 0;
+
+        while (pos < strRequestBody.length())
+        {
+            size_t semicolonm_pos = strRequestBody.find(";", pos);
+
+            if (semicolonm_pos == std::string::npos)
+                break;
+
+            std::string record = strRequestBody.substr(pos, semicolonm_pos - pos);
+            size_t prev_colum_pos = 0;
+            size_t next_colum_pos = record.find(",");
+            std::vector<std::string> matingValues;
+            std::string val;
+
+            while (next_colum_pos!=std::string::npos)
+            {
+                val = record.substr(prev_colum_pos, next_colum_pos - prev_colum_pos);
+                std::cout << val << std::endl;
+                matingValues.push_back(val);
+                prev_colum_pos = next_colum_pos+1;//+1;
+                next_colum_pos = record.find(",", prev_colum_pos);
+            }
+
+            val = record.substr(prev_colum_pos, record.length() - prev_colum_pos);
+            std::cout << val <<std::endl;
+
+            VertexMating* mating = new VertexMating(matingValues[0], std::stoi(matingValues[1]),
+                                    matingValues[2], std::stoi(val));
+
+            matings.push_back(mating);
+            pos += record.length()+1;
+        }
+
+        res.status = 200;
+        res.set_content("ok", "text/plain");
     });
 
     std::cout << "HTTP server is listening on port " << port_ << std::endl;

@@ -6,7 +6,7 @@ void TestReconstructors::testVisualGroundTruth(std::string puzzleDirectory)
 {
 	DataLoader dataLoader(puzzleDirectory);
 	std::vector<VertexMating> trueMatings;
-	dataLoader.loadVertexMatings(trueMatings, "springs_anchors_correct.csv");
+	dataLoader.loadVertexMatings(trueMatings, "springs_anchors_correct.csv"); //"springs_anchors_correct.csv");
 	std::vector<Piece> pieces;
 	dataLoader.loadPieces(pieces);
 

@@ -35,11 +35,10 @@ int main(int argc, char** argv)
 		vsReconstructor.init();
 		Puzzle puzzle();*/
 
-		int i = 0;
 		HTTPServer httpServer;
-		httpServer.run(i);
-		std::cout << i << std::endl;
+		httpServer.run();
 	}
+
 
 
 

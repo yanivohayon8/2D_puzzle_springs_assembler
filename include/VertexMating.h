@@ -12,5 +12,7 @@ public:
 	VertexMating(std::string firstPieceId, int firstPieceEdge, std::string secondPieceId, int secondPieceEdge);
 
 	bool operator==(const VertexMating& other) const;
+
+	~VertexMating()
 };
 
