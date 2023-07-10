@@ -54,17 +54,19 @@ void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Respo
 
     std::cout << "Recieved simulation for puzzle in " << puzzleDirectory << std::endl;
 
-    dataLoader_.setPuzzleDirectory(puzzleDirectory);
+    if (puzzleDirectory == dataLoader_.puzzleDirectoryPath_)
+    {
+        std::cout << "Puzzle already loaded" << std::endl;
+        return;
+    }
 
+    dataLoader_.setPuzzleDirectory(puzzleDirectory);
     std::vector<Piece> tmpPieces;
     std::vector<VertexMating*> tmpMatings;
     dataLoader_.loadVertexMatings(tmpMatings, "springs_anchors_correct.csv");
     dataLoader_.loadPieces(tmpPieces);    
     puzzle_.setGroundTruthMatings(tmpMatings);
     puzzle_.setPieces(tmpPieces);
-
-    res.status = 200;
-    res.set_content("Puzzle Loaded", "text/plain");
 }
 
 void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res,std::string requestBody)//, Json::Value& bodyRequest
@@ -114,30 +116,21 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
         pos += record.length() + recordsDelimiter.length();
     }
 
-    //puzzle_.findPiecesToReconstruct()
-       /*puzzle.findPiecesToReconstruct(activePieces, trueMatings)
-       silentReconstructor.initRun(activePieces, matings);
-       silentReconstructor.Run("../data/deleteme.png");
-       silentReconstructor.closeRun()*/
-    
-    //puzzle_.findPiecesToReconstruct(pieces, matings);
-    //silentReconstructor_.initRun(pieces, matings);
-
     puzzle_.findPiecesToReconstruct(activePieces_, activeMatings_);
     std::cout << "Running Reconstructor" << std::endl;
     silentReconstructor_.initRun(activePieces_, activeMatings_);
     silentReconstructor_.Run(dataLoader_.puzzleDirectoryPath_ + "/assembly.png");
     silentReconstructor_.closeRun();
 
-    for (auto& mating: activeMatings_)
+    /*for (auto& mating: activeMatings_)
     {
         delete &mating;
-    }
+    }*/
 
     activeMatings_.clear();
 
     res.status = 200;
-    res.set_content("Vika", "text/plain");
+    res.set_content("Succeed", "text/plain");
 }
 
 void HTTPServer::run()
@@ -156,11 +149,9 @@ void HTTPServer::run()
         res.set_content("Hello World", "text/plain");
     });
 
-    server_.Post(versionPrefix_ + "/simulations", [&](const httplib::Request & req, httplib::Response & res) {
-        handlePuzzleLoading(req, res);
-    });
 
     server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
+        
         // For simplicity of development the scheme is 
         // firstPieceId,firstPieceVertexIndex,secondPieceId,secondPieceVertexIndex;
         std::string strRequestBody;
@@ -172,7 +163,7 @@ void HTTPServer::run()
         
         try
         {
-
+            handlePuzzleLoading(req, res);
             handleReconstruct(req, res, strRequestBody);
         }
         catch (const std::exception& ex)
