@@ -28,6 +28,7 @@ public:
 	std::string imagePath_;
 	b2AABB aabb_;
 	BoostPolygon boostPolygonGlobalCoords_;
+	float boostPolygonArea_;
 
 	Piece(std::string pieceId,Eigen::MatrixX2d coordinates, std::string imagePath);
 

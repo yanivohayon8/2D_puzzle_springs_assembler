@@ -14,6 +14,7 @@ Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imag
 	}
 
 	imagePath_ = imagePath;
+	boostPolygonArea_ = -1;
 }
 
 void Piece::DestroyBody()
@@ -197,7 +198,11 @@ float Piece::computeOverlappingArea(const BoostPolygon& otherPolyon)
 
 float Piece::computeArea()
 {
-	return bg::area(boostPolygonGlobalCoords_);
+	if (boostPolygonArea_ < 0)
+	{
+		boostPolygonArea_ = bg::area(boostPolygonGlobalCoords_);
+	}
+	return boostPolygonArea_;
 }
 
 void Piece::setCollideOff()
