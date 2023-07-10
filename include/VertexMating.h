@@ -13,6 +13,6 @@ public:
 
 	bool operator==(const VertexMating& other) const;
 
-	~VertexMating()
+	~VertexMating();
 };
 

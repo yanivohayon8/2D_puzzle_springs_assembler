@@ -62,14 +62,51 @@ void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Respo
     res.set_content("Puzzle Loaded", "text/plain");
 }
 
-void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res)//, Json::Value& bodyRequest
+void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res,std::string requestBody)//, Json::Value& bodyRequest
 {
 
-    // TODO: Extract matings from body of the request
+    
+    std::vector<VertexMating*> matings;
+    size_t pos = 0;
+
+    while (pos < requestBody.length())
+    {
+        size_t semicolonm_pos = requestBody.find(";", pos);
+
+        if (semicolonm_pos == std::string::npos)
+            break;
+
+        std::string record = requestBody.substr(pos, semicolonm_pos - pos);
+        size_t prev_colum_pos = 0;
+        size_t next_colum_pos = record.find(",");
+        std::vector<std::string> matingValues;
+        std::string val;
+
+        while (next_colum_pos != std::string::npos)
+        {
+            val = record.substr(prev_colum_pos, next_colum_pos - prev_colum_pos);
+            //std::cout << val << std::endl;
+            matingValues.push_back(val);
+            prev_colum_pos = next_colum_pos + 1;//+1;
+            next_colum_pos = record.find(",", prev_colum_pos);
+        }
+
+        val = record.substr(prev_colum_pos, record.length() - prev_colum_pos);
+        //std::cout << val << std::endl;
+
+        VertexMating* mating = new VertexMating(matingValues[0], std::stoi(matingValues[1]),
+            matingValues[2], std::stoi(val));
+
+        matings.push_back(mating);
+        pos += record.length() + 1;
+    }
+
+    //puzzle_.findPiecesToReconstruct()
        /*puzzle.findPiecesToReconstruct(activePieces, trueMatings)
        silentReconstructor.initRun(activePieces, matings);
        silentReconstructor.Run("../data/deleteme.png");
        silentReconstructor.closeRun()*/
+
     res.status = 200;
     res.set_content("Vika", "text/plain");
 }
@@ -105,43 +142,7 @@ void HTTPServer::run()
             return true;
         });
         
-        std::vector<VertexMating*> matings;
-        size_t pos = 0;
-
-        while (pos < strRequestBody.length())
-        {
-            size_t semicolonm_pos = strRequestBody.find(";", pos);
-
-            if (semicolonm_pos == std::string::npos)
-                break;
-
-            std::string record = strRequestBody.substr(pos, semicolonm_pos - pos);
-            size_t prev_colum_pos = 0;
-            size_t next_colum_pos = record.find(",");
-            std::vector<std::string> matingValues;
-            std::string val;
-
-            while (next_colum_pos!=std::string::npos)
-            {
-                val = record.substr(prev_colum_pos, next_colum_pos - prev_colum_pos);
-                std::cout << val << std::endl;
-                matingValues.push_back(val);
-                prev_colum_pos = next_colum_pos+1;//+1;
-                next_colum_pos = record.find(",", prev_colum_pos);
-            }
-
-            val = record.substr(prev_colum_pos, record.length() - prev_colum_pos);
-            std::cout << val <<std::endl;
-
-            VertexMating* mating = new VertexMating(matingValues[0], std::stoi(matingValues[1]),
-                                    matingValues[2], std::stoi(val));
-
-            matings.push_back(mating);
-            pos += record.length()+1;
-        }
-
-        res.status = 200;
-        res.set_content("ok", "text/plain");
+        handleReconstruct(req, res, strRequestBody);
     });
 
     std::cout << "HTTP server is listening on port " << port_ << std::endl;

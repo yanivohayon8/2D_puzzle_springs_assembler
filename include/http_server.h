@@ -17,7 +17,7 @@ private:
     SilentReconstructor silentReconstructor_;
     
     void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res);
-    void handleReconstruct(const httplib::Request& req, httplib::Response& res);//, Json::Value& bodyRequest
+    void handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody);//, Json::Value& bodyRequest
     //httplib::Server server_;
 public:
     int port_=8888;

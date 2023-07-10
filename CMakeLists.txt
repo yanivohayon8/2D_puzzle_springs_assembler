@@ -43,10 +43,19 @@ endif()
 #add_library(httplib INTERFACE)
 #target_include_directories(httplib INTERFACE ${HTTPLIB_ROOT})
 
+#set(JSONCPP_DIR "C:/src/vcpkg/installed/x86-windows/share/jsoncpp")
+#find_library(JSONCPP NAMES jsoncpp PATHS "C:/src/vcpkg/installed/x86-windows/lib")
+##target_include_directories(${PROJECT_NAME} PRIVATE "C:/src/vcpkg/installed/x86-windows/include")
+#include_directories("C:/src/vcpkg/installed/x86-windows/include")
+
+#set(JSONCPP_DIR "C:/src/vcpkg/installed/x86-windows/share/jsoncpp")
+#add_library(JSONCPP SHARED)
+
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     box2d 
     Eigen3::Eigen
     ${SFML_GRAPHICS_LIBRARY} ${SFML_WINDOW_LIBRARY} ${SFML_NETWORK_LIBRARY} ${SFML_SYSTEM_LIBRARY} ${SFML_AUDIO_LIBRARY}
     ${Boost_LIBRARIES} 
-) 
+)
+
