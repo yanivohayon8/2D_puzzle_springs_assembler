@@ -130,7 +130,9 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     activeMatings_.clear();
 
     res.status = 200;
-    res.set_content("Succeed", "text/plain");
+    std::string output;
+    output += "{ \"overlappingAreaPercentage\": " + std::to_string(silentReconstructor_.getPiecesOverlappingArea()) + "}\r\n";
+    res.set_content(output, "application/json");
 }
 
 void HTTPServer::run()

@@ -238,6 +238,8 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 	{
 		putMatingSprings(*mating);
 	}
+
+	piecesOverlappingArea_ = -1;
 }
 
 void Reconstructor::closeRun()
@@ -263,3 +265,30 @@ void Reconstructor::closeRun()
 	activeMatings_.clear();
 }
 
+float Reconstructor::computePiecesOverlapAreaPercentage()
+{
+	float totalArea = 0;
+
+	for (auto& piece : activePieces_)
+	{
+		piece.initBoostPolygon();
+		totalArea += piece.computeArea();
+	}
+
+	float overlappingArea = 0;
+
+	for (int i = 0; i < activePieces_.size(); i++)
+	{
+		for (int j = i + 1; j < activePieces_.size(); j++)
+		{
+			overlappingArea += activePieces_[i].computeOverlappingArea(activePieces_[j].boostPolygonGlobalCoords_);
+		}
+	}
+
+	return overlappingArea / totalArea * 100;
+}
+
+float Reconstructor::getPiecesOverlappingArea()
+{
+	return piecesOverlappingArea_;
+}

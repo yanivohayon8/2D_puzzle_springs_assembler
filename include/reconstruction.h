@@ -21,6 +21,9 @@ private:
 		float frequencyHertz = 1.0f, float dampingRatio = 0.01);
 	void putMatingSprings(VertexMating& mating);
 
+protected:
+	float computePiecesOverlapAreaPercentage();
+
 public:
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> activePieces_;
@@ -38,10 +41,13 @@ public:
 	int velocityIterations_ = 6;
 	int positionIterations_ = 2;
 
+	float piecesOverlappingArea_ = -1;
+
 	Reconstructor(float boardWidth = 10,float boardHeight=10, int screenWidth_ = 1380, int screenHeight_ = 1380);
 	void init();
 	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, int positionSeed = 0, int positionPadding = 2);
 	virtual void Run(std::string resultScreenshotPath = "")=0;
 	void closeRun(); // delete the matings and pieces...
+	float getPiecesOverlappingArea();
 };
 

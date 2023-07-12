@@ -59,10 +59,10 @@ void TestReconstructors::testSilentGroundTruth(std::string puzzleDirectory)
 	std::vector<Piece> pieces;
 	dataLoader.loadPieces(pieces);
 
-	SilentReconstructor vsReconstructor;
-	vsReconstructor.init();
+	SilentReconstructor silentReconstructor;
+	silentReconstructor.init();
 
-	vsReconstructor.initRun(pieces, trueMatings);
-	vsReconstructor.Run(puzzleDirectory+"/silent_assembly.png");
-	vsReconstructor.closeRun();
+	silentReconstructor.initRun(pieces, trueMatings);
+	silentReconstructor.Run(puzzleDirectory+"/silent_assembly.png");
+	silentReconstructor.closeRun();
 }
