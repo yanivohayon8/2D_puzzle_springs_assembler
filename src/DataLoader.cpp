@@ -13,9 +13,9 @@ DataLoader::DataLoader()
 
 }
 
-DataLoader::DataLoader(std::string puzzleDirectoryPath) : puzzleDirectoryPath_(puzzleDirectoryPath)
+DataLoader::DataLoader(std::string puzzleDirectoryPath) //: puzzleDirectoryPath_(puzzleDirectoryPath)
 {
-    //puzzleDirectoryPath_ = puzzleDirectoryPath;
+    puzzleDirectoryPath_ = puzzleDirectoryPath;
 }
 
 DataLoader::~DataLoader() 
