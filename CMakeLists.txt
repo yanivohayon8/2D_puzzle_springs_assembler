@@ -51,7 +51,6 @@ endif()
 #set(JSONCPP_DIR "C:/src/vcpkg/installed/x86-windows/share/jsoncpp")
 #add_library(JSONCPP SHARED)
 
-
 target_link_libraries(${PROJECT_NAME} PRIVATE
     box2d 
     Eigen3::Eigen

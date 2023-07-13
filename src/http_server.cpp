@@ -129,10 +129,30 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
 
     activeMatings_.clear();
 
+    nlohmann::json output;
+    output["scaleUsedOnImages"] = SCALE_IMAGE_COORDINATES_TO_BOX2D;
+    nlohmann::json piecesBeforeCollision = nlohmann::json::array();
+    auto piece2CoordBeforeCollision = silentReconstructor_.getPiece2CoordsBeforeEnableCollision();
+
+    for (auto& pieceIt = piece2CoordBeforeCollision->begin(); pieceIt != piece2CoordBeforeCollision->end(); ++pieceIt)
+    {
+        nlohmann::json pieceJson;
+        pieceJson["pieceId"] = pieceIt->first;
+        nlohmann::json coords = nlohmann::json::array();
+        
+        for (auto& coord: piece2CoordBeforeCollision->at(pieceIt->first))
+        {
+            coords.push_back(nlohmann::json::array({ coord.x,coord.y }));
+        }
+
+        pieceJson["coordinates"] = coords;
+        piecesBeforeCollision.push_back(pieceJson);
+    }
+
+    output["piecesBeforeEnableCollision"] = piecesBeforeCollision;
+
+    res.set_content(output.dump(), "application/json");
     res.status = 200;
-    std::string output;
-    output += "{ \"overlappingAreaPercentage\": " + std::to_string(silentReconstructor_.getPiecesOverlappingArea()) + "}\r\n";
-    res.set_content(output, "application/json");
 }
 
 void HTTPServer::run()
@@ -151,6 +171,30 @@ void HTTPServer::run()
         res.set_content("Hello World", "text/plain");
     });
 
+    server_.Get(versionPrefix_ + "/json_test", [&](const httplib::Request& req, httplib::Response& res) {
+
+        std::cout << "Received request with params:" << std::endl;
+        for (const auto& param : req.params) {
+            std::cout << param.first << ": " << param.second << std::endl;
+        }
+
+        // Echo the body of the request
+        res.status = 200;
+        nlohmann::json json;
+
+        json["scaleUsed"] = 0.01;
+        nlohmann::json myarray = nlohmann::json::array();
+
+        std::vector<float> floatValues = { 1,2,3 };
+        for (auto& val: floatValues)
+        {
+            myarray.push_back(nlohmann::json::array({ val,val }));
+        }
+
+        json["array"] = myarray;
+
+        res.set_content(json.dump(), "application/json");
+    });
 
     server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
         
