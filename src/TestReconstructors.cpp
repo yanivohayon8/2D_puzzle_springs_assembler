@@ -60,12 +60,14 @@ void TestReconstructors::testSilentGroundTruth(std::string puzzleDirectory)
 	std::vector<VertexMating*> trueMatings;
 	dataLoader.loadVertexMatings(trueMatings, "springs_anchors_correct.csv");
 	std::vector<Piece> pieces;
-	dataLoader.loadPieces(pieces);
+	//dataLoader.loadPieces(pieces);
+	dataLoader.loadPieces(debugActivePieces_);
 
 	SilentReconstructor silentReconstructor;
 	silentReconstructor.init();
 
-	silentReconstructor.initRun(pieces, trueMatings);
+	//silentReconstructor.initRun(pieces, trueMatings);
+	silentReconstructor.initRun(debugActivePieces_, trueMatings);
 	silentReconstructor.Run(puzzleDirectory+"/silent_assembly.png");
 	silentReconstructor.closeRun();
 }

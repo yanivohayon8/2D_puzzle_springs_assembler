@@ -7,6 +7,9 @@
 
 class TestReconstructors
 {
+private:
+	std::vector<Piece> debugActivePieces_;
+
 public:
 	TestReconstructors();
 	void testVisualGroundTruth(std::string puzzleDirectory = "../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0");
