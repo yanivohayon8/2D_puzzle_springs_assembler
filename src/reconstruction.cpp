@@ -196,8 +196,8 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 	// Init Bodies
 	activePieces_ = activePieces;
 	activeMatings_ = activeMatings;
-	Piece* fixedPiece = getMaxMatingsPiece();
-	initStaticBody(*fixedPiece, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+	fixedPiece_ = getMaxMatingsPiece();
+	initStaticBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
 
 	std::vector<b2Vec2> positions;
 	generate2DVectors(positions, activePieces_.size() - 1, boardWidth_, boardHeight_, positionPadding, positionSeed);
@@ -208,7 +208,7 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 
 	for (auto& piece:activePieces_)
 	{
-		if (piece.id_ != fixedPiece->id_)
+		if (piece.id_ != fixedPiece_->id_)
 		{
 			initMovingBody(piece, *initialPosIt);
 			++initialPosIt;
@@ -265,30 +265,116 @@ void Reconstructor::closeRun()
 	activeMatings_.clear();
 }
 
-float Reconstructor::computePiecesOverlapAreaPercentage()
+void Reconstructor::computePiecesBoostPolygons()
 {
-	float totalArea = 0;
-
 	for (auto& piece : activePieces_)
 	{
 		piece.initBoostPolygon();
-		totalArea += piece.computeArea();
+		//totalArea += piece.computeArea();
 	}
-
-	float overlappingArea = 0;
-
-	for (int i = 0; i < activePieces_.size(); i++)
-	{
-		for (int j = i + 1; j < activePieces_.size(); j++)
-		{
-			overlappingArea += activePieces_[i].computeOverlappingArea(activePieces_[j].boostPolygonGlobalCoords_);
-		}
-	}
-
-	return overlappingArea / totalArea * 100;
 }
+
+//float Reconstructor::computeOverlapAreaDiceCoeff()
+//{
+//	/// <summary>
+//	/// This is a variant to the dice coeff 
+//	/// </summary>
+//	/// <returns></returns>
+//	
+//	std::vector<Piece> piecesToUnion;
+//	std::vector<BoostPolygon> unionedPolys;
+//	float sum = 0;
+//	float overlapArea;
+//	float currPieceArea;
+//
+//	for (int i = 0; i < activePieces_.size(); i++)
+//	{
+//
+//		piecesToUnion.clear();
+//
+//		for (int j = 0; j < activePieces_.size(); j++)
+//		{
+//			if (i!=j)
+//			{
+//				piecesToUnion.push_back(activePieces_[j]);
+//			}
+//		}
+//
+//		unionedPolys.clear();
+//		computeUnionBoostPolygon(unionedPolys, piecesToUnion);
+//		overlapArea = 0;//
+//
+//		for (auto& poly: unionedPolys)
+//		{
+//			overlapArea += activePieces_[i].computeOverlappingArea(poly);
+//		}
+//
+//		currPieceArea = activePieces_[i].computeArea();
+//
+//		sum += overlapArea / (currPieceArea+1e-5);
+//
+//	}
+//
+//	return sum;
+//}
+//
+//float Reconstructor::computePiecesOverlapAreaPercentage()
+//{
+//	float totalArea = 0;
+//
+//	for (int i = 0; i < activePieces_.size(); i++)
+//	{
+//		totalArea += activePieces_[i].computeArea();
+//	}
+//
+//	float overlappingArea = 0;
+//
+//	for (int i = 0; i < activePieces_.size(); i++)
+//	{
+//		for (int j = i + 1; j < activePieces_.size(); j++)
+//		{
+//			overlappingArea += activePieces_[i].computeOverlappingArea(activePieces_[j].boostPolygonGlobalCoords_);
+//		}
+//	}
+//
+//	return overlappingArea / totalArea * 100;
+//}
 
 float Reconstructor::getPiecesOverlappingArea()
 {
 	return piecesOverlappingArea_;
+}
+
+
+
+void Reconstructor::saveFinalTransforms(const std::string& filename,const b2Vec2& translateCenter)
+{
+	// Open the CSV file for writing
+	std::ofstream file(filename);
+
+	if (!file.is_open()) {
+		std::cerr << "Failed to open file: " << filename << std::endl;
+		return;
+	}
+
+	// Write the header
+	//file << "piece,t_x,t_y,r_sin,r_cos,r_angle" << std::endl;
+	file << "piece,translate_x,translate_y,rotation_angle" << std::endl;
+
+	// Write each row of the matrix as a separate line in the CSV file
+	for (auto& piece : activePieces_)
+	{
+		auto& trans = piece.refb2Body_->GetTransform();
+		float x = trans.p.x - translateCenter.x;
+		float y = trans.p.y - translateCenter.y;
+		float radians = piece.refb2Body_->GetAngle();
+
+		//file << piece.id_ << "," << trans.p.x << "," << trans.p.y << "," << trans.q.s << "," << trans.q.c<<  << std::endl;
+		file << piece.id_ << "," << x << "," << y << "," << radians << std::endl;
+	}
+
+	// Close the file
+	file.close();
+
+	std::cout << "Matrix data written to CSV file: " << filename << std::endl;
 }

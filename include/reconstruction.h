@@ -22,12 +22,16 @@ private:
 	void putMatingSprings(VertexMating& mating);
 
 protected:
-	float computePiecesOverlapAreaPercentage();
+	/*float computePiecesOverlapAreaPercentage();
+	float computeOverlapAreaDiceCoeff();*/
+	void computePiecesBoostPolygons();
+	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
 
 public:
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> activePieces_;
 	std::vector<VertexMating*> activeMatings_;
+	Piece* fixedPiece_;
 	std::vector< b2DistanceJoint*> joints_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	float boardHeight_;//20; 
