@@ -9,6 +9,8 @@
 #include "DataLoader.h"
 #include "VertexMating.h"
 #include "Piece.h"
+#include "Global_Parameters.h"
+#include <json.hpp>
 
 class HTTPServer {
 private:
