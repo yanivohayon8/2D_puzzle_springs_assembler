@@ -145,13 +145,26 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     output["piecesBeforeEnableCollision"] = piecesBeforeCollision;*/
 
     nlohmann::json joints = nlohmann::json::array();
+    float maxLength = 0;
+    double sumLengths = 0;
 
     for (auto& mating: silentReconstructor_.activeMatings_)
     {
-        joints.push_back(mating.toJson());
+        auto matingJson = mating.toJson(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+        joints.push_back(matingJson);
+        sumLengths += matingJson["snapshotedLength"];
+
+        if (matingJson["snapshotedLength"] > maxLength)
+        {
+            maxLength = matingJson["snapshotedLength"];
+        }
     }
 
-    output["springsAfterEnableCollision"] = joints;
+    nlohmann::json afterCollision;
+    afterCollision["springs"] = joints;
+    afterCollision["maxSpringsLength"] = maxLength;
+    afterCollision["averageSpringsLength"] = sumLengths/ silentReconstructor_.activeMatings_.size();
+    output["AfterEnableCollision"] = afterCollision;
 
     silentReconstructor_.closeRun();
     activeMatings_.clear();

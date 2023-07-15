@@ -19,7 +19,7 @@ public:
 	bool operator==(const VertexMating& other) const;
 
 	void snapshotJointLength();
-	nlohmann::json toJson();
+	nlohmann::json toJson(float scale=1);
 
 
 	~VertexMating();

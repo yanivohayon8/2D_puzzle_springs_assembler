@@ -61,11 +61,6 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	piece.refb2Body_ = body;
 }
 
-//void Reconstructor::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB, float frequencyHertz, float dampingRatio)
-//{
-//	
-//}
-
 void Reconstructor::putMatingSprings(VertexMating& mating, float frequencyHertz, float dampingRatio)
 {
 	Piece* pieceA;
@@ -91,11 +86,10 @@ void Reconstructor::putMatingSprings(VertexMating& mating, float frequencyHertz,
 	pieceA->getVeterxGlobalCoords(vertexGlobalA, mating.firstPieceVertex_);
 	b2Vec2 vertexGlobalB;
 	pieceB->getVeterxGlobalCoords(vertexGlobalB, mating.secondPieceVertex_);
-	//connectSpringsToPieces(bodyA, bodyB, &vertexGlobalA, &vertexGlobalB);
 
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, vertexGlobalA, vertexGlobalB);
-	jointDef.collideConnected = false;
+	jointDef.collideConnected = false; //true;//false; // true makes the correct matings "jitter"?
 	jointDef.minLength = 0;//0.05;// 0.1f;
 	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
 	jointDef.length = 0.01;// 0.05;
@@ -103,8 +97,6 @@ void Reconstructor::putMatingSprings(VertexMating& mating, float frequencyHertz,
 	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
 
 	mating.jointRef_ = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
-	//b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
-	//joints_.push_back(joint);
 }
 
 Piece* Reconstructor::getMaxMatingsPiece()

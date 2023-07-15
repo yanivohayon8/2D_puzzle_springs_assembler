@@ -40,6 +40,7 @@ void SilentReconstructor::progress(int numIteration)
 
 void SilentReconstructor::Run(std::string resultScreenshotPath)
 {
+	auto redColor = sf::Color::Red;
 	bool isScreenVisible = false;
 	screen_->initDisplay(isScreenVisible);
 	screen_->clearDisplay();
@@ -57,20 +58,26 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
 	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
 
-	/*for (auto& piece : activePieces_)
+	//debug
+	for (auto& mating : activeMatings_)
+	{
+		mating.snapshotJointLength();
+	}
+
+	for (auto& piece : activePieces_)
 	{
 		screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
 	}
 
 	screen_->screenShot("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/disable_collide.png");
-	screen_->clearDisplay();*/
+	screen_->clearDisplay();
 
-	int iterationToSecondConverage = iterationToConverge / 2;
 	for (auto& piece : activePieces_)
 	{
 		piece.setCollideOn();
 	}
 
+	int iterationToSecondConverage = iterationToConverge / 2;
 	progress(iterationToSecondConverage);
 	
 	for (auto& mating: activeMatings_)
@@ -78,49 +85,19 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 		mating.snapshotJointLength();
 	}
 
-	/*const b2Vec2& centerOfAssembly = fixedPiece_->refb2Body_->GetTransform().p;
-	saveFinalTransforms("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/final_transform_debug.csv", centerOfAssembly);*/
+	// Debug
+	for (auto& mating : activeMatings_)
+	{
+		auto& anchorA = mating.jointRef_->GetAnchorA();
+		auto& anchorB = mating.jointRef_->GetAnchorB();
+		screen_->drawLine(anchorA, anchorB, redColor, -1);
+	}
 
-		/*computePiecesBoostPolygons();
-		piecesOverlappingArea_ = computeOverlapAreaDiceCoeff();*/
+	for (auto& piece : activePieces_)
+	{
+		screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
+	}
 
-		/*int iterationToSecondConverage = iterationToConverge / 2;
-		for (auto& piece : activePieces_)
-		{
-			piece.setCollideOn();
-		}
-
-		progress(iterationToSecondConverage);
-
-		for (auto& piece : activePieces_)
-		{
-			screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
-		}
-
-		float overlapDebug = computePiecesOverlapAreaPercentage();
-		std::cout << "Overlapping area after enable collision is " << overlapDebug << std::endl;
-
-		screen_->screenShot("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/enable_collide.png");
-		screen_->clearDisplay();
-
-		screen_->closeWindow();*/
-
-		/*if (resultScreenshotPath !="")
-		{
-			bool isScreenVisible = false;
-			screen_->initDisplay(isScreenVisible);
-			screen_->clearDisplay();
-
-			for (auto& piece : activePieces_)
-			{
-				screen_->initSprite(piece);
-				screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
-			}
-
-			screen_->screenShot(resultScreenshotPath);
-			screen_->closeWindow();
-		}*/
-
-		/// Todo: compute the distances between ground truth vertices
-	
+	screen_->screenShot("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/enable_collide.png");
+	screen_->closeWindow();
 }

@@ -20,10 +20,10 @@ VertexMating::~VertexMating(){}
 
 void VertexMating::snapshotJointLength()
 {
-	jointLengthSnapshots_.push_back(jointRef_->GetLength());
+	jointLengthSnapshots_.push_back(jointRef_->GetCurrentLength());
 }
 
-nlohmann::json VertexMating::toJson()
+nlohmann::json VertexMating::toJson(float scale)
 {
 	nlohmann::json oJson;
 
@@ -31,7 +31,7 @@ nlohmann::json VertexMating::toJson()
 	oJson["firstPieceVertex"] = firstPieceVertex_;
 	oJson["secondPieceId"] = secondPieceId_;
 	oJson["secondPieceVertex"] = secondPieceVertex_;
-	oJson["snapshotedLength"] = jointLengthSnapshots_[0];
+	oJson["snapshotedLength"] = jointLengthSnapshots_[jointLengthSnapshots_.size()-1] / scale;
 
 	return oJson;
 }
