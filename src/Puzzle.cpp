@@ -4,7 +4,7 @@ Puzzle::Puzzle()
 {
 }
 
-Puzzle::Puzzle(std::vector<Piece> &pieces, std::vector<VertexMating*> groundTruthMatings)
+Puzzle::Puzzle(std::vector<Piece> &pieces, std::vector<VertexMating> groundTruthMatings)
 {
 	pieces_ = pieces;
 	groundTruthMatings_ = groundTruthMatings;
@@ -15,7 +15,7 @@ Puzzle::Puzzle(std::vector<Piece> &pieces, std::vector<VertexMating*> groundTrut
 	}
 }
 
-std::vector<VertexMating*>* Puzzle::getGroundTruthMatings()
+std::vector<VertexMating>* Puzzle::getGroundTruthMatings()
 {
 	return &groundTruthMatings_;
 }
@@ -37,30 +37,30 @@ void Puzzle::setPieces(std::vector<Piece>& newPieces)
 	}
 }
 
-void Puzzle::setGroundTruthMatings(std::vector<VertexMating*>& newGroundTruthMatings)
+void Puzzle::setGroundTruthMatings(std::vector<VertexMating>& newGroundTruthMatings)
 {
 	groundTruthMatings_ = newGroundTruthMatings;
 }
 
-void Puzzle::findPiecesToReconstruct(std::vector<Piece> &oReconstructPieces,std::vector<VertexMating*>& matings)
+void Puzzle::findPiecesToReconstruct(std::vector<Piece> &oReconstructPieces,std::vector<VertexMating>& matings)
 {
 	//oReconstructPieces.clear();
 	std::vector<std::string> reconstructPiecesIds;
 
 	for (auto& mating : matings)
 	{
-		if (!std::count(reconstructPiecesIds.begin(), reconstructPiecesIds.end(), mating->firstPieceId_))
+		if (!std::count(reconstructPiecesIds.begin(), reconstructPiecesIds.end(), mating.firstPieceId_))
 		{
-			Piece& p = id2piece_.at(mating->firstPieceId_);
+			Piece& p = id2piece_.at(mating.firstPieceId_);
 			oReconstructPieces.push_back(p);
-			reconstructPiecesIds.push_back(mating->firstPieceId_);
+			reconstructPiecesIds.push_back(mating.firstPieceId_);
 		}
 
-		if (!std::count(reconstructPiecesIds.begin(), reconstructPiecesIds.end(), mating->secondPieceId_))
+		if (!std::count(reconstructPiecesIds.begin(), reconstructPiecesIds.end(), mating.secondPieceId_))
 		{
-			Piece& p = id2piece_.at(mating->secondPieceId_);
+			Piece& p = id2piece_.at(mating.secondPieceId_);
 			oReconstructPieces.push_back(p);
-			reconstructPiecesIds.push_back(mating->secondPieceId_);
+			reconstructPiecesIds.push_back(mating.secondPieceId_);
 		}
 	}	
 }

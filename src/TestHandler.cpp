@@ -18,14 +18,14 @@ void RouteTests(std::map<std::string, std::string>& param2Value)
 		}
 	}
 
-	if (testName == "VisualTwoReconstructs")
+	else if (testName == "VisualTwoReconstructs")
 	{
 		TestReconstructors tester;
 		tester.testVisualTwoReconstructs(); //param2Value["puzzleDir"]
 	}
 
 	// --test SilentGroundTruth --puzzleDir "../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0"
-	if (testName == "SilentGroundTruth")
+	else if (testName == "SilentGroundTruth")
 	{
 		TestReconstructors tester;
 		tester.testSilentGroundTruth(param2Value["puzzleDir"]);

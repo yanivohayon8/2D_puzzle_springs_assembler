@@ -134,7 +134,7 @@ void DataLoader::loadCoordinates_(std::string fileName, bool isOfir )
 
 }
 
-void DataLoader::loadVertexMatings(std::vector<VertexMating*>& olstMatings, std::string fileName)
+void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings, std::string fileName)
 {
     /*
         Loads the matings between the edges. The csv headers are piece1,vertex1,piece2,vertex2. All of them are int.
@@ -150,13 +150,13 @@ void DataLoader::loadVertexMatings(std::vector<VertexMating*>& olstMatings, std:
     std::string line;
     //int firstPieceId, secondPieceId, firstPieceVertex, secondPieceVertex;
     int firstPieceVertex, secondPieceVertex;
-    std::string firstPieceVertexStr, secondPieceVertexStr;
-    std::string firstPieceId, secondPieceId;
     char comma;  // represent ',' in file, ignored.
     std::getline(infile, line);//skip the first line because it is a header
 
 
     while (std::getline(infile, line)) {
+        std::string firstPieceVertexStr, secondPieceVertexStr;
+        std::string firstPieceId, secondPieceId;
         std::stringstream ss(line);
         std::getline(ss, firstPieceId, ',');
         std::getline(ss, firstPieceVertexStr, ',');
@@ -166,7 +166,7 @@ void DataLoader::loadVertexMatings(std::vector<VertexMating*>& olstMatings, std:
         secondPieceVertex = std::stoi(secondPieceVertexStr);
 
         VertexMating mating(firstPieceId, firstPieceVertex, secondPieceId, secondPieceVertex);
-        olstMatings.push_back(&mating);
+        olstMatings.push_back(mating);
     }
 }
 
