@@ -28,6 +28,13 @@ void RouteTests(std::map<std::string, std::string>& param2Value)
 	else if (testName == "SilentGroundTruth")
 	{
 		TestReconstructors tester;
-		tester.testSilentGroundTruth(param2Value["puzzleDir"]);
+		if (param2Value.count("puzzleDir"))
+		{
+			tester.testSilentGroundTruth(param2Value["puzzleDir"]);
+		}
+		else
+		{
+			tester.testSilentGroundTruth(); //Default Puzzle
+		}
 	}
 }

@@ -16,10 +16,10 @@ private:
 	Piece* getMaxMatingsPiece();
 	void initStaticBody(Piece& piece, b2Vec2& position);
 	void initMovingBody(Piece& piece, b2Vec2& initialPosition);
-	void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
+	/*void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
 		b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
-		float frequencyHertz = 1.0f, float dampingRatio = 0.01);
-	void putMatingSprings(VertexMating& mating);
+		float frequencyHertz = 1.0f, float dampingRatio = 0.01);*/
+	void putMatingSprings(VertexMating& mating, float frequencyHertz = 1.0f, float dampingRatio = 0.01);
 
 protected:
 	/*float computePiecesOverlapAreaPercentage();
@@ -32,7 +32,7 @@ public:
 	std::vector<Piece> activePieces_;
 	std::vector<VertexMating> activeMatings_;
 	Piece* fixedPiece_;
-	std::vector< b2DistanceJoint*> joints_;
+	//std::vector< b2DistanceJoint*> joints_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 	float boardHeight_;//20; 
 	float boardWidth_;//20;//note also the recommondation of static bodies (no more than 50!)
