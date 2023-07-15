@@ -121,8 +121,8 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     silentReconstructor_.Run(dataLoader_.puzzleDirectoryPath_ + "/assembly.png");
     
     nlohmann::json output;
-    //output["scaleUsedOnImages"] = SCALE_IMAGE_COORDINATES_TO_BOX2D;
-    nlohmann::json piecesBeforeCollision = nlohmann::json::array();
+
+    /*nlohmann::json piecesBeforeCollision = nlohmann::json::array();
     auto piece2CoordBeforeCollision = silentReconstructor_.getPiece2CoordsBeforeEnableCollision();
 
     for (auto& pieceIt = piece2CoordBeforeCollision->begin(); pieceIt != piece2CoordBeforeCollision->end(); ++pieceIt)
@@ -142,7 +142,7 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
         piecesBeforeCollision.push_back(pieceJson);
     }
 
-    output["piecesBeforeEnableCollision"] = piecesBeforeCollision;
+    output["piecesBeforeEnableCollision"] = piecesBeforeCollision;*/
 
     nlohmann::json joints = nlohmann::json::array();
 
