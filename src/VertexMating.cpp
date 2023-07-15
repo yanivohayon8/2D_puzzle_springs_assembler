@@ -6,6 +6,7 @@ VertexMating::VertexMating(std::string firstPieceId, int firstPieceVertex, std::
 	secondPieceId_ = secondPieceId;
 	firstPieceVertex_ = firstPieceVertex;
 	secondPieceVertex_ = secondPieceVertex;
+	jointLengthSnapshots_.clear();
 }
 
 bool VertexMating::operator==(const VertexMating& other) const {
@@ -16,3 +17,8 @@ bool VertexMating::operator==(const VertexMating& other) const {
 }
 
 VertexMating::~VertexMating(){}
+
+void VertexMating::snapshotJointLength()
+{
+	jointLengthSnapshots_.push_back(jointRef_->GetLength());
+}

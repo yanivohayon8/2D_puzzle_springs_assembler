@@ -44,10 +44,10 @@ void VisualReconstructor::Run(std::string resultScreenshotPath)
 
 		}
 
-		for (auto& joint : joints_)
+		for (auto& mating : activeMatings_)
 		{
-			auto& anchorA = joint->GetAnchorA();
-			auto& anchorB = joint->GetAnchorB();
+			auto& anchorA = mating.jointRef_->GetAnchorA();
+			auto& anchorB = mating.jointRef_->GetAnchorB();
 			screen_->drawLine(anchorA, anchorB, redColor, -1);
 		}
 

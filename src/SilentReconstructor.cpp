@@ -65,9 +65,6 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	screen_->screenShot("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/disable_collide.png");
 	screen_->clearDisplay();*/
 
-	
-	
-
 	int iterationToSecondConverage = iterationToConverge / 2;
 	for (auto& piece : activePieces_)
 	{
@@ -75,6 +72,11 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	}
 
 	progress(iterationToSecondConverage);
+	
+	for (auto& mating: activeMatings_)
+	{
+		mating.snapshotJointLength();
+	}
 
 	/*const b2Vec2& centerOfAssembly = fixedPiece_->refb2Body_->GetTransform().p;
 	saveFinalTransforms("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/final_transform_debug.csv", centerOfAssembly);*/

@@ -119,9 +119,7 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     std::cout << "Running Reconstructor" << std::endl;
     silentReconstructor_.initRun(activePieces_, activeMatings_);
     silentReconstructor_.Run(dataLoader_.puzzleDirectoryPath_ + "/assembly.png");
-    silentReconstructor_.closeRun();
-    activeMatings_.clear();
-
+    
     nlohmann::json output;
     //output["scaleUsedOnImages"] = SCALE_IMAGE_COORDINATES_TO_BOX2D;
     nlohmann::json piecesBeforeCollision = nlohmann::json::array();
@@ -145,6 +143,9 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     }
 
     output["piecesBeforeEnableCollision"] = piecesBeforeCollision;
+
+    silentReconstructor_.closeRun();
+    activeMatings_.clear();
 
     res.set_content(output.dump(), "application/json");
     res.status = 200;

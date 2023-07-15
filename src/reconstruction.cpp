@@ -61,22 +61,12 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	piece.refb2Body_ = body;
 }
 
-void Reconstructor::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB, float frequencyHertz, float dampingRatio)
-{
-	b2DistanceJointDef jointDef;
-	jointDef.Initialize(bodyA, bodyB, *globalCoordsAnchorA, *globalCoordsAnchorB);
-	jointDef.collideConnected = false;
-	jointDef.minLength = 0;//0.05;// 0.1f;
-	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
-	jointDef.length = 0.01;// 0.05;
+//void Reconstructor::connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB, b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB, float frequencyHertz, float dampingRatio)
+//{
+//	
+//}
 
-	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
-
-	b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
-	joints_.push_back(joint);
-}
-
-void Reconstructor::putMatingSprings(VertexMating& mating)
+void Reconstructor::putMatingSprings(VertexMating& mating, float frequencyHertz, float dampingRatio)
 {
 	Piece* pieceA;
 	Piece* pieceB;
@@ -101,7 +91,20 @@ void Reconstructor::putMatingSprings(VertexMating& mating)
 	pieceA->getVeterxGlobalCoords(vertexGlobalA, mating.firstPieceVertex_);
 	b2Vec2 vertexGlobalB;
 	pieceB->getVeterxGlobalCoords(vertexGlobalB, mating.secondPieceVertex_);
-	connectSpringsToPieces(bodyA, bodyB, &vertexGlobalA, &vertexGlobalB);
+	//connectSpringsToPieces(bodyA, bodyB, &vertexGlobalA, &vertexGlobalB);
+
+	b2DistanceJointDef jointDef;
+	jointDef.Initialize(bodyA, bodyB, vertexGlobalA, vertexGlobalB);
+	jointDef.collideConnected = false;
+	jointDef.minLength = 0;//0.05;// 0.1f;
+	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
+	jointDef.length = 0.01;// 0.05;
+
+	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
+
+	mating.jointRef_ = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
+	//b2DistanceJoint* joint = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
+	//joints_.push_back(joint);
 }
 
 Piece* Reconstructor::getMaxMatingsPiece()
@@ -244,9 +247,14 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 
 void Reconstructor::closeRun()
 {
-	for (auto& joint:joints_)
+	/*for (auto& joint:joints_)
 	{
 		world_.DestroyJoint(joint);
+	}*/
+
+	for (auto& mating:activeMatings_)
+	{
+		world_.DestroyJoint(mating.jointRef_);
 	}
 
 	for (int i=0;i<activePieces_.size();++i)
@@ -255,7 +263,7 @@ void Reconstructor::closeRun()
 	}
 
 	activePieces_.clear();
-	joints_.clear();
+	//joints_.clear();
 	
 	/*for (auto& mating: activeMatings_)
 	{
