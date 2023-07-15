@@ -2,6 +2,7 @@
 #include <string>
 #include <box2d/box2d.h>
 #include <vector>
+#include <json.hpp>
 
 class VertexMating
 {
@@ -18,6 +19,8 @@ public:
 	bool operator==(const VertexMating& other) const;
 
 	void snapshotJointLength();
+	nlohmann::json toJson();
+
 
 	~VertexMating();
 };

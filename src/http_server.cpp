@@ -144,6 +144,15 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
 
     output["piecesBeforeEnableCollision"] = piecesBeforeCollision;
 
+    nlohmann::json joints = nlohmann::json::array();
+
+    for (auto& mating: silentReconstructor_.activeMatings_)
+    {
+        joints.push_back(mating.toJson());
+    }
+
+    output["springsAfterEnableCollision"] = joints;
+
     silentReconstructor_.closeRun();
     activeMatings_.clear();
 
