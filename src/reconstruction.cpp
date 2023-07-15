@@ -117,7 +117,7 @@ Piece* Reconstructor::getMaxMatingsPiece()
 
 		for (auto& mating : activeMatings_)
 		{
-			if (mating->firstPieceId_ == piece.id_ || mating->secondPieceId_ == piece.id_)
+			if (mating.firstPieceId_ == piece.id_ || mating.secondPieceId_ == piece.id_)
 			{
 				countMatings++;
 			}
@@ -191,7 +191,7 @@ void Reconstructor::init()
 	}
 }
 
-void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, int positionSeed, int positionPadding)
+void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<VertexMating>& activeMatings, int positionSeed, int positionPadding)
 {
 	// Init Bodies
 	activePieces_ = activePieces;
@@ -236,7 +236,7 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 
 	for (auto &mating:activeMatings_)
 	{
-		putMatingSprings(*mating);
+		putMatingSprings(mating);
 	}
 
 	piecesOverlappingArea_ = -1;

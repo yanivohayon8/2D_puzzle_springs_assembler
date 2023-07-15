@@ -54,17 +54,27 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	int iterationToConverge = activePieces_.size() * iterationToConvergePerPiece;
 	progress(iterationToConverge);
 
-	for (auto& piece : activePieces_)
+	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
+	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
+
+	/*for (auto& piece : activePieces_)
 	{
 		screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
 	}
 
 	screen_->screenShot("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/disable_collide.png");
-	screen_->clearDisplay();
+	screen_->clearDisplay();*/
 
-	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
-	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
 	
+	
+
+	int iterationToSecondConverage = iterationToConverge / 2;
+	for (auto& piece : activePieces_)
+	{
+		piece.setCollideOn();
+	}
+
+	progress(iterationToSecondConverage);
 
 	/*const b2Vec2& centerOfAssembly = fixedPiece_->refb2Body_->GetTransform().p;
 	saveFinalTransforms("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/final_transform_debug.csv", centerOfAssembly);*/

@@ -30,7 +30,7 @@ protected:
 public:
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> activePieces_;
-	std::vector<VertexMating*> activeMatings_;
+	std::vector<VertexMating> activeMatings_;
 	Piece* fixedPiece_;
 	std::vector< b2DistanceJoint*> joints_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
@@ -40,8 +40,9 @@ public:
 	SfmlScreen* screen_; // valid also for silent mode for the last image
 	int screenHeight_;
 	int screenWidth_;
-
-	double timeStep_ = 1 / 60.0F; //1.0F / 60.0F;
+#pragma message("Please convert to double");
+	//float timeStep_ = 1 / 60; //1.0F / 60.0F;
+	double timeStep_ = 1.0F / 60.0F;
 	int velocityIterations_ = 6;
 	int positionIterations_ = 2;
 
@@ -49,7 +50,7 @@ public:
 
 	Reconstructor(float boardWidth = 10,float boardHeight=10, int screenWidth_ = 1380, int screenHeight_ = 1380);
 	void init();
-	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, int positionSeed = 0, int positionPadding = 2);
+	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating>& activeMatings, int positionSeed = 0, int positionPadding = 2);
 	virtual void Run(std::string resultScreenshotPath = "")=0;
 	void closeRun(); // delete the matings and pieces...
 	float getPiecesOverlappingArea();

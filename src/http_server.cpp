@@ -62,7 +62,7 @@ void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Respo
 
     dataLoader_.setPuzzleDirectory(puzzleDirectory);
     std::vector<Piece> tmpPieces;
-    std::vector<VertexMating*> tmpMatings;
+    std::vector<VertexMating> tmpMatings;
     dataLoader_.loadVertexMatings(tmpMatings, "springs_anchors_correct.csv");
     dataLoader_.loadPieces(tmpPieces);    
     puzzle_.setGroundTruthMatings(tmpMatings);
@@ -107,8 +107,7 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
 
         if (matingValues.size() == 4)
         {
-            VertexMating* mating = new VertexMating(matingValues[0], std::stoi(matingValues[1]),
-                matingValues[2], std::stoi(matingValues[3]));
+            VertexMating mating(matingValues[0], std::stoi(matingValues[1]),matingValues[2], std::stoi(matingValues[3]));
 
             activeMatings_.push_back(mating);
         }
@@ -121,16 +120,10 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     silentReconstructor_.initRun(activePieces_, activeMatings_);
     silentReconstructor_.Run(dataLoader_.puzzleDirectoryPath_ + "/assembly.png");
     silentReconstructor_.closeRun();
-
-    /*for (auto& mating: activeMatings_)
-    {
-        delete &mating;
-    }*/
-
     activeMatings_.clear();
 
     nlohmann::json output;
-    output["scaleUsedOnImages"] = SCALE_IMAGE_COORDINATES_TO_BOX2D;
+    //output["scaleUsedOnImages"] = SCALE_IMAGE_COORDINATES_TO_BOX2D;
     nlohmann::json piecesBeforeCollision = nlohmann::json::array();
     auto piece2CoordBeforeCollision = silentReconstructor_.getPiece2CoordsBeforeEnableCollision();
 
@@ -142,7 +135,9 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
         
         for (auto& coord: piece2CoordBeforeCollision->at(pieceIt->first))
         {
-            coords.push_back(nlohmann::json::array({ coord.x,coord.y }));
+            auto x = coord.x / SCALE_IMAGE_COORDINATES_TO_BOX2D;
+            auto y = coord.y / SCALE_IMAGE_COORDINATES_TO_BOX2D;
+            coords.push_back(nlohmann::json::array({ x,y }));
         }
 
         pieceJson["coordinates"] = coords;

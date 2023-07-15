@@ -19,7 +19,7 @@ private:
     DataLoader dataLoader_;
     SilentReconstructor silentReconstructor_;
     std::vector<Piece> activePieces_;
-    std::vector<VertexMating*> activeMatings_;
+    std::vector<VertexMating> activeMatings_;
     
     void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res);
     void handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody);//, Json::Value& bodyRequest
