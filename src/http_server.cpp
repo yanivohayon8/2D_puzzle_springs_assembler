@@ -122,7 +122,7 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     
     nlohmann::json output;
 
-    /*nlohmann::json piecesBeforeCollision = nlohmann::json::array();
+    nlohmann::json piecesBeforeCollision = nlohmann::json::array();
     auto piece2CoordBeforeCollision = silentReconstructor_.getPiece2CoordsBeforeEnableCollision();
 
     for (auto& pieceIt = piece2CoordBeforeCollision->begin(); pieceIt != piece2CoordBeforeCollision->end(); ++pieceIt)
@@ -142,7 +142,7 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
         piecesBeforeCollision.push_back(pieceJson);
     }
 
-    output["piecesBeforeEnableCollision"] = piecesBeforeCollision;*/
+    output["piecesBeforeEnableCollision"] = piecesBeforeCollision;
 
     nlohmann::json joints = nlohmann::json::array();
     float maxLength = 0;
@@ -162,8 +162,9 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
 
     nlohmann::json afterCollision;
     afterCollision["springs"] = joints;
-    afterCollision["maxSpringsLength"] = maxLength;
-    afterCollision["averageSpringsLength"] = sumLengths/ silentReconstructor_.activeMatings_.size();
+    //afterCollision["maxSpringsLength"] = maxLength;
+    //afterCollision["averageSpringsLength"] = sumLengths/ silentReconstructor_.activeMatings_.size();
+    afterCollision["sumSpringsLength"] = sumLengths;
     output["AfterEnableCollision"] = afterCollision;
 
     silentReconstructor_.closeRun();
