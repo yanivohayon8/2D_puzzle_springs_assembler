@@ -62,11 +62,11 @@ void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Respo
 
     dataLoader_.setPuzzleDirectory(puzzleDirectory);
     std::vector<Piece> tmpPieces;
-    std::vector<VertexMating> tmpMatings;
-    dataLoader_.loadVertexMatings(tmpMatings, "springs_anchors_correct.csv");
     dataLoader_.loadPieces(tmpPieces);    
-    puzzle_.setGroundTruthMatings(tmpMatings);
     puzzle_.setPieces(tmpPieces);
+    //std::vector<VertexMating> tmpMatings;
+    //dataLoader_.loadVertexMatings(tmpMatings, "springs_anchors_correct.csv");
+    //puzzle_.setGroundTruthMatings(tmpMatings);
 }
 
 void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res,std::string requestBody)//, Json::Value& bodyRequest

@@ -190,7 +190,13 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 {
 	// Init Bodies
 	activePieces_ = activePieces;
-	activeMatings_ = activeMatings;
+	//activeMatings_ = activeMatings;
+
+	for (auto& mating:activeMatings)
+	{
+		activeMatings_.push_back(mating);
+	}
+
 	fixedPiece_ = getMaxMatingsPiece();
 	initStaticBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
 
