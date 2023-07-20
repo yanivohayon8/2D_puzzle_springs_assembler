@@ -49,7 +49,16 @@ void DataLoader::coordsToEigenCoords(Eigen::MatrixXd& eigenCoords, std::vector<s
 
 std::string DataLoader::getImagePath(std::string pieceId)
 {
-    return puzzleDirectoryPath_ + "/images/" + pieceId + ".png";
+    std::string name = pieceId;
+    
+    // because Ofir saved the ids in floats while the file names in int
+    if (isFloatString(pieceId))
+    {
+        name = std::to_string(int(std::stof(pieceId)));
+    }
+
+    std::string path = puzzleDirectoryPath_ + "/images/" + name + ".png";
+    return path;
 }
 
 void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)

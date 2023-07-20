@@ -1,6 +1,6 @@
 #include "VisualReconstructor.h"
 
-void VisualReconstructor::Run(std::string resultScreenshotPath)
+void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
 {
 	
 	screen_->initDisplay();

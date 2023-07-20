@@ -14,3 +14,5 @@ void getScreenSize(int& oHeight, int& oWidth);
 void getRoatationMatrix(Eigen::MatrixX2d& oRotation, double angle);
 
 void getRoatationMatrix(Eigen::MatrixX2d& oRotation, const b2Rot& rot);
+
+bool isFloatString(const std::string str);

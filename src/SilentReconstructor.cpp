@@ -1,5 +1,24 @@
 #include "SilentReconstructor.h"
 
+bool SilentReconstructor::isScreenInitiated()
+{
+	return isScreenInitiated_;
+}
+
+void SilentReconstructor::initScreen(std::vector<Piece>& pieces)
+{
+	bool isScreenVisible = false;
+	screen_->initDisplay(isScreenVisible);
+
+	for (auto& piece : pieces)
+	{
+		screen_->initSprite(piece);
+	}
+
+	screen_->clearDisplay();
+	isScreenInitiated_ = true;
+}
+
 std::map<std::string, std::vector<b2Vec2>>* SilentReconstructor::getPiece2CoordsBeforeEnableCollision()
 {
 	return &piece2CoordsBeforeEnableCollision_;
@@ -38,18 +57,9 @@ void SilentReconstructor::progress(int numIteration)
 	}
 }
 
-void SilentReconstructor::Run(std::string resultScreenshotPath)
+void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
 {
-	/*auto redColor = sf::Color::Red;
-	bool isScreenVisible = false;
-	screen_->initDisplay(isScreenVisible);
-	screen_->clearDisplay();
-
-	for (auto& piece : activePieces_)
-	{
-		screen_->initSprite(piece);
-	}*/
-
+	
 	int iteration = 0;
 	int iterationToConvergePerPiece = 1000;
 	int iterationToConverge = activePieces_.size() * iterationToConvergePerPiece;
@@ -65,13 +75,17 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	}
 
 	// debug
-	/*for (auto& piece : activePieces_)
+	if (isScreenInitiated_ && screenshotPathBeforeCollide != "")
 	{
-		screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
-	}
+		for (auto& piece : activePieces_)
+		{
+			screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
+		}
 
-	screen_->screenShot("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/disable_collide.png");
-	screen_->clearDisplay();*/
+		screen_->screenShot(screenshotPathBeforeCollide);
+		screen_->clearDisplay();
+	}
+	
 
 	for (auto& piece : activePieces_)
 	{
@@ -87,18 +101,25 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	}
 
 	// Debug
-	/*for (auto& mating : activeMatings_)
+	if (isScreenInitiated_ && screenshotPathAfterCollide!="")
 	{
-		auto& anchorA = mating.jointRef_->GetAnchorA();
-		auto& anchorB = mating.jointRef_->GetAnchorB();
-		screen_->drawLine(anchorA, anchorB, redColor, -1);
-	}
+		auto redColor = sf::Color::Red;
 
-	for (auto& piece : activePieces_)
-	{
-		screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
-	}
+		for (auto& mating : activeMatings_)
+		{
+			auto& anchorA = mating.jointRef_->GetAnchorA();
+			auto& anchorB = mating.jointRef_->GetAnchorB();
+			screen_->drawLine(anchorA, anchorB, redColor, -1);
+		}
 
-	screen_->screenShot("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/enable_collide.png");
+		for (auto& piece : activePieces_)
+		{
+			screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
+		}
+
+		screen_->screenShot(screenshotPathAfterCollide);
+		screen_->clearDisplay();
+	}
+	/*
 	screen_->closeWindow();*/
 }

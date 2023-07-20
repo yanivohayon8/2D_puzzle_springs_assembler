@@ -67,10 +67,30 @@ void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Respo
     //std::vector<VertexMating> tmpMatings;
     //dataLoader_.loadVertexMatings(tmpMatings, "springs_anchors_correct.csv");
     //puzzle_.setGroundTruthMatings(tmpMatings);
+
 }
 
 void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res,std::string requestBody)//, Json::Value& bodyRequest
 {
+
+    std::string screenShotName="";
+    std::string imageBeforeCollide = "";
+    std::string imageAfterCollide = "";
+
+    if (req.has_param("screenShotName"))
+    {
+        screenShotName = req.get_param_value("screenShotName");
+
+        if (!silentReconstructor_.isScreenInitiated())
+        {
+            silentReconstructor_.initScreen(*puzzle_.getPieces());
+        }
+
+        imageBeforeCollide = dataLoader_.puzzleDirectoryPath_ + "/" + screenShotName + "_before_collide.png";
+        imageAfterCollide = dataLoader_.puzzleDirectoryPath_ + "/" + screenShotName + "_after_collide.png";
+    }
+
+
     std::cout << "Loading Matings" << std::endl;
     
     activeMatings_.clear();
@@ -118,7 +138,7 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     puzzle_.findPiecesToReconstruct(activePieces_, activeMatings_);
     std::cout << "Running Reconstructor" << std::endl;
     silentReconstructor_.initRun(activePieces_, activeMatings_);
-    silentReconstructor_.Run(dataLoader_.puzzleDirectoryPath_ + "/assembly.png");
+    silentReconstructor_.Run(imageBeforeCollide, imageAfterCollide);
     
     nlohmann::json output;
 
@@ -177,6 +197,7 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
 void HTTPServer::run()
 {
     silentReconstructor_.init();
+    //silentReconstructor_.initScreen();
 
     server_.Get(versionPrefix_+"/sanity", [&](const httplib::Request& req, httplib::Response& res) {
 
