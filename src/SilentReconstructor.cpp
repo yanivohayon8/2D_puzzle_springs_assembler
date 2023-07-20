@@ -40,7 +40,7 @@ void SilentReconstructor::progress(int numIteration)
 
 void SilentReconstructor::Run(std::string resultScreenshotPath)
 {
-	auto redColor = sf::Color::Red;
+	/*auto redColor = sf::Color::Red;
 	bool isScreenVisible = false;
 	screen_->initDisplay(isScreenVisible);
 	screen_->clearDisplay();
@@ -48,7 +48,7 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	for (auto& piece : activePieces_)
 	{
 		screen_->initSprite(piece);
-	}
+	}*/
 
 	int iteration = 0;
 	int iterationToConvergePerPiece = 1000;
@@ -64,13 +64,14 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 		mating.snapshotJointLength();
 	}
 
-	for (auto& piece : activePieces_)
+	// debug
+	/*for (auto& piece : activePieces_)
 	{
 		screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
 	}
 
 	screen_->screenShot("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/disable_collide.png");
-	screen_->clearDisplay();
+	screen_->clearDisplay();*/
 
 	for (auto& piece : activePieces_)
 	{
@@ -86,7 +87,7 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	}
 
 	// Debug
-	for (auto& mating : activeMatings_)
+	/*for (auto& mating : activeMatings_)
 	{
 		auto& anchorA = mating.jointRef_->GetAnchorA();
 		auto& anchorB = mating.jointRef_->GetAnchorB();
@@ -99,5 +100,5 @@ void SilentReconstructor::Run(std::string resultScreenshotPath)
 	}
 
 	screen_->screenShot("../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0/enable_collide.png");
-	screen_->closeWindow();
+	screen_->closeWindow();*/
 }
