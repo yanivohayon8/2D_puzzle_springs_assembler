@@ -81,11 +81,6 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     {
         screenShotName = req.get_param_value("screenShotName");
 
-        if (!silentReconstructor_.isScreenInitiated())
-        {
-            silentReconstructor_.initScreen(*puzzle_.getPieces());
-        }
-
         imageBeforeCollide = dataLoader_.puzzleDirectoryPath_ + "/" + screenShotName + "_before_collide.png";
         imageAfterCollide = dataLoader_.puzzleDirectoryPath_ + "/" + screenShotName + "_after_collide.png";
     }
@@ -197,6 +192,7 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
 void HTTPServer::run()
 {
     silentReconstructor_.init();
+    
     //silentReconstructor_.initScreen();
 
     server_.Get(versionPrefix_+"/sanity", [&](const httplib::Request& req, httplib::Response& res) {

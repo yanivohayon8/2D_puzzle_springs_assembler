@@ -5,15 +5,10 @@ bool SilentReconstructor::isScreenInitiated()
 	return isScreenInitiated_;
 }
 
-void SilentReconstructor::initScreen(std::vector<Piece>& pieces)
+void SilentReconstructor::initScreen()//std::vector<Piece>& pieces
 {
 	bool isScreenVisible = false;
 	screen_->initDisplay(isScreenVisible);
-
-	for (auto& piece : pieces)
-	{
-		screen_->initSprite(piece);
-	}
 
 	screen_->clearDisplay();
 	isScreenInitiated_ = true;
@@ -59,7 +54,16 @@ void SilentReconstructor::progress(int numIteration)
 
 void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
 {
+	if (!isScreenInitiated_)
+	{
+		initScreen();
+	}
 	
+	for (auto& piece : activePieces_)
+	{
+		screen_->initSprite(piece);
+	}
+
 	int iteration = 0;
 	int iterationToConvergePerPiece = 1000;
 	int iterationToConverge = activePieces_.size() * iterationToConvergePerPiece;
@@ -77,13 +81,13 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	// debug
 	if (isScreenInitiated_ && screenshotPathBeforeCollide != "")
 	{
+		screen_->clearDisplay();
 		for (auto& piece : activePieces_)
 		{
 			screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
 		}
 
 		screen_->screenShot(screenshotPathBeforeCollide);
-		screen_->clearDisplay();
 	}
 	
 
@@ -103,6 +107,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	// Debug
 	if (isScreenInitiated_ && screenshotPathAfterCollide!="")
 	{
+		screen_->clearDisplay();
 		auto redColor = sf::Color::Red;
 
 		for (auto& mating : activeMatings_)
@@ -118,7 +123,6 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 		}
 
 		screen_->screenShot(screenshotPathAfterCollide);
-		screen_->clearDisplay();
 	}
 	/*
 	screen_->closeWindow();*/

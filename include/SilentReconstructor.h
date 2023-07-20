@@ -16,7 +16,7 @@ protected:
 public:
 	void Run(std::string screenshotPathBeforeCollide="", std::string screenshotPathAfterCollide="");
 	std::map<std::string, std::vector<b2Vec2>>* getPiece2CoordsBeforeEnableCollision();
-	void initScreen(std::vector<Piece>& pieces);
+	void initScreen();//std::vector<Piece>& pieces
 	bool isScreenInitiated();
 };
 
