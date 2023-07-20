@@ -10,6 +10,11 @@ void SilentReconstructor::initScreen()//std::vector<Piece>& pieces
 	bool isScreenVisible = false;
 	screen_->initDisplay(isScreenVisible);
 
+	for (auto& piece : activePieces_)
+	{
+		screen_->initSprite(piece);
+	}
+
 	screen_->clearDisplay();
 	isScreenInitiated_ = true;
 }
@@ -54,16 +59,9 @@ void SilentReconstructor::progress(int numIteration)
 
 void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
 {
-	if (!isScreenInitiated_)
-	{
-		initScreen();
-	}
 	
-	for (auto& piece : activePieces_)
-	{
-		screen_->initSprite(piece);
-	}
-
+	initScreen();
+	
 	int iteration = 0;
 	int iterationToConvergePerPiece = 1000;
 	int iterationToConverge = activePieces_.size() * iterationToConvergePerPiece;
@@ -79,7 +77,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	}
 
 	// debug
-	if (isScreenInitiated_ && screenshotPathBeforeCollide != "")
+	if (screenshotPathBeforeCollide != "")
 	{
 		screen_->clearDisplay();
 		for (auto& piece : activePieces_)
@@ -105,7 +103,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	}
 
 	// Debug
-	if (isScreenInitiated_ && screenshotPathAfterCollide!="")
+	if (screenshotPathAfterCollide!="")
 	{
 		screen_->clearDisplay();
 		auto redColor = sf::Color::Red;
@@ -124,6 +122,6 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 		screen_->screenShot(screenshotPathAfterCollide);
 	}
-	/*
-	screen_->closeWindow();*/
+	
+	screen_->closeWindow();
 }
