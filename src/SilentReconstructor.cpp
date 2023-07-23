@@ -77,7 +77,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	}
 
 	// debug
-	if (screenshotPathBeforeCollide != "")
+	/*if (screenshotPathBeforeCollide != "")
 	{
 		screen_->clearDisplay();
 		for (auto& piece : activePieces_)
@@ -86,7 +86,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 		}
 
 		screen_->screenShotToFile(screenshotPathBeforeCollide);
-	}
+	}*/
 	
 
 	for (auto& piece : activePieces_)

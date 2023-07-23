@@ -81,8 +81,8 @@ void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Respons
     {
         screenShotName = req.get_param_value("screenShotName");
 
-        imageBeforeCollide = dataLoader_.puzzleDirectoryPath_ + "/" + screenShotName + "_before_collide.png";
-        imageAfterCollide = dataLoader_.puzzleDirectoryPath_ + "/" + screenShotName + "_after_collide.png";
+        imageBeforeCollide = dataLoader_.puzzleDirectoryPath_ + "/screenshots/" + screenShotName + "_before_collide.png";
+        imageAfterCollide = dataLoader_.puzzleDirectoryPath_ + "/screenshots/" + screenShotName + "_after_collide.png";
     }
 
 
