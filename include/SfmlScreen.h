@@ -7,6 +7,8 @@
 #include "Piece.h"
 #include "Global_Parameters.h"
 
+
+
 class SfmlScreen
 {
 public:
@@ -49,7 +51,6 @@ public:
 	bool pollEvent(sf::Event& event);
 	void closeWindow();
 
-	void screenShot(std::string fileName);
-
+	void screenShotToFile(std::string fileName);
 };
 

@@ -85,7 +85,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 			screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
 		}
 
-		screen_->screenShot(screenshotPathBeforeCollide);
+		screen_->screenShotToFile(screenshotPathBeforeCollide);
 	}
 	
 
@@ -120,7 +120,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 			screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
 		}
 
-		screen_->screenShot(screenshotPathAfterCollide);
+		screen_->screenShotToFile(screenshotPathAfterCollide);
 	}
 	
 	screen_->closeWindow();
