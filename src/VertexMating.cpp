@@ -31,7 +31,8 @@ nlohmann::json VertexMating::toJson(float scale)
 	oJson["firstPieceVertex"] = firstPieceVertex_;
 	oJson["secondPieceId"] = secondPieceId_;
 	oJson["secondPieceVertex"] = secondPieceVertex_;
-	oJson["snapshotedLength"] = jointLengthSnapshots_[jointLengthSnapshots_.size()-1] / scale;
+	auto numSnapshots = jointLengthSnapshots_.size();
+	oJson["snapshotedLength"] = jointLengthSnapshots_[numSnapshots-1] / scale;
 
 	return oJson;
 }

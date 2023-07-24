@@ -16,14 +16,9 @@ private:
 	Piece* getMaxMatingsPiece();
 	void initStaticBody(Piece& piece, b2Vec2& position);
 	void initMovingBody(Piece& piece, b2Vec2& initialPosition);
-	/*void connectSpringsToPieces(b2Body* bodyA, b2Body* bodyB,
-		b2Vec2* globalCoordsAnchorA, b2Vec2* globalCoordsAnchorB,
-		float frequencyHertz = 1.0f, float dampingRatio = 0.01);*/
 	void putMatingSprings(VertexMating& mating, float frequencyHertz = 1.0f, float dampingRatio = 0.01);
 
 protected:
-	/*float computePiecesOverlapAreaPercentage();
-	float computeOverlapAreaDiceCoeff();*/
 	void computePiecesBoostPolygons();
 	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
 
