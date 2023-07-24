@@ -1,5 +1,6 @@
 //#include "http_server.h"
 #include "HttpServerCD.h"
+#include "HttpServerRePAIR.h"
 #include <DataLoader.h>
 #include <Piece.h>
 ////#include <World.h>
@@ -31,10 +32,9 @@ int main(int argc, char** argv)
 				httpServer.run();
 			}
 			else if (param2Value.at("server") == "RePAIR") {
-
-			
+				HttpServerRePAIR httpServer;
+				httpServer.run();
 			}
-			
 		}
 		else
 		{
