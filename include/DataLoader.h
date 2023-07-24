@@ -15,7 +15,7 @@ public:
 	std::string puzzleDirectoryPath_;
 
 	DataLoader(std::string puzzleDirectoryPath);
-	void loadPieces(std::vector<Piece> &olstPiece,bool isOfir = true);
+	void loadPieces(std::vector<Piece> &olstPiece,bool isOfir = true, std::string piecesFile="");
 	void coordsToEigenCoords(Eigen::MatrixXd &eigenCoords,std::vector<std::pair<double, double>>& coords);
 	
 	void loadVertexMatings(std::vector<VertexMating>& olstMatings,std::string fileName="springs_anchors.csv");//, const std::vector<Piece>& pieces

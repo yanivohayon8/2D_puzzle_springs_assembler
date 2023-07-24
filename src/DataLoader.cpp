@@ -61,7 +61,7 @@ std::string DataLoader::getImagePath(std::string pieceId)
     return path;
 }
 
-void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
+void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir, std::string piecesFile)
 {
     /*
         Loads the computed pieces. The csv headers are the following: piece,x,y.
@@ -69,7 +69,12 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
     */
 
     //std::string piecesFile = pieces.csv"; //puzzleDirectoryPath_ + "/pieces.csv"; //"C:\\Users\\97254pieces.csv"; //puzzleDirectoryPath_ + "/pieces.csv"; //"C:\\Users\\97254\\Desktop\\msc\\RePAIR\\projects\\springs_assembler_sfml\\2D_puzzle_springs_assembler\\data\\ofir\\RePAIR\\group_39\\pieces.csv"; //puzzleDirectoryPath_ + "/pieces.csv";// + pieces_file_name;
-    std::string piecesFile = puzzleDirectoryPath_ + "/pieces.csv";// + pieces_file_name;
+    //std::string piecesFile = puzzleDirectoryPath_ + "/pieces.csv";// + pieces_file_name;
+
+    if (piecesFile=="")
+    {
+        piecesFile = puzzleDirectoryPath_ + "/pieces.csv";
+    }
     
     std::ifstream infile(piecesFile);
 
