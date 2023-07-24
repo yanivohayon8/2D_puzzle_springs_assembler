@@ -28,6 +28,7 @@ public:
     int port_=8888;
     HTTPServer(int port = 8888);
     void run();
+    void payloadToMatings(std::vector<VertexMating>& oMatings,std::string requestBody);
 };
 
 #endif #HTTP_SERVER_H
