@@ -21,8 +21,25 @@ int main(int argc, char** argv)
 		//--test VisualGroundTruth
 		RouteTests(param2Value);
 	} else {
-		HttpServerCD httpServer;
-		httpServer.run();
+
+		if (param2Value.count("server") > 0)
+		{
+			if (param2Value.at("server") == "ConvexDrawing")
+			{
+
+				HttpServerCD httpServer;
+				httpServer.run();
+			}
+			else if (param2Value.at("server") == "RePAIR") {
+
+			
+			}
+			
+		}
+		else
+		{
+			std::cout << "Please provide the task you want to execute (test\server)" << std::endl;
+		}
 	}
 
 	return 0;

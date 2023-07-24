@@ -14,18 +14,5 @@ void parseInput(std::map<std::string, std::string> &oParam2Value, int argc, char
 			continue;
 		}
 
-		//if (token=="--test")
-		//{
-		//	oParam2Value.insert({ "test",argv[i + 1] });
-		//	continue;
-		//}
-
-		//if (token=="--puzzleDir")
-		//{
-		//	//oPuzzleDirectory = argv[i + 1];			
-		//	oParam2Value.insert({ "puzzleDir",argv[i + 1] });
-		//	continue;
-		//}
-
 	}
 }
