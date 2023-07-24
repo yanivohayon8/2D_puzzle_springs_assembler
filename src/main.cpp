@@ -1,4 +1,5 @@
-#include "http_server.h"
+//#include "http_server.h"
+#include "HttpServerCD.h"
 #include <DataLoader.h>
 #include <Piece.h>
 ////#include <World.h>
@@ -7,7 +8,7 @@
 #include <Puzzle.h>
 #include <reconstruction.h>
 #include <TestHandler.h>
-#include <cpp-httplib/httplib.h>
+//#include <cpp-httplib/httplib.h>
 
 int main(int argc, char** argv)
 {
@@ -20,7 +21,7 @@ int main(int argc, char** argv)
 		//--test VisualGroundTruth
 		RouteTests(param2Value);
 	} else {
-		HTTPServer httpServer;
+		HttpServerCD httpServer;
 		httpServer.run();
 	}
 

@@ -13,17 +13,16 @@
 #include <json.hpp>
 
 class HTTPServer {
-private:
-    std::string versionPrefix_ = "/v0";
-    Puzzle puzzle_;
-    DataLoader dataLoader_;
-    SilentReconstructor silentReconstructor_;
+
+protected:
+    virtual void handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody);//, Json::Value& bodyRequest
+    virtual void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res);
     std::vector<Piece> activePieces_;
     std::vector<VertexMating> activeMatings_;
-    
-    void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res);
-    void handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody);//, Json::Value& bodyRequest
+    SilentReconstructor silentReconstructor_;
     httplib::Server server_;
+    std::string versionPrefix_ = "/v0";
+
 public:
     int port_=8888;
     HTTPServer(int port = 8888);
