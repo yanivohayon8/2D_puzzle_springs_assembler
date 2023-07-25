@@ -89,7 +89,7 @@ void Reconstructor::putMatingSprings(VertexMating& mating, float frequencyHertz,
 
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, vertexGlobalA, vertexGlobalB);
-	jointDef.collideConnected = false; //true;//false; // true makes the correct matings "jitter"?
+	jointDef.collideConnected = isEnableJointsCollide_;//true;//false; //true;//false; // true makes the correct matings "jitter"?
 	jointDef.minLength = 0;//0.05;// 0.1f;
 	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
 	jointDef.length = 0.01;// 0.05;
@@ -383,4 +383,15 @@ void Reconstructor::saveFinalTransforms(const std::string& filename,const b2Vec2
 	file.close();
 
 	std::cout << "Matrix data written to CSV file: " << filename << std::endl;
+}
+
+void Reconstructor::disableJointsCollide()
+{
+	isEnableJointsCollide_ = false;
+}
+
+void Reconstructor::enableJointsCollide()
+{
+	isEnableJointsCollide_ = true;
+
 }

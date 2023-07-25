@@ -12,6 +12,7 @@ void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, http
 {
     VisualReconstructor vsReconstructor;
     vsReconstructor.init();
+    vsReconstructor.enableJointsCollide();
     vsReconstructor.initRun(activePieces_, activeMatings_);
     vsReconstructor.Run();
     vsReconstructor.closeRun();

@@ -21,6 +21,7 @@ private:
 protected:
 	void computePiecesBoostPolygons();
 	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
+	bool isEnableJointsCollide_ = false;
 
 public:
 	b2World world_ = b2World(b2Vec2(0, 0));
@@ -49,5 +50,8 @@ public:
 	virtual void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "")=0;
 	void closeRun(); // delete the matings and pieces...
 	float getPiecesOverlappingArea();
+
+	void disableJointsCollide();
+	void enableJointsCollide();
 };
 
