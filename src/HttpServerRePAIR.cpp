@@ -7,6 +7,21 @@ HttpServerRePAIR::HttpServerRePAIR(int port) :HTTPServer(port)
 	dataLoader_.setPuzzleDirectory("../data/RePAIR");
 }
 
+
+void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, httplib::Response& res)
+{
+    VisualReconstructor vsReconstructor;
+    vsReconstructor.init();
+    vsReconstructor.initRun(activePieces_, activeMatings_);
+    vsReconstructor.Run();
+    vsReconstructor.closeRun();
+    
+    activeMatings_.clear();
+    activePieces_.clear();
+    res.set_content("Ran simulation", "text/plain");
+    res.status = 200;
+}
+
 void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody)
 {
 	payloadToMatings(activeMatings_, requestBody);
@@ -70,6 +85,11 @@ void HttpServerRePAIR::run()
  
     server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
 
+
+        // This is for tests
+        bool isVisualTest= req.has_param("isVisualTest");
+ 
+
         // For simplicity of development the scheme is 
         // firstPieceId,firstPieceVertexIndex,secondPieceId,secondPieceVertexIndex;
         std::string strRequestBody;
@@ -82,7 +102,15 @@ void HttpServerRePAIR::run()
         try
         {
             handlePuzzleLoading(req, res,strRequestBody);
-            handleReconstruct(req, res);
+
+            if (isVisualTest)
+            {
+                handleVisualReconstruct(req, res);
+            }
+            else
+            {
+                handleReconstruct(req, res);
+            }
         }
         catch (const std::exception& ex)
         {
@@ -92,6 +120,6 @@ void HttpServerRePAIR::run()
         }
         });
 
-    std::cout << "HTTP server is listening on port " << port_ << std::endl;
+    std::cout << "RePAIR HTTP server is listening on port " << port_ << std::endl;
     server_.listen("localhost", port_);
 }
