@@ -70,8 +70,10 @@ void SilentReconstructor::setIterToConvAfterCollide(int numIterationPerPiece)
 
 void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
 {
-	
-	initScreen();
+	if (screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
+	{
+		initScreen();
+	}
 	
 	int iteration = 0;
 	//int iterationToConvergePerPiece = 1000;
@@ -135,5 +137,8 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 		screen_->screenShotToFile(screenshotPathAfterCollide);
 	}
 	
-	screen_->closeWindow();
+	if (screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
+	{
+		screen_->closeWindow();
+	}
 }
