@@ -79,6 +79,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	progress(iterationToConverge);
 
 	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
+	piece2CoordsBeforeEnableCollision_.clear();
 	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
 
 	//debug
