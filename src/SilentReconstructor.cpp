@@ -57,14 +57,25 @@ void SilentReconstructor::progress(int numIteration)
 	}
 }
 
+void SilentReconstructor::setIterToConvBeforeCollide(int numIterationPerPiece)
+{
+	iterationToConvergeBeforeCollidePerPiece_ = numIterationPerPiece;
+}
+
+void SilentReconstructor::setIterToConvAfterCollide(int numIterationPerPiece)
+{
+	iterationToConvergeAfterCollidePerPiece_ = numIterationPerPiece;
+}
+
+
 void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
 {
 	
 	initScreen();
 	
 	int iteration = 0;
-	int iterationToConvergePerPiece = 1000;
-	int iterationToConverge = activePieces_.size() * iterationToConvergePerPiece;
+	//int iterationToConvergePerPiece = 1000;
+	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
 	progress(iterationToConverge);
 
 	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
@@ -94,7 +105,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 		piece.setCollideOn();
 	}
 
-	int iterationToSecondConverage = iterationToConverge / 2;
+	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
 	progress(iterationToSecondConverage);
 	
 	for (auto& mating: activeMatings_)
