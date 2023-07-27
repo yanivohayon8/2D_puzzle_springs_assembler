@@ -67,7 +67,7 @@ nlohmann::json HTTPServer::buildSpringsJson(std::vector<VertexMating>& matings)
     }
 
     nlohmann::json afterCollision;
-    afterCollision["springs"] = joints;
+    //afterCollision["springs"] = joints;
     afterCollision["sumSpringsLength"] = sumLengths;
 
     return afterCollision;
