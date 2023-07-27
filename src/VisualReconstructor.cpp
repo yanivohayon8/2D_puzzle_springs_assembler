@@ -72,6 +72,7 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 						isDrawSprites_ = !isDrawSprites_;
 						break;
 					case sf::Keyboard::E:
+						std::cout << "Exploding" << std::endl;
 						for (auto& piece : activePieces_)
 						{
 							int power = sampleIntUniformly(5, -5, -1);
@@ -99,10 +100,19 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 						}
 						break;
 					case sf::Keyboard::C:
+						std::cout << "Set collide on" << std::endl;
 						for (auto& piece : activePieces_)
 						{
-							piece.switchColide();
+							piece.setCollideOn();
 						}
+						break;
+					case sf::Keyboard::X:
+						std::cout << "Set collide off" << std::endl;
+						for (auto& piece : activePieces_)
+						{
+							piece.setCollideOff();
+						}
+						break;
 					default:
 						break;
 					}
