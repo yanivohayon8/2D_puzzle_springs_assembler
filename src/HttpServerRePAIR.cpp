@@ -67,6 +67,8 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
     nlohmann::json output;
     auto piece2CoordBeforeCollision = silentReconstructor_.getPiece2CoordsBeforeEnableCollision();
     output["piecesBeforeEnableCollision"] = buildPieceCartesianJson(piece2CoordBeforeCollision);
+    auto piece2FinalCoord = silentReconstructor_.getPiece2FinalCoords();
+    output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);
     output["AfterEnableCollision"] = buildSpringsJson(silentReconstructor_.activeMatings_);
 
     silentReconstructor_.closeRun();
