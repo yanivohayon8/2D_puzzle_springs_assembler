@@ -90,9 +90,9 @@ void Reconstructor::putMatingSprings(VertexMating& mating, float frequencyHertz,
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, vertexGlobalA, vertexGlobalB);
 	jointDef.collideConnected = isEnableJointsCollide_;//true;//false; //true;//false; // true makes the correct matings "jitter"?
-	jointDef.minLength = 0;//0.05;// 0.1f;
+	jointDef.minLength = 0; //0;
 	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
-	jointDef.length = 0.01;// 0.05;
+	jointDef.length = 0.01;
 
 	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
 
@@ -218,12 +218,12 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 
 	// Apply impulse on bodies
 	int impulseIndex = 0;
-	float powerMagnitude = 0.2;
+	//float powerMagnitude = 0.2;//2
 	std::vector<b2Vec2> initialImpulses = {
-		{powerMagnitude,powerMagnitude},
-		{-powerMagnitude,powerMagnitude},
-		{-powerMagnitude,-powerMagnitude},
-		{-powerMagnitude,powerMagnitude}
+		{initPowerMagnitude_,initPowerMagnitude_},
+		{-initPowerMagnitude_,initPowerMagnitude_},
+		{-initPowerMagnitude_,-initPowerMagnitude_},
+		{-initPowerMagnitude_,initPowerMagnitude_}
 	};
 	int numInitialImpulses = initialImpulses.size();
 
@@ -394,4 +394,12 @@ void Reconstructor::enableJointsCollide()
 {
 	isEnableJointsCollide_ = true;
 
+}
+
+void Reconstructor::setPiecesLinearDamping(float damping)
+{
+	for (auto& piece : activePieces_)
+	{
+		piece.setLinearDamping(damping);
+	}
 }

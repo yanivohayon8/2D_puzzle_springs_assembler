@@ -22,6 +22,7 @@ protected:
 	void computePiecesBoostPolygons();
 	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
 	bool isEnableJointsCollide_ = false;
+	float initPowerMagnitude_ = 0.2;
 
 public:
 	b2World world_ = b2World(b2Vec2(0, 0));
@@ -53,5 +54,7 @@ public:
 
 	void disableJointsCollide();
 	void enableJointsCollide();
+
+	void setPiecesLinearDamping(float damping);
 };
 
