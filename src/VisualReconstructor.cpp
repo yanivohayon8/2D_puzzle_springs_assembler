@@ -92,6 +92,7 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 						}
 						break;
 					case sf::Keyboard::R:
+						std::cout << "Increase damping" << std::endl;
 						linearDamping += 0.1;
 						for (auto& piece : activePieces_)
 						{
@@ -99,6 +100,7 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 						}
 						break;
 					case sf::Keyboard::T:
+						std::cout << "Decrease damping" << std::endl;
 						linearDamping -= 0.1;
 						if (linearDamping < 0)
 						{
