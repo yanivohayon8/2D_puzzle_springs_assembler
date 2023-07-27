@@ -24,6 +24,11 @@ std::map<std::string, std::vector<b2Vec2>>* SilentReconstructor::getPiece2Coords
 	return &piece2CoordsBeforeEnableCollision_;
 }
 
+std::map<std::string, std::vector<b2Vec2>>* SilentReconstructor::getPiece2FinalCoords()
+{
+	return &piece2FinalCoords_;
+}
+
 void SilentReconstructor::snapshotPiecesCoords(std::map<std::string, std::vector<b2Vec2>>& oPiece2Coords, const b2Vec2& translateCenter)
 {
 
@@ -115,6 +120,9 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	{
 		mating.snapshotJointLength();
 	}
+
+	piece2FinalCoords_.clear();
+	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
 
 	// Debug
 	if (screenshotPathAfterCollide!="")
