@@ -23,6 +23,7 @@ protected:
 	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
 	bool isEnableJointsCollide_ = false;
 	float initPowerMagnitude_ = 0.2;
+	float jointStartLength_ = 0.01;
 
 public:
 	b2World world_ = b2World(b2Vec2(0, 0));
@@ -56,5 +57,8 @@ public:
 	void enableJointsCollide();
 
 	void setPiecesLinearDamping(float damping);
+	void setPiecesCollisionOn();
+	void setPiecesCollisionOff();
+	void setJointStartLength(float length);
 };
 

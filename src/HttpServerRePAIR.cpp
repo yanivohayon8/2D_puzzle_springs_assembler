@@ -14,8 +14,10 @@ void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, http
     VisualReconstructor vsReconstructor;
     vsReconstructor.init();
     //vsReconstructor.enableJointsCollide();
+    vsReconstructor.setJointStartLength(0.02);
     vsReconstructor.initRun(activePieces_, activeMatings_,1);//,1
-    vsReconstructor.setPiecesLinearDamping(0.05);
+    vsReconstructor.setPiecesCollisionOn();
+    vsReconstructor.setPiecesLinearDamping(1);
     vsReconstructor.Run();
     vsReconstructor.closeRun();
     
@@ -62,6 +64,7 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
     silentReconstructor_.setIterToConvBeforeCollide(1000);
     silentReconstructor_.setIterToConvAfterCollide(2000);
     //silentReconstructor_.enableJointsCollide();
+    silentReconstructor_.setJointStartLength(0.02);
     silentReconstructor_.initRun(activePieces_, activeMatings_,1);//,1
     silentReconstructor_.setPiecesLinearDamping(0.1);
     silentReconstructor_.Run(imageBeforeCollide, imageAfterCollide);

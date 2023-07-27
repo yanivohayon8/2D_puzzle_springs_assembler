@@ -75,8 +75,20 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 						std::cout << "Exploding" << std::endl;
 						for (auto& piece : activePieces_)
 						{
-							int power = sampleIntUniformly(5, -5, -1);
-							piece.applyLinearImpulse(power, power);
+							/*int power = sampleIntUniformly(5, -5, -1);
+							piece.applyLinearImpulse(power, power);*/
+							
+							piece.applyLinearImpulse(10, 10);
+						}
+						break;
+					case sf::Keyboard::W:
+						std::cout << "Exploding" << std::endl;
+						for (auto& piece : activePieces_)
+						{
+							/*int power = sampleIntUniformly(5, -5, -1);
+							piece.applyLinearImpulse(power, power);*/
+
+							piece.applyLinearImpulse(-100, -100);
 						}
 						break;
 					case sf::Keyboard::R:
@@ -111,6 +123,44 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 						for (auto& piece : activePieces_)
 						{
 							piece.setCollideOff();
+						}
+						break;
+					case sf::Keyboard::F:
+						// For tests...
+						for (auto& piece: activePieces_)
+						{
+							auto velocity = piece.refb2Body_->GetLinearVelocity();
+							std::string strVelocity = "(" + std::to_string(velocity.x) + "," + std::to_string(velocity.y) + ")";
+							std::cout << "Velocity of piece " << piece.id_ << " is " + strVelocity << std::endl;
+						}
+
+						for (auto& mating : activeMatings_)
+						{
+
+							float inverseTimeStep = 1/timeStep_;
+							auto force = mating.jointRef_->GetReactionForce(inverseTimeStep);
+							std::string strForce = "(" + std::to_string(force.x) + "," + std::to_string(force.y) + ")";
+							std::cout << "Force of mating is " + strForce << std::endl;
+
+							auto torque = mating.jointRef_->GetReactionTorque(inverseTimeStep);
+							std::cout << "Torque of mating is " + std::to_string(torque) << std::endl;
+						}
+
+						break;
+					case sf::Keyboard::S:
+						std::cout << "Extend the springs length in a few cm" << std::endl;
+
+						for (auto& mating : activeMatings_)
+						{
+							float length = mating.jointRef_->GetCurrentLength();
+							mating.jointRef_->SetLength(length + 0.005);
+							
+							/*float stif, damp;
+							b2LinearStiffness(stif, damp, 0.6f, 0.05f, mating.jointRef_->GetBodyA(), mating.jointRef_->GetBodyB());
+							mating.jointRef_->SetStiffness(stif);
+							mating.jointRef_->SetDamping(damp);
+							*/
+							
 						}
 						break;
 					default:

@@ -92,7 +92,7 @@ void Reconstructor::putMatingSprings(VertexMating& mating, float frequencyHertz,
 	jointDef.collideConnected = isEnableJointsCollide_;//true;//false; //true;//false; // true makes the correct matings "jitter"?
 	jointDef.minLength = 0; //0;
 	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
-	jointDef.length = 0.01;
+	jointDef.length = jointStartLength_;//0.01;
 
 	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
 
@@ -402,4 +402,24 @@ void Reconstructor::setPiecesLinearDamping(float damping)
 	{
 		piece.setLinearDamping(damping);
 	}
+}
+
+void Reconstructor::setPiecesCollisionOn()
+{
+	for (auto& piece : activePieces_)
+	{
+		piece.setCollideOn();
+	}
+}
+void Reconstructor::setPiecesCollisionOff()
+{
+	for (auto& piece : activePieces_)
+	{
+		piece.setCollideOff();
+	}
+}
+
+void Reconstructor::setJointStartLength(float length)
+{
+	jointStartLength_ = length;
 }
