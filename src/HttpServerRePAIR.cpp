@@ -10,12 +10,12 @@ HttpServerRePAIR::HttpServerRePAIR(int port) :HTTPServer(port)
 
 void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, httplib::Response& res)
 {
+    std::cout << "Start new reconstruction" << std::endl;
     VisualReconstructor vsReconstructor;
     vsReconstructor.init();
-    vsReconstructor.enableJointsCollide();
-    silentReconstructor_.setIterToConvBeforeCollide(2000);
-    silentReconstructor_.setIterToConvAfterCollide(1000);
-    vsReconstructor.initRun(activePieces_, activeMatings_);//,1
+    //vsReconstructor.enableJointsCollide();
+    vsReconstructor.initRun(activePieces_, activeMatings_,1);//,1
+    vsReconstructor.setPiecesLinearDamping(0.05);
     vsReconstructor.Run();
     vsReconstructor.closeRun();
     
@@ -46,6 +46,7 @@ void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib:
 
 void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::Response& res)
 {
+    std::cout << "Start new reconstruction" << std::endl;
     std::string screenShotName = "";
     std::string imageBeforeCollide = "";
     std::string imageAfterCollide = "";
@@ -58,10 +59,11 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
         imageAfterCollide = dataLoader_.puzzleDirectoryPath_ + "/screenshots/" + screenShotName + "_after_collide.png";
     }
 
-    silentReconstructor_.enableJointsCollide();
-    silentReconstructor_.setIterToConvBeforeCollide(2000);
-    silentReconstructor_.setIterToConvAfterCollide(1000);
-    silentReconstructor_.initRun(activePieces_, activeMatings_);//,1
+    silentReconstructor_.setIterToConvBeforeCollide(1000);
+    silentReconstructor_.setIterToConvAfterCollide(2000);
+    //silentReconstructor_.enableJointsCollide();
+    silentReconstructor_.initRun(activePieces_, activeMatings_,1);//,1
+    silentReconstructor_.setPiecesLinearDamping(0.1);
     silentReconstructor_.Run(imageBeforeCollide, imageAfterCollide);
 
     nlohmann::json output;
