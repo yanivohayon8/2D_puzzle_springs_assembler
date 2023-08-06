@@ -29,7 +29,8 @@ void HttpServerCD::handlePuzzleLoading(const httplib::Request& req, httplib::Res
     puzzleNum = req.get_param_value("num");
     noise = req.get_param_value("noise");
 
-    puzzleDirectory = "../data/ofir/" + directory + "/Puzzle" + puzzleNum + "/" + noise;
+    //puzzleDirectory = "../data/ofir/" + directory + "/Puzzle" + puzzleNum + "/" + noise;
+    puzzleDirectory = "C:/Users/97254/Desktop/msc/Thesis/ConvexDrawingDataset/" + directory + "/Puzzle" + puzzleNum + "/" + noise;
 
     std::cout << "Recieved simulation for puzzle in " << puzzleDirectory << std::endl;
 
