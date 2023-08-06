@@ -22,6 +22,8 @@ bool SfmlScreen::pollEvent(sf::Event& nextEvent)
 void SfmlScreen::closeWindow()
 {
 	window_.close();
+	pieceId2Sprite_.clear();
+	pieceId2texture_.clear();
 }
 
 void SfmlScreen::initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordinates)
