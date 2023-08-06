@@ -269,6 +269,8 @@ void Reconstructor::closeRun()
 	}*/
 	
 	activeMatings_.clear();
+
+	std::cout << "Run closed" << std::endl;
 }
 
 void Reconstructor::computePiecesBoostPolygons()
