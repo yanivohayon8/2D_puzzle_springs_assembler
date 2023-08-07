@@ -7,8 +7,8 @@ bool SilentReconstructor::isScreenInitiated()
 
 void SilentReconstructor::initScreen()//std::vector<Piece>& pieces
 {
-	bool isScreenVisible = false;
-	screen_->initDisplay(isScreenVisible);
+	//bool isScreenVisible = false;
+	screen_->initDisplay(isDebugScreenVisible_);
 
 	for (auto& piece : activePieces_)
 	{
@@ -59,6 +59,28 @@ void SilentReconstructor::progress(int numIteration)
 		{
 			pieceIt->translate();
 		}
+
+		if (isDebugScreenVisible_)
+		{
+			screen_->clearDisplay();
+
+			for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
+			{
+				const b2Transform& transform = pieceIt->refb2Body_->GetTransform();			
+				screen_->drawSprite(pieceIt->id_, transform);
+			}
+
+			for (auto& mating : activeMatings_)
+			{
+				auto& anchorA = mating.jointRef_->GetAnchorA();
+				auto& anchorB = mating.jointRef_->GetAnchorB();
+				screen_->drawLine(anchorA, anchorB, springColor_, -1);
+			}
+
+			screen_->updateDisplay();
+		}
+
+		
 	}
 }
 
@@ -72,10 +94,14 @@ void SilentReconstructor::setIterToConvAfterCollide(int numIterationPerPiece)
 	iterationToConvergeAfterCollidePerPiece_ = numIterationPerPiece;
 }
 
+void SilentReconstructor::setDebugScreenVisibility(bool isVisible)
+{
+	isDebugScreenVisible_ = isVisible;
+}
 
 void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
 {
-	if (screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
+	if (isDebugScreenVisible_ || screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
 	{
 		initScreen();
 	}
@@ -95,19 +121,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 		mating.snapshotJointLength();
 	}
 
-	// debug
-	/*if (screenshotPathBeforeCollide != "")
-	{
-		screen_->clearDisplay();
-		for (auto& piece : activePieces_)
-		{
-			screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
-		}
-
-		screen_->screenShotToFile(screenshotPathBeforeCollide);
-	}*/
 	
-
 	for (auto& piece : activePieces_)
 	{
 		piece.setCollideOn();
@@ -144,9 +158,16 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 		screen_->screenShotToFile(screenshotPathAfterCollide);
 	}
+
 	
 	if (screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
 	{
+		screen_->closeWindow();		
+	}
+
+	if (isDebugScreenVisible_)
+	{
 		screen_->closeWindow();
+		isDebugScreenVisible_ = false;
 	}
 }

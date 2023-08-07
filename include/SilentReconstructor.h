@@ -15,6 +15,8 @@ protected:
 	bool isScreenInitiated_ = false;
 	int iterationToConvergeBeforeCollidePerPiece_ = 1000;
 	int iterationToConvergeAfterCollidePerPiece_ = 500;
+	bool isDebugScreenVisible_ = false;
+	sf::Color springColor_ = sf::Color::Red;
 
 public:
 	void Run(std::string screenshotPathBeforeCollide="", std::string screenshotPathAfterCollide="");
@@ -22,6 +24,7 @@ public:
 	std::map<std::string, std::vector<b2Vec2>>* getPiece2FinalCoords();
 	void initScreen();//std::vector<Piece>& pieces
 	bool isScreenInitiated();
+	void setDebugScreenVisibility(bool isVisible);
 	void setIterToConvAfterCollide(int numIterationPerPiece);
 	void setIterToConvBeforeCollide(int numIterationPerPiece);
 };

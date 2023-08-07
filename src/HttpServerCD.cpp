@@ -48,7 +48,6 @@ void HttpServerCD::handlePuzzleLoading(const httplib::Request& req, httplib::Res
 
 void HttpServerCD::handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody)//, Json::Value& bodyRequest
 {
-
     std::string screenShotName = "";
     std::string imageBeforeCollide = "";
     std::string imageAfterCollide = "";
@@ -59,6 +58,12 @@ void HttpServerCD::handleReconstruct(const httplib::Request& req, httplib::Respo
 
         imageBeforeCollide = dataLoader_.puzzleDirectoryPath_ + "/screenshots/" + screenShotName + "_before_collide.png";
         imageAfterCollide = dataLoader_.puzzleDirectoryPath_ + "/screenshots/" + screenShotName + "_after_collide.png";
+    }
+
+    silentReconstructor_.setDebugScreenVisibility(false);
+    if (req.has_param("debugVisibily"))
+    {
+        silentReconstructor_.setDebugScreenVisibility(true);
     }
 
 
