@@ -19,7 +19,6 @@ private:
 	void putMatingSprings(VertexMating& mating, float frequencyHertz = 1.0f, float dampingRatio = 0.01);
 
 protected:
-	void computePiecesBoostPolygons();
 	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
 	bool isEnableJointsCollide_ = false;
 	float initPowerMagnitude_ = 0.2;
@@ -51,7 +50,6 @@ public:
 	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating>& activeMatings, int positionSeed = 0, int positionPadding = 2);
 	virtual void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "")=0;
 	void closeRun(); // delete the matings and pieces...
-	float getPiecesOverlappingArea();
 
 	void disableJointsCollide();
 	void enableJointsCollide();
