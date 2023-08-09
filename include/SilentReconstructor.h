@@ -6,10 +6,10 @@
 class SilentReconstructor: public Reconstructor
 {
 private:
-	void progress(int numIteration);
-	void snapshotPiecesCoords(std::map<std::string, std::vector<b2Vec2>>& oPiece2Coords, const b2Vec2 &translateCenter);
 	
 protected:	
+	void snapshotPiecesCoords(std::map<std::string, std::vector<b2Vec2>>& oPiece2Coords, const b2Vec2 &translateCenter);
+	void progress(int numIteration);
 	std::map<std::string, std::vector<b2Vec2>> piece2CoordsBeforeEnableCollision_;
 	std::map<std::string, std::vector<b2Vec2>> piece2FinalCoords_;
 	bool isScreenInitiated_ = false;
