@@ -8,24 +8,6 @@ HttpServerRePAIR::HttpServerRePAIR(int port) :HTTPServer(port)
 }
 
 
-void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, httplib::Response& res)
-{
-    std::cout << "Start new reconstruction" << std::endl;
-    VisualReconstructor vsReconstructor;
-    vsReconstructor.init();
-    //vsReconstructor.enableJointsCollide();
-    vsReconstructor.setJointStartLength(0.02);
-    vsReconstructor.initRun(activePieces_, activeMatings_,1);//,1
-    vsReconstructor.setPiecesCollisionOn();
-    vsReconstructor.setPiecesLinearDamping(1);
-    vsReconstructor.Run();
-    vsReconstructor.closeRun();
-    
-    activeMatings_.clear();
-    activePieces_.clear();
-    res.set_content("Ran simulation", "text/plain");
-    res.status = 200;
-}
 
 void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody)
 {
@@ -46,6 +28,26 @@ void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib:
 	}
 }
 
+void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, httplib::Response& res)
+{
+    std::cout << "Start new reconstruction" << std::endl;
+    VisualReconstructor vsReconstructor;
+    vsReconstructor.init();
+    //vsReconstructor.enableJointsCollide();
+    vsReconstructor.setJointStartLength(0.05);
+    vsReconstructor.initRun(activePieces_, activeMatings_, 1);//,1
+    vsReconstructor.setPiecesCollisionOn();
+    vsReconstructor.setPiecesLinearDamping(1);
+    vsReconstructor.Run();
+    vsReconstructor.closeRun();
+
+    activeMatings_.clear();
+    activePieces_.clear();
+    res.set_content("Ran simulation", "text/plain");
+    res.status = 200;
+}
+
+
 void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::Response& res)
 {
     std::cout << "Start new reconstruction" << std::endl;
@@ -61,22 +63,28 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
         imageAfterCollide = dataLoader_.puzzleDirectoryPath_ + "/screenshots/" + screenShotName + "_after_collide.png";
     }
 
-    silentReconstructor_.setIterToConvBeforeCollide(1000);
-    silentReconstructor_.setIterToConvAfterCollide(2000);
-    //silentReconstructor_.enableJointsCollide();
-    silentReconstructor_.setJointStartLength(0.02);
-    silentReconstructor_.initRun(activePieces_, activeMatings_,1);//,1
-    silentReconstructor_.setPiecesLinearDamping(0.1);
-    silentReconstructor_.Run(imageBeforeCollide, imageAfterCollide);
+    reconstructor_.setDebugScreenVisibility(false);
+    if (req.has_param("debugVisibily"))
+    {
+        reconstructor_.setDebugScreenVisibility(true);
+    }
+
+    reconstructor_.setIterToConvBeforeCollide(1000);
+    reconstructor_.setIterToConvAfterCollide(2000);
+    
+    
+    reconstructor_.initRun(activePieces_, activeMatings_,1);//,1
+    reconstructor_.setPiecesLinearDamping(1);
+    reconstructor_.Run(imageBeforeCollide, imageAfterCollide);
 
     nlohmann::json output;
-    auto piece2CoordBeforeCollision = silentReconstructor_.getPiece2CoordsBeforeEnableCollision();
+    auto piece2CoordBeforeCollision = reconstructor_.getPiece2CoordsBeforeEnableCollision();
     output["piecesBeforeEnableCollision"] = buildPieceCartesianJson(piece2CoordBeforeCollision);
-    auto piece2FinalCoord = silentReconstructor_.getPiece2FinalCoords();
+    auto piece2FinalCoord = reconstructor_.getPiece2FinalCoords();
     output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);
-    output["AfterEnableCollision"] = buildSpringsJson(silentReconstructor_.activeMatings_);
+    output["AfterEnableCollision"] = buildSpringsJson(reconstructor_.activeMatings_);
 
-    silentReconstructor_.closeRun();
+    reconstructor_.closeRun();
     activeMatings_.clear();
     activePieces_.clear();
 
@@ -86,7 +94,8 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
 
 void HttpServerRePAIR::run()
 {
-    silentReconstructor_.init();
+    //silentReconstructor_.init();
+    reconstructor_.init();
 
     server_.Get(versionPrefix_ + "/sanity", [&](const httplib::Request& req, httplib::Response& res) {
 
