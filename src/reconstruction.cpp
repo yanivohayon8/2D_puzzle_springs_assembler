@@ -61,7 +61,7 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	piece.refb2Body_ = body;
 }
 
-void Reconstructor::putMatingSprings(VertexMating& mating, float frequencyHertz, float dampingRatio)
+void Reconstructor::putMatingSprings(VertexMating& mating)
 {
 	Piece* pieceA;
 	Piece* pieceB;
@@ -94,7 +94,7 @@ void Reconstructor::putMatingSprings(VertexMating& mating, float frequencyHertz,
 	jointDef.maxLength = boardWidth_;//we have here implicit assumption that the board is squared
 	jointDef.length = jointStartLength_;//0.01;
 
-	b2LinearStiffness(jointDef.stiffness, jointDef.damping, frequencyHertz, dampingRatio, bodyA, bodyB);
+	b2LinearStiffness(jointDef.stiffness, jointDef.damping, jointFrequencyHertz_, jointDampingRatio_, bodyA, bodyB);
 
 	mating.jointRef_ = (b2DistanceJoint*)world_.CreateJoint(&jointDef);
 }
@@ -199,6 +199,7 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 
 	fixedPiece_ = getMaxMatingsPiece();
 	initStaticBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+	//initMovingBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
 
 	std::vector<b2Vec2> positions;
 	generate2DVectors(positions, activePieces_.size() - 1, boardWidth_, boardHeight_, positionPadding, positionSeed);
@@ -355,3 +356,12 @@ void Reconstructor::setInitPowerMagnitude(float magnitude)
 	initPowerMagnitude_ = magnitude;
 }
 
+void Reconstructor::setJointFrequency(float herz)
+{
+	jointFrequencyHertz_ = herz;
+}
+
+void Reconstructor::setJointDamping(float ratio)
+{
+	jointDampingRatio_ = ratio;
+}

@@ -44,12 +44,12 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 		}
 
-		for (auto& mating : activeMatings_)
+		/*for (auto& mating : activeMatings_)
 		{
 			auto& anchorA = mating.jointRef_->GetAnchorA();
 			auto& anchorB = mating.jointRef_->GetAnchorB();
 			screen_->drawLine(anchorA, anchorB, redColor, -1);
-		}
+		}*/
 
 		screen_->updateDisplay();
 
@@ -151,10 +151,10 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 							std::cout << "AnchorA " << std::to_string(mating.jointRef_->GetAnchorA().x) << "," << std::to_string(mating.jointRef_->GetAnchorA().y) << std::endl;
 							std::cout << "AnchorB " << std::to_string(mating.jointRef_->GetAnchorB().x) << "," << std::to_string(mating.jointRef_->GetAnchorB().y) << std::endl;
 							
-							
-							//activePieces_[1].refb2Body_->ApplyLinearImpulse(5 * force, mating.jointRef_->GetAnchorB(), true);
+							activePieces_[1].setAngularDamping(0.15);
+							activePieces_[1].refb2Body_->ApplyLinearImpulse(5 * force, mating.jointRef_->GetAnchorB(), true);
 
-							activePieces_[1].refb2Body_->ApplyLinearImpulseToCenter(10 * force, true);
+							//activePieces_[1].refb2Body_->ApplyLinearImpulseToCenter(10 * force, true);
 							
 							world_.DestroyJoint(mating.jointRef_);
 						}
@@ -168,12 +168,20 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 						break;
 					case sf::Keyboard::S:
-						std::cout << "Extend the springs length in a few cm" << std::endl;
+						//std::cout << "Extend the springs length in a few cm" << std::endl;
 
 						for (auto& mating : activeMatings_)
 						{
-							float length = mating.jointRef_->GetCurrentLength();
-							mating.jointRef_->SetLength(length + 0.005);
+							float inverseTimeStep = 1 / timeStep_;
+							auto force = mating.jointRef_->GetReactionForce(inverseTimeStep);
+
+							b2Vec2 perperndicular(-force.y*5, -force.x*5);
+
+							activePieces_[1].refb2Body_->ApplyLinearImpulse(perperndicular, mating.jointRef_->GetAnchorB(), true);
+							//activePieces_[1].refb2Body_->ApplyLinearImpulseToCenter(perperndicular,true);*/
+
+							//float length = mating.jointRef_->GetCurrentLength();
+							//mating.jointRef_->SetLength(length + 0.005);
 							
 							/*float stif, damp;
 							b2LinearStiffness(stif, damp, 0.6f, 0.05f, mating.jointRef_->GetBodyA(), mating.jointRef_->GetBodyB());

@@ -16,7 +16,7 @@ private:
 	Piece* getMaxMatingsPiece();
 	void initStaticBody(Piece& piece, b2Vec2& position);
 	void initMovingBody(Piece& piece, b2Vec2& initialPosition);
-	void putMatingSprings(VertexMating& mating, float frequencyHertz = 1.0f, float dampingRatio = 0.01);
+	void putMatingSprings(VertexMating& mating);
 
 protected:
 	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
@@ -24,6 +24,8 @@ protected:
 	float initPowerMagnitude_ = 0.2;
 	float jointStartLength_ = 0.01;
 	float jointMinLength_ = 0;
+	float jointFrequencyHertz_ = 1.0f;
+	float jointDampingRatio_ = 0.01;
 
 public:
 	b2World world_ = b2World(b2Vec2(0, 0));
@@ -56,6 +58,8 @@ public:
 	void enableJointsCollide();
 	void setJointStartLength(float length);
 	void setJointMinLength(float minlength);
+	void setJointFrequency(float herz);
+	void setJointDamping(float ratio);
 	void setInitPowerMagnitude(float magnitude);
 
 	void setPiecesLinearDamping(float damping);

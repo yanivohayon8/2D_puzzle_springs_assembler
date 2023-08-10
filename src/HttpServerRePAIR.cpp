@@ -34,7 +34,10 @@ void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, http
     VisualReconstructor vsReconstructor;
     vsReconstructor.init();
     //vsReconstructor.enableJointsCollide();
-    vsReconstructor.setJointStartLength(0.05);
+    //vsReconstructor.setJointStartLength(5);
+    vsReconstructor.setJointMinLength(1);
+    vsReconstructor.setJointFrequency(2);
+    vsReconstructor.setInitPowerMagnitude(0);
     vsReconstructor.initRun(activePieces_, activeMatings_, 1);//,1
     vsReconstructor.setPiecesCollisionOn();
     vsReconstructor.setPiecesLinearDamping(1);
@@ -43,7 +46,10 @@ void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, http
 
     activeMatings_.clear();
     activePieces_.clear();
-    res.set_content("Ran simulation", "text/plain");
+
+    nlohmann::json output;
+
+    res.set_content(output.dump(), "text/plain");
     res.status = 200;
 }
 
@@ -69,7 +75,7 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
         reconstructor_.setDebugScreenVisibility(true);
     }
 
-    reconstructor_.setIterToConvBeforeCollide(1000);
+    reconstructor_.setIterToConvBeforeCollide(2000);
     reconstructor_.setIterToConvAfterCollide(2000);
     
     
@@ -78,11 +84,11 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
     reconstructor_.Run(imageBeforeCollide, imageAfterCollide);
 
     nlohmann::json output;
-    auto piece2CoordBeforeCollision = reconstructor_.getPiece2CoordsBeforeEnableCollision();
+    /*auto piece2CoordBeforeCollision = reconstructor_.getPiece2CoordsBeforeEnableCollision();
     output["piecesBeforeEnableCollision"] = buildPieceCartesianJson(piece2CoordBeforeCollision);
     auto piece2FinalCoord = reconstructor_.getPiece2FinalCoords();
-    output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);
-    output["AfterEnableCollision"] = buildSpringsJson(reconstructor_.activeMatings_);
+    output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);*/
+    //output["AfterEnableCollision"] = buildSpringsJson(reconstructor_.activeMatings_);
 
     reconstructor_.closeRun();
     activeMatings_.clear();
