@@ -16,9 +16,9 @@ private:
 	Piece* getMaxMatingsPiece();
 	void initStaticBody(Piece& piece, b2Vec2& position);
 	void initMovingBody(Piece& piece, b2Vec2& initialPosition);
-	void putMatingSprings(VertexMating& mating);
 
 protected:
+	void putMatingSprings(VertexMating& mating);
 	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
 	bool isEnableJointsCollide_ = false;
 	float initPowerMagnitude_ = 0.2;

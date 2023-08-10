@@ -33,14 +33,14 @@ void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, http
     std::cout << "Start new reconstruction" << std::endl;
     VisualReconstructor vsReconstructor;
     vsReconstructor.init();
-    //vsReconstructor.enableJointsCollide();
-    //vsReconstructor.setJointStartLength(5);
-    vsReconstructor.setJointMinLength(1);
-    vsReconstructor.setJointFrequency(2);
+    vsReconstructor.enableJointsCollide();
+    vsReconstructor.setJointStartLength(0.15);
+    //vsReconstructor.setJointMinLength(1);
+    //vsReconstructor.setJointFrequency(2);
     vsReconstructor.setInitPowerMagnitude(0);
     vsReconstructor.initRun(activePieces_, activeMatings_, 1);//,1
     vsReconstructor.setPiecesCollisionOn();
-    vsReconstructor.setPiecesLinearDamping(1);
+    vsReconstructor.setPiecesLinearDamping(1); // 1
     vsReconstructor.Run();
     vsReconstructor.closeRun();
 
