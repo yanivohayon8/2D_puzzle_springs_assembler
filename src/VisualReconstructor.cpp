@@ -146,7 +146,25 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 							auto torque = mating.jointRef_->GetReactionTorque(inverseTimeStep);
 							std::cout << "Torque of mating is " + std::to_string(torque) << std::endl;
+							
+							std::cout << "piece 1 " << mating.firstPieceId_ << " piece2 " << mating.secondPieceId_ << std::endl;
+							std::cout << "AnchorA " << std::to_string(mating.jointRef_->GetAnchorA().x) << "," << std::to_string(mating.jointRef_->GetAnchorA().y) << std::endl;
+							std::cout << "AnchorB " << std::to_string(mating.jointRef_->GetAnchorB().x) << "," << std::to_string(mating.jointRef_->GetAnchorB().y) << std::endl;
+							
+							
+							//activePieces_[1].refb2Body_->ApplyLinearImpulse(5 * force, mating.jointRef_->GetAnchorB(), true);
+
+							activePieces_[1].refb2Body_->ApplyLinearImpulseToCenter(10 * force, true);
+							
+							world_.DestroyJoint(mating.jointRef_);
 						}
+
+						/*auto hardcodedForce = b2Vec2(0.029518, -0.169097);
+						activePieces_[1].refb2Body_->ApplyLinearImpulseToCenter(-hardcodedForce, true);
+						activePieces_[0].refb2Body_->ApplyLinearImpulseToCenter(hardcodedForce, true);*/
+						
+						
+						
 
 						break;
 					case sf::Keyboard::S:
@@ -163,6 +181,25 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 							mating.jointRef_->SetDamping(damp);
 							*/
 							
+						}
+						break;
+					case sf::Keyboard::A:
+						std::cout << "Short the springs length in a few cm" << std::endl;
+
+						for (auto& mating : activeMatings_)
+						{
+							//float length = mating.jointRef_->GetCurrentLength();
+							//mating.jointRef_->SetLength(length - 0.005);
+
+							float maxLength = mating.jointRef_->GetMaxLength();
+							mating.jointRef_->SetMaxLength(maxLength - 0.1);
+
+							/*float stif, damp;
+							b2LinearStiffness(stif, damp, 0.6f, 0.05f, mating.jointRef_->GetBodyA(), mating.jointRef_->GetBodyB());
+							mating.jointRef_->SetStiffness(stif);
+							mating.jointRef_->SetDamping(damp);
+							*/
+
 						}
 						break;
 					default:

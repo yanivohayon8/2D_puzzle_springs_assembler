@@ -23,6 +23,7 @@ protected:
 	bool isEnableJointsCollide_ = false;
 	float initPowerMagnitude_ = 0.2;
 	float jointStartLength_ = 0.01;
+	float jointMinLength_ = 0;
 
 public:
 	b2World world_ = b2World(b2Vec2(0, 0));
@@ -53,10 +54,11 @@ public:
 
 	void disableJointsCollide();
 	void enableJointsCollide();
+	void setJointStartLength(float length);
+	void setJointMinLength(float minlength);
 
 	void setPiecesLinearDamping(float damping);
 	void setPiecesCollisionOn();
 	void setPiecesCollisionOff();
-	void setJointStartLength(float length);
 };
 
