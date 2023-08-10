@@ -56,6 +56,7 @@ public:
 	void enableJointsCollide();
 	void setJointStartLength(float length);
 	void setJointMinLength(float minlength);
+	void setInitPowerMagnitude(float magnitude);
 
 	void setPiecesLinearDamping(float damping);
 	void setPiecesCollisionOn();

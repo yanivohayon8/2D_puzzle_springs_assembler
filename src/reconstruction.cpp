@@ -344,8 +344,14 @@ void Reconstructor::setJointStartLength(float length)
 {
 	jointStartLength_ = length;
 }
+
 void Reconstructor::setJointMinLength(float minlength)
 {
 	jointMinLength_ = minlength;
+}
+
+void Reconstructor::setInitPowerMagnitude(float magnitude)
+{
+	initPowerMagnitude_ = magnitude;
 }
 
