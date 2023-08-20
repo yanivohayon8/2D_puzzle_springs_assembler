@@ -10,10 +10,10 @@ void HttpServerCD::handlePuzzleLoading(const httplib::Request& req, httplib::Res
 {
     std::string puzzleDirectory = "";
     
-    std::string directory;
+    std::string db;
     std::string puzzleNum;
     std::string noise;
-    std::vector<std::string> requestedConvexDrawParams = { "image","num","noise" };
+    std::vector<std::string> requestedConvexDrawParams = { "db","num","noise" };
 
     for (auto& param : requestedConvexDrawParams)
     {
@@ -25,12 +25,14 @@ void HttpServerCD::handlePuzzleLoading(const httplib::Request& req, httplib::Res
         }
     }
 
-    directory = req.get_param_value("image");
+    db = req.get_param_value("db");
     puzzleNum = req.get_param_value("num");
     noise = req.get_param_value("noise");
 
     //puzzleDirectory = "../data/ofir/" + directory + "/Puzzle" + puzzleNum + "/" + noise;
-    puzzleDirectory = "C:/Users/97254/Desktop/msc/Thesis/ConvexDrawingDataset/" + directory + "/Puzzle" + puzzleNum + "/" + noise;
+    // 
+    //puzzleDirectory = "C:/Users/97254/Desktop/msc/Thesis/ConvexDrawingDataset/" + directory + "/Puzzle" + puzzleNum + "/" + noise;
+    puzzleDirectory = "C:/Users/97254/Desktop/msc/Thesis/ConvexDrawingDataset/DB" + db + "/Puzzle" + puzzleNum + "/noise_" + noise;
 
     std::cout << "Recieved simulation for puzzle in " << puzzleDirectory << std::endl;
 
