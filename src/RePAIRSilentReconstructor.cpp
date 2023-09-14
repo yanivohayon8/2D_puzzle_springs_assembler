@@ -15,10 +15,22 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 	}
 
 	int iteration = 0;
-	setPiecesCollisionOn();
+	//setPiecesCollisionOn();
 	//int iterationToConvergePerPiece = 1000;
 	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
 	progress(iterationToConverge);
+
+	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
+	piece2CoordsBeforeEnableCollision_.clear();
+	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
+
+	setPiecesCollisionOn();
+
+	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
+	progress(iterationToSecondConverage);
+
+	piece2FinalCoords_.clear();
+	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
 
 	
 
