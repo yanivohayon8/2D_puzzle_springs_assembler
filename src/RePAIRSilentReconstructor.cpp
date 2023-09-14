@@ -4,7 +4,7 @@
 RePAIRSilentReconstructor::RePAIRSilentReconstructor():SilentReconstructor()
 {
 	isEnableJointsCollide_ = true;
-	jointStartLength_ = 0.05;
+	jointRestLength_ = 0.05;
 }
 
 void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , std::string screenshotPathAfterCollide)

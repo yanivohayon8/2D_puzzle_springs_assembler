@@ -22,7 +22,7 @@ protected:
 	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
 	bool isEnableJointsCollide_ = false;
 	float initPowerMagnitude_ = 0.2;
-	float jointStartLength_ = 0.01;
+	float jointRestLength_ = 0.01;
 	float jointMinLength_ = 0;
 	float jointFrequencyHertz_ = 1.0f;
 	float jointDampingRatio_ = 0.01;
@@ -57,7 +57,7 @@ public:
 
 	void disableJointsCollide();
 	void enableJointsCollide();
-	void setJointStartLength(float length);
+	void setJointRestLength(float length);
 	void setJointMinLength(float minlength);
 	void setJointFrequency(float herz);
 	void setJointDamping(float ratio);
