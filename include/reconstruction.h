@@ -28,6 +28,7 @@ protected:
 	float jointDampingRatio_ = 0.01;
 
 public:
+	float pieceAngularDamping_ = 0.01;
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> activePieces_;
 	std::vector<VertexMating> activeMatings_;
@@ -42,7 +43,7 @@ public:
 	int screenWidth_;
 #pragma message("Please convert to double");
 	//float timeStep_ = 1 / 60; //1.0F / 60.0F;
-	double timeStep_ = 1.0F / 60.0F;
+	double timeStep_ = 1.0 / 60.0F; //1.0F / 60.0F;
 	int velocityIterations_ = 6;
 	int positionIterations_ = 2;
 
@@ -63,6 +64,7 @@ public:
 	void setInitPowerMagnitude(float magnitude);
 
 	void setPiecesLinearDamping(float damping);
+	void setPiecesAngularDamping(float damping);
 	void setPiecesCollisionOn();
 	void setPiecesCollisionOff();
 };
