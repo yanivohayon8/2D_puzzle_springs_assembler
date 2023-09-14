@@ -14,9 +14,6 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 		initScreen();
 	}
 
-	int iteration = 0;
-	//setPiecesCollisionOn();
-	//int iterationToConvergePerPiece = 1000;
 	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
 	progress(iterationToConverge);
 
@@ -31,15 +28,10 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 
 	piece2FinalCoords_.clear();
 	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
-
 	
-
-	/*int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
-	progress(iterationToSecondConverage);*/
-
-
+	piece2FinalTransformation_.clear();
+	snapshotPiecesTransformation(piece2FinalTransformation_, centerOfBoard);
 	
-
 	if (isDebugScreenVisible_)
 	{
 		screen_->closeWindow();

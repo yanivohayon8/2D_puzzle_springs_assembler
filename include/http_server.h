@@ -30,6 +30,7 @@ public:
     void payloadToMatings(std::vector<VertexMating>& oMatings,std::string requestBody);
     nlohmann::json buildSpringsJson(std::vector<VertexMating>& matings); //
     nlohmann::json buildPieceCartesianJson(std::map<std::string, std::vector<b2Vec2>>* &pieces2Coords);
+    nlohmann::json buildPieceTransformationJson(std::map<std::string, std::pair<float, b2Vec2>>& piece2FinalTransformation);
 };
 
 #endif #HTTP_SERVER_H

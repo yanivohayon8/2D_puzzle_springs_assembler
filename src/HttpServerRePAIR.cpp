@@ -34,13 +34,16 @@ void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, http
     VisualReconstructor vsReconstructor;
     vsReconstructor.init();
     vsReconstructor.enableJointsCollide();
-    vsReconstructor.setJointStartLength(0.15);
+    vsReconstructor.setJointRestLength(0);
     //vsReconstructor.setJointMinLength(1);
-    //vsReconstructor.setJointFrequency(2);
+    vsReconstructor.setJointFrequency(1);
+    vsReconstructor.setJointDamping(0.01);
     vsReconstructor.setInitPowerMagnitude(0);
     vsReconstructor.initRun(activePieces_, activeMatings_, 1);//,1
     vsReconstructor.setPiecesCollisionOn();
+    //vsReconstructor.setPiecesCollisionOff();
     vsReconstructor.setPiecesLinearDamping(1); // 1
+    vsReconstructor.setPiecesAngularDamping(0.01); // 1
     vsReconstructor.Run();
     vsReconstructor.closeRun();
 
@@ -84,11 +87,15 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
     reconstructor_.Run(imageBeforeCollide, imageAfterCollide);
 
     nlohmann::json output;
-    /*auto piece2CoordBeforeCollision = reconstructor_.getPiece2CoordsBeforeEnableCollision();
+    auto piece2CoordBeforeCollision = reconstructor_.getPiece2CoordsBeforeEnableCollision();
     output["piecesBeforeEnableCollision"] = buildPieceCartesianJson(piece2CoordBeforeCollision);
     auto piece2FinalCoord = reconstructor_.getPiece2FinalCoords();
-    output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);*/
+    output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);
     //output["AfterEnableCollision"] = buildSpringsJson(reconstructor_.activeMatings_);
+
+    std::map<std::string, std::pair<float, b2Vec2>> piece2FinalTransformation;
+    reconstructor_.getPiece2FinalTransformation(piece2FinalTransformation);
+    output["piecesFinalTransformation"] = buildPieceTransformationJson(piece2FinalTransformation);
 
     reconstructor_.closeRun();
     activeMatings_.clear();

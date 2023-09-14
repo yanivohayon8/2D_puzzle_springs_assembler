@@ -187,3 +187,8 @@ void SilentReconstructor::snapshotPiecesTransformation(std::map<std::string, std
 		oPiece2Transform[piece.id_] = AngleAndTranslatevector;
 	}
 }
+
+void SilentReconstructor::getPiece2FinalTransformation(std::map<std::string, std::pair<float, b2Vec2>>& piece2FinalTransformation)
+{
+	piece2FinalTransformation = piece2FinalTransformation_;
+}

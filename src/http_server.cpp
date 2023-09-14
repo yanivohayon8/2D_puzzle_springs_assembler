@@ -97,6 +97,25 @@ nlohmann::json HTTPServer::buildPieceCartesianJson(std::map<std::string, std::ve
     return piecesJson;
 }
 
+nlohmann::json HTTPServer::buildPieceTransformationJson(std::map<std::string, std::pair<float, b2Vec2>>& piece2FinalTransformation)
+{
+    nlohmann::json piecesJson = nlohmann::json::array();
+
+    for (auto& pieceIt = piece2FinalTransformation.begin(); pieceIt != piece2FinalTransformation.end(); ++pieceIt)
+    {
+        nlohmann::json pieceJson;
+        pieceJson["pieceId"] = pieceIt->first;
+        pieceJson["rotationRadians"] = piece2FinalTransformation.at(pieceIt->first).first;
+        
+        b2Vec2& translateVector = piece2FinalTransformation.at(pieceIt->first).second;
+        pieceJson["translateVectorX"] = translateVector.x / SCALE_IMAGE_COORDINATES_TO_BOX2D;
+        pieceJson["translateVectorY"] = translateVector.y / SCALE_IMAGE_COORDINATES_TO_BOX2D;
+        piecesJson.push_back(pieceJson);
+    }
+
+    return piecesJson;
+}
+
 
 void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody)
 {
