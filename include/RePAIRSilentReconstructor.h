@@ -4,6 +4,7 @@ class RePAIRSilentReconstructor :
     public SilentReconstructor
 {
 public:
-    void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "")
+    RePAIRSilentReconstructor();
+    void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "");
 };
 
