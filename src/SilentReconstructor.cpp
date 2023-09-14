@@ -1,5 +1,6 @@
 #include "SilentReconstructor.h"
 
+
 bool SilentReconstructor::isScreenInitiated()
 {
 	return isScreenInitiated_;
@@ -169,5 +170,20 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	{
 		screen_->closeWindow();
 		isDebugScreenVisible_ = false;
+	}
+}
+
+void SilentReconstructor::snapshotPiecesTransformation(std::map<std::string, std::pair<float, b2Vec2>>& oPiece2Transform, const b2Vec2& translateCenter)
+{
+	for (auto& piece : activePieces_)
+	{
+
+		b2Vec2 position;
+		piece.getBodyPosition(position);
+		float x = position.x - translateCenter.x;
+		float y = position.y - translateCenter.y;
+		auto angle = piece.getBodyRotationRadians();
+		std::pair<float, b2Vec2> AngleAndTranslatevector(angle,b2Vec2(x, y));
+		oPiece2Transform[piece.id_] = AngleAndTranslatevector;
 	}
 }
