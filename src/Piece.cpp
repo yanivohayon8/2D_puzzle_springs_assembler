@@ -249,3 +249,14 @@ void Piece::applyLinearImpulse(int powerX,int powerY)
 }
 
 
+
+float Piece::getBodyRotationRadians()
+{
+	return refb2Body_->GetAngle();
+}
+
+void Piece::getBodyPosition(b2Vec2& position)
+{
+	position = refb2Body_->GetWorldCenter();
+}
+

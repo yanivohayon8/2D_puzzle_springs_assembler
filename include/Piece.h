@@ -45,6 +45,7 @@ public:
 	void sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map);
 	void getGlobalCoordsMoved(Eigen::MatrixX2d &oCoords, b2Vec2 translate);
 	void getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords);
+
 	void computeBoundingBox();
 	float getBodyBoundingBoxWidth();
 	float getBodyBoundingBoxHeight();
@@ -59,5 +60,8 @@ public:
 	void setLinearDamping(double linearDamping);
 	void setAngularDamping(double angularDamping);
 	void applyLinearImpulse(int powerX, int powerY);
+
+	float getBodyRotationRadians();
+	void getBodyPosition(b2Vec2& position);
 };
 
