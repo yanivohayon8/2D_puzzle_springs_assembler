@@ -65,44 +65,44 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 			for (b2Contact* contact = world_.GetContactList(); contact; contact = contact->GetNext())
 			{
 				std::cout << "collide" << contact->GetFixtureA() << std::endl;
-				for (auto& mating : activeMatings_)
+				/*for (auto& mating : activeMatings_)
 				{
 					
 					draw_joints = false;
 					world_.DestroyJoint(mating.jointRef_);
-				}
+				}*/
 			}
 			
-			//for (auto& mating : activeMatings_)
-			//{
-			//	auto bodyA = mating.jointRef_->GetBodyA();
-			//	auto bodyB = mating.jointRef_->GetBodyB();
+			for (auto& mating : activeMatings_)
+			{
+				auto bodyA = mating.jointRef_->GetBodyA();
+				auto bodyB = mating.jointRef_->GetBodyB();
 
-			//	for (b2Fixture* fixtureA = bodyA->GetFixtureList(); fixtureA; fixtureA = fixtureA->GetNext()) {
-			//		for (b2Fixture* fixtureB = bodyB->GetFixtureList(); fixtureB; fixtureB = fixtureB->GetNext()) {
-			//			if (b2TestOverlap(fixtureA->GetAABB(0), fixtureB->GetAABB(0))) {
+				for (b2Fixture* fixtureA = bodyA->GetFixtureList(); fixtureA; fixtureA = fixtureA->GetNext()) {
+					for (b2Fixture* fixtureB = bodyB->GetFixtureList(); fixtureB; fixtureB = fixtureB->GetNext()) {
+						if (b2TestOverlap(fixtureA->GetAABB(0), fixtureB->GetAABB(0))) {
 
 
-			//				float inverseTimeStep = 1 / timeStep_;
-			//				auto force = mating.jointRef_->GetReactionForce(inverseTimeStep);
-			//				activePieces_[1].refb2Body_->ApplyForce(0.0001*force, mating.jointRef_->GetAnchorB(), true);
-			//				fixtureB->SetRestitution(0);
-			//				fixtureA->SetRestitution(0);
-			//				
-			//				/*for (auto& piece : activePieces_)
-			//				{
-			//					piece.setLinearDamping(2);
-			//				}*/
-			//				//activePieces_[1].refb2Body_->ApplyLinearImpulseToCenter(10 * force, true);
+							float inverseTimeStep = 1 / timeStep_;
+							auto force = mating.jointRef_->GetReactionForce(inverseTimeStep);
+							activePieces_[1].refb2Body_->ApplyForce(0.0001*force, mating.jointRef_->GetAnchorB(), true);
+							fixtureB->SetRestitution(0);
+							fixtureA->SetRestitution(0);
+							
+							/*for (auto& piece : activePieces_)
+							{
+								piece.setLinearDamping(2);
+							}*/
+							//activePieces_[1].refb2Body_->ApplyLinearImpulseToCenter(10 * force, true);
 
-			//				draw_joints = false;
-			//				world_.DestroyJoint(mating.jointRef_);
-			//				setPiecesCollisionOn();
-			//				is_recreated_joints = false; // to prevent from enter here again
-			//			}
-			//		}
-			//	}
-			//}
+							draw_joints = false;
+							world_.DestroyJoint(mating.jointRef_);
+							setPiecesCollisionOn();
+							is_recreated_joints = false; // to prevent from enter here again
+						}
+					}
+				}
+			}
 
 
 		}
@@ -215,8 +215,7 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 							world_.DestroyJoint(mating.jointRef_);
 							disableJointsCollide();
-							setJointStartLength(0.1);
-							setJointMinLength(0.05);
+							setJointRestLength(0.05);
 							setJointFrequency(jointFrequencyHertz_ * 1.5);
 							setJointDamping(jointDampingRatio_ * 2);
 							putMatingSprings(mating);

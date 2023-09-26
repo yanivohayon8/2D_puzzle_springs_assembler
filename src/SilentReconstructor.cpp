@@ -178,8 +178,12 @@ void SilentReconstructor::snapshotPiecesTransformation(std::map<std::string, std
 	for (auto& piece : activePieces_)
 	{
 
-		b2Vec2 position;
-		piece.getBodyPosition(position);
+		/*b2Vec2 position;
+		piece.getBodyPosition(position);*/
+		
+		const b2Transform& transform = piece.refb2Body_->GetTransform();
+		auto& position = transform.p;
+
 		float x = position.x - translateCenter.x;
 		float y = position.y - translateCenter.y;
 		auto angle = piece.getBodyRotationRadians();
