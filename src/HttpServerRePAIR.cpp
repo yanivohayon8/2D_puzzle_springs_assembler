@@ -11,7 +11,19 @@ HttpServerRePAIR::HttpServerRePAIR(int port) :HTTPServer(port)
 
 void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody)
 {
-	payloadToMatings(activeMatings_, requestBody);
+    nlohmann::json bodyJson = nlohmann::json::parse(requestBody);
+
+    auto& matingsJson = bodyJson["matings"];
+    for (auto& matingIt = matingsJson.begin(); matingIt != matingsJson.end(); ++matingIt)
+    {
+        std::string firstPiece = matingIt->at(0);
+        int firstVertexIndex = matingIt->at(1);
+        std::string secondPiece = matingIt->at(2);
+        int secondVertexIndex = matingIt->at(3);
+        VertexMating mating(firstPiece,firstVertexIndex,secondPiece,secondVertexIndex);
+        activeMatings_.push_back(mating);
+    }
+
 	std::set<std::string> fragmentsNames;
 
 	for (auto& mating: activeMatings_)
