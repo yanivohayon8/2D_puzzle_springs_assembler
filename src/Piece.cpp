@@ -264,3 +264,8 @@ void Piece::setIsRotationFixed(bool flag)
 {
 	isRotationFixed = flag;
 }
+
+void Piece::setInitialAngle(float radians)
+{
+	initialAngle = radians;
+}

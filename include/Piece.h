@@ -25,6 +25,7 @@ public:
 	b2Vec2 finalTranslate_;
 	b2Rot finalRot_;
 	bool isRotationFixed = false;
+	float initialAngle = 0;
 	std::string imagePath_;
 	b2AABB aabb_;
 	BoostPolygon boostPolygonGlobalCoords_;
@@ -64,6 +65,7 @@ public:
 	float getBodyRotationRadians();
 	void getBodyPosition(b2Vec2& position);
 
-	void setIsRotationFixed(bool flag);
+	void setIsRotationFixed(bool flag);// effective only before reconstructor.init()...
+	void setInitialAngle(float radians);
 };
 

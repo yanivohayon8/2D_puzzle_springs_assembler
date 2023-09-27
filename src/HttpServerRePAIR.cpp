@@ -44,12 +44,14 @@ void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib:
     {
         auto& pieceJson= pieceJsonIt.value();
         std::string pieceJsonID = pieceJson["piece"];
+        float radians = pieceJson["initialAngleRadians"];
 
         for (auto& piece:activePieces_)
         {
             if (pieceJsonID == piece.id_)
             {
                 piece.setIsRotationFixed(true);
+                piece.setInitialAngle(radians);
             }
         }
     }

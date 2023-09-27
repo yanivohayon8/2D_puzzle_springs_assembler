@@ -33,6 +33,7 @@ void Reconstructor::initStaticBody(Piece& piece, b2Vec2 &position)
 	b2BodyDef fixedPieceBodyDef;
 	fixedPieceBodyDef.type = b2_staticBody;
 	fixedPieceBodyDef.position = position;//b2Vec2(boardWidth_ / 2, boardHeight_ / 2);
+	fixedPieceBodyDef.angle = piece.initialAngle;
 
 	b2FixtureDef fixedPieceFixture;
 	fixedPieceFixture.density = 1.0f;
@@ -51,6 +52,7 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position = initialPosition;
 	bodyDef.fixedRotation = piece.isRotationFixed; // = false;
+	bodyDef.angle = piece.initialAngle;
 
 	b2FixtureDef fixture;
 	fixture.density = 1.0f;
