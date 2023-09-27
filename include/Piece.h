@@ -63,5 +63,7 @@ public:
 
 	float getBodyRotationRadians();
 	void getBodyPosition(b2Vec2& position);
+
+	void setIsRotationFixed(bool flag);
 };
 

@@ -260,3 +260,7 @@ void Piece::getBodyPosition(b2Vec2& position)
 	position = refb2Body_->GetWorldCenter();
 }
 
+void Piece::setIsRotationFixed(bool flag)
+{
+	isRotationFixed = flag;
+}

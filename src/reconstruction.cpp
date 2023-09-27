@@ -50,7 +50,7 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position = initialPosition;
-	bodyDef.fixedRotation = false;
+	bodyDef.fixedRotation = piece.isRotationFixed; // = false;
 
 	b2FixtureDef fixture;
 	fixture.density = 1.0f;

@@ -38,6 +38,21 @@ void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib:
 		std::string pieceFile = dataLoader_.puzzleDirectoryPath_ + "/csv/" + name + ".csv";
 		dataLoader_.loadPieces(activePieces_, true,pieceFile);
 	}
+
+    auto& fixedRotationJson = bodyJson["fixedRotation"];
+    for (auto &pieceJsonIt = fixedRotationJson.begin(); pieceJsonIt!=fixedRotationJson.end(); ++pieceJsonIt)
+    {
+        auto& pieceJson= pieceJsonIt.value();
+        std::string pieceJsonID = pieceJson["piece"];
+
+        for (auto& piece:activePieces_)
+        {
+            if (pieceJsonID == piece.id_)
+            {
+                piece.setIsRotationFixed(true);
+            }
+        }
+    }
 }
 
 void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, httplib::Response& res)
