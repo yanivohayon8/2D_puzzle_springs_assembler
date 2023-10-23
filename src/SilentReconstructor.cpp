@@ -139,6 +139,9 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	piece2FinalCoords_.clear();
 	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
 
+	piece2FinalTransformation_.clear();
+	snapshotPiecesTransformation(piece2FinalTransformation_, centerOfBoard);
+
 	// Debug
 	if (screenshotPathAfterCollide!="")
 	{

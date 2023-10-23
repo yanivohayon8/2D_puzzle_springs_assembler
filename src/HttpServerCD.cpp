@@ -88,6 +88,9 @@ void HttpServerCD::handleReconstruct(const httplib::Request& req, httplib::Respo
     output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);
     output["AfterEnableCollision"] = buildSpringsJson(silentReconstructor_.activeMatings_);
 
+    std::map<std::string, std::pair<float, b2Vec2>> piece2FinalTransformation;
+    silentReconstructor_.getPiece2FinalTransformation(piece2FinalTransformation);
+    output["piecesFinalTransformation"] = buildPieceTransformationJson(piece2FinalTransformation);
 
     silentReconstructor_.closeRun();
     activeMatings_.clear();
