@@ -67,5 +67,7 @@ public:
 
 	void setIsRotationFixed(bool flag);// effective only before reconstructor.init()...
 	void setInitialAngle(float radians);
+
+	void getBodyWorldCenterPosition(b2Vec2& position);
 };
 

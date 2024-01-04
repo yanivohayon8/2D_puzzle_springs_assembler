@@ -181,14 +181,28 @@ void SilentReconstructor::snapshotPiecesTransformation(std::map<std::string, std
 	for (auto& piece : activePieces_)
 	{
 
-		/*b2Vec2 position;
-		piece.getBodyPosition(position);*/
+		auto id_tmp = piece.id_;
+		b2Vec2 worldCenter1;
+		b2Vec2 worldCenter2;
+		piece.getBodyPosition(worldCenter1);
+		piece.getBodyWorldCenterPosition(worldCenter2);
 		
-		const b2Transform& transform = piece.refb2Body_->GetTransform();
-		auto& position = transform.p;
+		//const b2Transform& transform = piece.refb2Body_->GetTransform();
+		////auto& position = transform.p;
+		//b2Vec2 position = transform.p;
 
-		float x = position.x - translateCenter.x;
-		float y = position.y - translateCenter.y;
+		//b2Vec2 get_position = piece.refb2Body_->GetPosition();
+		//std::cout << get_position.x << " " << get_position.y << std::endl;
+		//std::cout << position.x << " " << position.y << std::endl;
+
+		//float x = position.x - translateCenter.x;
+		//float y = position.y - translateCenter.y;
+		/*float x = worldCenter1.x - translateCenter.x;
+		float y = worldCenter1.y - translateCenter.y;*/
+
+		float x = worldCenter2.x - translateCenter.x;
+		float y = worldCenter2.y - translateCenter.y;
+
 		auto angle = piece.getBodyRotationRadians();
 		std::pair<float, b2Vec2> AngleAndTranslatevector(angle,b2Vec2(x, y));
 		oPiece2Transform[piece.id_] = AngleAndTranslatevector;

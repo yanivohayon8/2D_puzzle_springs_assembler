@@ -2,7 +2,7 @@
 
 void generate2DVectors(std::vector<b2Vec2>&vectors,int n,int maxX,int maxY,int padding, int seed)
 {
-	std::mt19937 gen(seed); 
+	/*std::mt19937 gen(seed); 
 	std::uniform_int_distribution<int> distributionX(padding + 0, maxX-padding);
 	std::uniform_int_distribution<int> distributionY(padding + 0, maxY-padding);
 
@@ -10,6 +10,23 @@ void generate2DVectors(std::vector<b2Vec2>&vectors,int n,int maxX,int maxY,int p
 	{
 		int x = distributionX(gen);
 		int y = distributionY(gen);
+		vectors.push_back(b2Vec2(x, y));
+	}*/
+
+
+	
+
+	// Use the Mersenne Twister engine for randomness
+	std::mt19937 gen(seed);
+
+	// Define the uniform distribution for the given domain
+	std::uniform_real_distribution<double> distributionX(padding + 0, maxX - padding);
+	std::uniform_real_distribution<double> distributionY(padding + 0, maxY - padding);
+
+	for (int i = 0; i < n; i++)
+	{
+		double x = distributionX(gen); 
+		double y = distributionY(gen);
 		vectors.push_back(b2Vec2(x, y));
 	}
 	

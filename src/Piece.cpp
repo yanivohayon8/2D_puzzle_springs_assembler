@@ -260,6 +260,12 @@ void Piece::getBodyPosition(b2Vec2& position)
 	position = refb2Body_->GetWorldCenter();
 }
 
+void Piece::getBodyWorldCenterPosition(b2Vec2& position)
+{
+	auto& localCenter = refb2Body_->GetLocalCenter();
+	position = refb2Body_->GetWorldPoint(localCenter);
+}
+
 void Piece::setIsRotationFixed(bool flag)
 {
 	isRotationFixed = flag;
@@ -269,3 +275,5 @@ void Piece::setInitialAngle(float radians)
 {
 	initialAngle = radians;
 }
+
+
