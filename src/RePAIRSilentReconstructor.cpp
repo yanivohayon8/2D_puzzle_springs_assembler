@@ -40,6 +40,8 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 		piece.applyLinearImpulse(power.x, power.y);
 	}
 
+	snapshotPiecesTransformation(piece2BeforeCollisionTransformation_, centerOfBoard);
+
 
 	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
 	progress(iterationToSecondConverage);

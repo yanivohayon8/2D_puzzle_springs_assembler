@@ -129,6 +129,7 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
     std::map<std::string, std::pair<float, b2Vec2>> piece2FinalTransformation;
     reconstructor_.getPiece2FinalTransformation(piece2FinalTransformation);
     output["piecesFinalTransformation"] = buildPieceTransformationJson(piece2FinalTransformation);
+    output["piecesBeforeCollisionTransformation"] = buildPieceTransformationJson(reconstructor_.piece2BeforeCollisionTransformation_);
 
     reconstructor_.closeRun();
     activeMatings_.clear();
