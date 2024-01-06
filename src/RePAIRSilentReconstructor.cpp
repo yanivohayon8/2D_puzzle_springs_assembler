@@ -40,6 +40,7 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 		piece.applyLinearImpulse(power.x, power.y);
 	}
 
+	piece2BeforeCollisionTransformation_.clear();
 	snapshotPiecesTransformation(piece2BeforeCollisionTransformation_, centerOfBoard);
 
 
