@@ -16,7 +16,16 @@ void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib:
     auto& matingsJson = bodyJson["matings"];
     for (auto& matingIt = matingsJson.begin(); matingIt != matingsJson.end(); ++matingIt)
     {
-        std::string firstPiece = matingIt->at(0);
+        auto& matingJson = matingIt.value();
+
+        std::string firstPiece = matingJson["firstPiece"];
+        double firstPieceLocalCoordsX = matingJson["firstPieceLocalCoords"].at(0);
+        double firstPieceLocalCoordsY = matingJson["firstPieceLocalCoords"].at(1);
+        
+        std::string secondPiece = matingJson["secondPiece"];
+        double secondPieceLocalCoordsX = matingJson["secondPieceLocalCoords"].at(0);
+        double secondPieceLocalCoordsY = matingJson["secondPieceLocalCoords"].at(1);
+
         int firstVertexIndex = matingIt->at(1);
         std::string secondPiece = matingIt->at(2);
         int secondVertexIndex = matingIt->at(3);
