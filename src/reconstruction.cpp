@@ -83,11 +83,41 @@ void Reconstructor::putMatingSprings(VertexMating& mating)
 
 	b2Body* bodyA = pieceA->refb2Body_;
 	b2Body* bodyB = pieceB->refb2Body_;
-
 	b2Vec2 vertexGlobalA;
+	b2Vec2 vertexGlobalB;
+
+	VertexMatingRePAIR* matingRepair_ptr = dynamic_cast<VertexMatingRePAIR*>(&mating);
+
+	if (matingRepair_ptr!=nullptr)
+	{
+		std::cout << "VertexMatingRePAIR" << std::endl;
+		
+		//pieceA->getGlobalCoords(vertexGlobalA, b2Vec2(0.854, 0.859));//matingRepair_ptr->firstPieceLocalCoords_);
+		//pieceB->getGlobalCoords(vertexGlobalB, b2Vec2(0.66, 0.493));//matingRepair_ptr->secondPieceLocalCoords_);
+
+		b2Vec2* debug_coord_A = pieceA->getVeterxLocalCoords(14);
+		//pieceA->getGlobalCoords(vertexGlobalA, b2Vec2(0.854, 0.859));//*debug_coord_A);
+		pieceA->getGlobalCoords(vertexGlobalA, matingRepair_ptr->firstPieceLocalCoords_);//*debug_coord_A);
+		b2Vec2* debug_coord_B = pieceB->getVeterxLocalCoords(43);
+		pieceB->getGlobalCoords(vertexGlobalB, *debug_coord_B);
+	}
+	else
+	{
+		// Convex Drawing
+		std::cout << "ConvexDrawing" << std::endl;
+		pieceA->getVeterxGlobalCoords(vertexGlobalA, mating.firstPieceVertex_);	
+		pieceB->getVeterxGlobalCoords(vertexGlobalB, mating.secondPieceVertex_);
+	}
+
+	/*b2Vec2* debug1 = pieceA->getVeterxLocalCoords(mating.firstPieceLocalCoords_);
+	b2Vec2* debug2 = pieceA->getVeterxLocalCoords(mating.firstPieceLocalCoords_ +1);
+	b2Vec2 vertexGlobalA(debug1->x/2 + debug2->x/2, debug1->y / 2 + debug2->y / 2);
+	pieceA->getGlobalCoords(vertexGlobalA);*/
+
+	/*b2Vec2 vertexGlobalA;
 	pieceA->getVeterxGlobalCoords(vertexGlobalA, mating.firstPieceVertex_);
 	b2Vec2 vertexGlobalB;
-	pieceB->getVeterxGlobalCoords(vertexGlobalB, mating.secondPieceVertex_);
+	pieceB->getVeterxGlobalCoords(vertexGlobalB, mating.secondPieceVertex_);*/
 
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, vertexGlobalA, vertexGlobalB);

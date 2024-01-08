@@ -12,34 +12,37 @@ HttpServerRePAIR::HttpServerRePAIR(int port) :HTTPServer(port)
 void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody)
 {
     nlohmann::json bodyJson = nlohmann::json::parse(requestBody);
-
+    std::set<std::string> fragmentsNames;
     auto& matingsJson = bodyJson["matings"];
+
     for (auto& matingIt = matingsJson.begin(); matingIt != matingsJson.end(); ++matingIt)
     {
         auto& matingJson = matingIt.value();
 
-        std::string firstPiece = matingJson["firstPiece"];
+        std::string firstPieceId = matingJson["firstPiece"];
         double firstPieceLocalCoordsX = matingJson["firstPieceLocalCoords"].at(0);
         double firstPieceLocalCoordsY = matingJson["firstPieceLocalCoords"].at(1);
-        
-        std::string secondPiece = matingJson["secondPiece"];
+        b2Vec2 firstPieceLocalCoords(firstPieceLocalCoordsX * SCALE_IMAGE_COORDINATES_TO_BOX2D,
+            firstPieceLocalCoordsY * SCALE_IMAGE_COORDINATES_TO_BOX2D);
+
+        std::string secondPieceId = matingJson["secondPiece"];
         double secondPieceLocalCoordsX = matingJson["secondPieceLocalCoords"].at(0);
         double secondPieceLocalCoordsY = matingJson["secondPieceLocalCoords"].at(1);
+        b2Vec2 secondPieceLocalCoords(secondPieceLocalCoordsX * SCALE_IMAGE_COORDINATES_TO_BOX2D,
+            secondPieceLocalCoordsY * SCALE_IMAGE_COORDINATES_TO_BOX2D);
 
-        int firstVertexIndex = matingIt->at(1);
+        VertexMatingRePAIR mating(firstPieceId, firstPieceLocalCoords,secondPieceId, secondPieceLocalCoords);
+
+        /*int firstVertexIndex = matingIt->at(1);
         std::string secondPiece = matingIt->at(2);
         int secondVertexIndex = matingIt->at(3);
-        VertexMating mating(firstPiece,firstVertexIndex,secondPiece,secondVertexIndex);
+        VertexMating mating(firstPiece, firstVertexIndex,secondPiece, secondVertexIndex);*/
+       
         activeMatings_.push_back(mating);
+        fragmentsNames.insert(firstPieceId);
+        fragmentsNames.insert(secondPieceId);
     }
 
-	std::set<std::string> fragmentsNames;
-
-	for (auto& mating: activeMatings_)
-	{
-		fragmentsNames.insert(mating.firstPieceId_);
-		fragmentsNames.insert(mating.secondPieceId_);
-	}
 
 	activePieces_.clear();
 	for (auto& name:fragmentsNames)

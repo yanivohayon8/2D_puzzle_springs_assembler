@@ -77,6 +77,12 @@ void Piece::getVeterxGlobalCoords(b2Vec2 &oCoords,int iVertex)
 	oCoords = globalCoordinates_[iVertex];
 }
 
+void Piece::getGlobalCoords(b2Vec2& oCoords,b2Vec2& localCoord)
+{
+	oCoords = refb2Body_->GetWorldPoint(localCoord);
+}
+
+
 void Piece::sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map)
 {
 	// Compute centroid

@@ -43,6 +43,8 @@ public:
 	std::pair<int, int> getEdgeVertexIndexes(int iEdge);
 	b2Vec2* getVeterxLocalCoords(int iVertex);
 	void getVeterxGlobalCoords(b2Vec2& oCoords, int iVertex);
+	void getGlobalCoords(b2Vec2& oCoords, b2Vec2& localCoord);
+
 	void sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map);
 	void getGlobalCoordsMoved(Eigen::MatrixX2d &oCoords, b2Vec2 translate);
 	void getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords);
