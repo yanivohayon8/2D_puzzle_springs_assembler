@@ -55,7 +55,7 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 	
 	for (auto& mating : activeMatings_)
 	{
-		mating.snapshotJointLength();
+		mating->snapshotJointLength();
 	}
 
 	if (isDebugScreenVisible_)

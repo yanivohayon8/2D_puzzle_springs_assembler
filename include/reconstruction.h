@@ -19,7 +19,7 @@ private:
 	void initMovingBody(Piece& piece, b2Vec2& initialPosition);
 
 protected:
-	void putMatingSprings(VertexMating& mating);
+	void putMatingSprings(VertexMating* &mating);
 	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
 	bool isEnableJointsCollide_ = false;
 	float initPowerMagnitude_ = 0.2;
@@ -32,7 +32,7 @@ public:
 	float pieceAngularDamping_ = 0.01;
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> activePieces_;
-	std::vector<VertexMating> activeMatings_;
+	std::vector<VertexMating*> activeMatings_;
 	Piece* fixedPiece_;
 	//std::vector< b2DistanceJoint*> joints_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
@@ -52,7 +52,7 @@ public:
 
 	Reconstructor(float boardWidth = 10,float boardHeight=10, int screenWidth_ = 1380, int screenHeight_ = 1380);
 	void init();
-	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating>& activeMatings, int positionSeed = 0, int positionPadding = 2);
+	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, int positionSeed = 0, int positionPadding = 2);
 	virtual void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "")=0;
 	void closeRun(); // delete the matings and pieces...
 

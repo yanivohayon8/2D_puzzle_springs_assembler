@@ -31,7 +31,7 @@ void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib:
         b2Vec2 secondPieceLocalCoords(secondPieceLocalCoordsX * SCALE_IMAGE_COORDINATES_TO_BOX2D,
             secondPieceLocalCoordsY * SCALE_IMAGE_COORDINATES_TO_BOX2D);
 
-        VertexMatingRePAIR mating(firstPieceId, firstPieceLocalCoords,secondPieceId, secondPieceLocalCoords);
+        VertexMatingRePAIR* mating = new VertexMatingRePAIR(firstPieceId, firstPieceLocalCoords,secondPieceId, secondPieceLocalCoords);
 
         /*int firstVertexIndex = matingIt->at(1);
         std::string secondPiece = matingIt->at(2);

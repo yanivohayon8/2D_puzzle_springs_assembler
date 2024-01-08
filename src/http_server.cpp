@@ -6,7 +6,7 @@ HTTPServer::HTTPServer(int port)
 }
 
 
-void HTTPServer::payloadToMatings(std::vector<VertexMating>& oMatings, std::string requestBody)
+void HTTPServer::payloadToMatings(std::vector<VertexMating*>& oMatings, std::string requestBody)
 {
     size_t pos = 0;
     std::string recordsDelimiter = "\r\n"; // ";"
@@ -39,7 +39,8 @@ void HTTPServer::payloadToMatings(std::vector<VertexMating>& oMatings, std::stri
 
         if (matingValues.size() == 4)
         {
-            VertexMating mating(matingValues[0], std::stoi(matingValues[1]), matingValues[2], std::stoi(matingValues[3]));
+            //VertexMating mating(matingValues[0], std::stoi(matingValues[1]), matingValues[2], std::stoi(matingValues[3]));
+            VertexMating* mating = new VertexMating(matingValues[0], std::stoi(matingValues[1]), matingValues[2], std::stoi(matingValues[3]));
 
             oMatings.push_back(mating);
         }
@@ -48,7 +49,7 @@ void HTTPServer::payloadToMatings(std::vector<VertexMating>& oMatings, std::stri
     }
 }
 
-nlohmann::json HTTPServer::buildSpringsJson(std::vector<VertexMating>& matings)
+nlohmann::json HTTPServer::buildSpringsJson(std::vector<VertexMating*>& matings)
 {
     nlohmann::json joints = nlohmann::json::array();
     float maxLength = 0;
@@ -56,7 +57,7 @@ nlohmann::json HTTPServer::buildSpringsJson(std::vector<VertexMating>& matings)
 
     for (auto& mating : matings)
     {
-        auto matingJson = mating.toJson(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+        auto matingJson = mating->toJson(SCALE_IMAGE_COORDINATES_TO_BOX2D);
         joints.push_back(matingJson);
         sumLengths += matingJson["snapshotedLength"];
 

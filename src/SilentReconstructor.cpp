@@ -73,8 +73,8 @@ void SilentReconstructor::progress(int numIteration)
 
 			for (auto& mating : activeMatings_)
 			{
-				auto& anchorA = mating.jointRef_->GetAnchorA();
-				auto& anchorB = mating.jointRef_->GetAnchorB();
+				auto& anchorA = mating->jointRef_->GetAnchorA();
+				auto& anchorB = mating->jointRef_->GetAnchorB();
 				screen_->drawLine(anchorA, anchorB, springColor_, -1);
 			}
 
@@ -119,7 +119,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	//debug
 	for (auto& mating : activeMatings_)
 	{
-		mating.snapshotJointLength();
+		mating->snapshotJointLength();
 	}
 
 	
@@ -133,7 +133,7 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 	
 	for (auto& mating: activeMatings_)
 	{
-		mating.snapshotJointLength();
+		mating->snapshotJointLength();
 	}
 
 	piece2FinalCoords_.clear();
@@ -150,8 +150,8 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 		for (auto& mating : activeMatings_)
 		{
-			auto& anchorA = mating.jointRef_->GetAnchorA();
-			auto& anchorB = mating.jointRef_->GetAnchorB();
+			auto& anchorA = mating->jointRef_->GetAnchorA();
+			auto& anchorB = mating->jointRef_->GetAnchorB();
 			screen_->drawLine(anchorA, anchorB, redColor, -1);
 		}
 

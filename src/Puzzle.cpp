@@ -42,25 +42,25 @@ void Puzzle::setPieces(std::vector<Piece>& newPieces)
 }
 
 
-void Puzzle::findPiecesToReconstruct(std::vector<Piece> &oReconstructPieces,std::vector<VertexMating>& matings)
+void Puzzle::findPiecesToReconstruct(std::vector<Piece> &oReconstructPieces,std::vector<VertexMating*>& matings)
 {
 	//oReconstructPieces.clear();
 	std::vector<std::string> reconstructPiecesIds;
 
 	for (auto& mating : matings)
 	{
-		if (!std::count(reconstructPiecesIds.begin(), reconstructPiecesIds.end(), mating.firstPieceId_))
+		if (!std::count(reconstructPiecesIds.begin(), reconstructPiecesIds.end(), mating->firstPieceId_))
 		{
-			Piece& p1 = id2piece_.at(mating.firstPieceId_);
+			Piece& p1 = id2piece_.at(mating->firstPieceId_);
 			oReconstructPieces.push_back(p1);
-			reconstructPiecesIds.push_back(mating.firstPieceId_);
+			reconstructPiecesIds.push_back(mating->firstPieceId_);
 		}
 
-		if (!std::count(reconstructPiecesIds.begin(), reconstructPiecesIds.end(), mating.secondPieceId_))
+		if (!std::count(reconstructPiecesIds.begin(), reconstructPiecesIds.end(), mating->secondPieceId_))
 		{
-			Piece& p2 = id2piece_.at(mating.secondPieceId_);
+			Piece& p2 = id2piece_.at(mating->secondPieceId_);
 			oReconstructPieces.push_back(p2);
-			reconstructPiecesIds.push_back(mating.secondPieceId_);
+			reconstructPiecesIds.push_back(mating->secondPieceId_);
 		}
 	}	
 }

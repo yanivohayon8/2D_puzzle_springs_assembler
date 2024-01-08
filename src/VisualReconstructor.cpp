@@ -50,8 +50,8 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 		{
 			if (draw_joints)
 			{
-				auto& anchorA = mating.jointRef_->GetAnchorA();
-				auto& anchorB = mating.jointRef_->GetAnchorB();
+				auto& anchorA = mating->jointRef_->GetAnchorA();
+				auto& anchorB = mating->jointRef_->GetAnchorB();
 				screen_->drawLine(anchorA, anchorB, redColor, -1);
 			}
 			
@@ -75,8 +75,8 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 			
 			for (auto& mating : activeMatings_)
 			{
-				auto bodyA = mating.jointRef_->GetBodyA();
-				auto bodyB = mating.jointRef_->GetBodyB();
+				auto bodyA = mating->jointRef_->GetBodyA();
+				auto bodyB = mating->jointRef_->GetBodyB();
 
 				for (b2Fixture* fixtureA = bodyA->GetFixtureList(); fixtureA; fixtureA = fixtureA->GetNext()) {
 					for (b2Fixture* fixtureB = bodyB->GetFixtureList(); fixtureB; fixtureB = fixtureB->GetNext()) {
@@ -84,8 +84,8 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 
 							float inverseTimeStep = 1 / timeStep_;
-							auto force = mating.jointRef_->GetReactionForce(inverseTimeStep);
-							activePieces_[1].refb2Body_->ApplyForce(0.0001*force, mating.jointRef_->GetAnchorB(), true);
+							auto force = mating->jointRef_->GetReactionForce(inverseTimeStep);
+							activePieces_[1].refb2Body_->ApplyForce(0.0001*force, mating->jointRef_->GetAnchorB(), true);
 							fixtureB->SetRestitution(0);
 							fixtureA->SetRestitution(0);
 							
@@ -96,7 +96,7 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 							//activePieces_[1].refb2Body_->ApplyLinearImpulseToCenter(10 * force, true);
 
 							draw_joints = false;
-							world_.DestroyJoint(mating.jointRef_);
+							world_.DestroyJoint(mating->jointRef_);
 							setPiecesCollisionOn();
 							is_recreated_joints = false; // to prevent from enter here again
 						}
@@ -194,16 +194,16 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 						{
 
 							float inverseTimeStep = 1/timeStep_;
-							auto force = mating.jointRef_->GetReactionForce(inverseTimeStep);
+							auto force = mating->jointRef_->GetReactionForce(inverseTimeStep);
 							std::string strForce = "(" + std::to_string(force.x) + "," + std::to_string(force.y) + ")";
 							std::cout << "Force of mating is " + strForce << std::endl;
 
-							auto torque = mating.jointRef_->GetReactionTorque(inverseTimeStep);
+							auto torque = mating->jointRef_->GetReactionTorque(inverseTimeStep);
 							std::cout << "Torque of mating is " + std::to_string(torque) << std::endl;
 							
-							std::cout << "piece 1 " << mating.firstPieceId_ << " piece2 " << mating.secondPieceId_ << std::endl;
-							std::cout << "AnchorA " << std::to_string(mating.jointRef_->GetAnchorA().x) << "," << std::to_string(mating.jointRef_->GetAnchorA().y) << std::endl;
-							std::cout << "AnchorB " << std::to_string(mating.jointRef_->GetAnchorB().x) << "," << std::to_string(mating.jointRef_->GetAnchorB().y) << std::endl;
+							std::cout << "piece 1 " << mating->firstPieceId_ << " piece2 " << mating->secondPieceId_ << std::endl;
+							std::cout << "AnchorA " << std::to_string(mating->jointRef_->GetAnchorA().x) << "," << std::to_string(mating->jointRef_->GetAnchorA().y) << std::endl;
+							std::cout << "AnchorB " << std::to_string(mating->jointRef_->GetAnchorB().x) << "," << std::to_string(mating->jointRef_->GetAnchorB().y) << std::endl;
 							
 							//activePieces_[1].setAngularDamping(0.15);
 							//activePieces_[1].refb2Body_->ApplyLinearImpulse(2*force, mating.jointRef_->GetAnchorB(), true);
@@ -213,7 +213,7 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 							//world_.DestroyJoint(mating.jointRef_);
 
 
-							world_.DestroyJoint(mating.jointRef_);
+							world_.DestroyJoint(mating->jointRef_);
 							disableJointsCollide();
 							setJointRestLength(0.05);
 							setJointFrequency(jointFrequencyHertz_ * 1.5);
@@ -237,11 +237,11 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 						for (auto& mating : activeMatings_)
 						{
 							float inverseTimeStep = 1 / timeStep_;
-							auto force = mating.jointRef_->GetReactionForce(inverseTimeStep);
+							auto force = mating->jointRef_->GetReactionForce(inverseTimeStep);
 
 							b2Vec2 perperndicular(-force.y*5, -force.x*5);
 
-							activePieces_[1].refb2Body_->ApplyLinearImpulse(perperndicular, mating.jointRef_->GetAnchorB(), true);
+							activePieces_[1].refb2Body_->ApplyLinearImpulse(perperndicular, mating->jointRef_->GetAnchorB(), true);
 							//activePieces_[1].refb2Body_->ApplyLinearImpulseToCenter(perperndicular,true);*/
 
 							//float length = mating.jointRef_->GetCurrentLength();
@@ -263,8 +263,8 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 							//float length = mating.jointRef_->GetCurrentLength();
 							//mating.jointRef_->SetLength(length - 0.005);
 
-							float maxLength = mating.jointRef_->GetMaxLength();
-							mating.jointRef_->SetMaxLength(maxLength - 0.1);
+							float maxLength = mating->jointRef_->GetMaxLength();
+							mating->jointRef_->SetMaxLength(maxLength - 0.1);
 
 							/*float stif, damp;
 							b2LinearStiffness(stif, damp, 0.6f, 0.05f, mating.jointRef_->GetBodyA(), mating.jointRef_->GetBodyB());
