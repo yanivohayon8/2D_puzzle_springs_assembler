@@ -184,14 +184,15 @@ void SilentReconstructor::snapshotPiecesTransformation(std::map<std::string, std
 		auto id_tmp = piece.id_;
 		b2Vec2 worldCenter1;
 		b2Vec2 worldCenter2;
-		piece.getBodyPosition(worldCenter1);
+		//piece.getBodyPosition(worldCenter1);
 		piece.getBodyWorldCenterPosition(worldCenter2);
+		//piece.getBodyPosition(worldCenter2);
 		
 		//const b2Transform& transform = piece.refb2Body_->GetTransform();
 		////auto& position = transform.p;
 		//b2Vec2 position = transform.p;
 
-		//b2Vec2 get_position = piece.refb2Body_->GetPosition();
+		//b2Vec2 position = piece.refb2Body_->GetPosition();
 		//std::cout << get_position.x << " " << get_position.y << std::endl;
 		//std::cout << position.x << " " << position.y << std::endl;
 

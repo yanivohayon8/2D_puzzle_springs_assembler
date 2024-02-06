@@ -122,13 +122,18 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
     reconstructor_.setIterToConvBeforeCollide(2000);
     reconstructor_.setIterToConvAfterCollide(2000);
  
-   /* reconstructor_.enableJointsCollide();
+    reconstructor_.enableJointsCollide();
     reconstructor_.setJointRestLength(0);
     reconstructor_.setJointFrequency(1);
-    reconstructor_.setJointDamping(0.01);*/
+    reconstructor_.setJointDamping(0.01);
 
     reconstructor_.initRun(activePieces_, activeMatings_,1);//,1
+
+    reconstructor_.setPiecesCollisionOff();
+    reconstructor_.setPiecesLinearDamping(1); // 1
+    reconstructor_.setPiecesAngularDamping(0.01); // 1
     reconstructor_.setPiecesLinearDamping(1);
+
     reconstructor_.Run(imageBeforeCollide, imageAfterCollide);
 
     nlohmann::json output;

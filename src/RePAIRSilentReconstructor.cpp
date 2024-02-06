@@ -21,27 +21,27 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 	piece2CoordsBeforeEnableCollision_.clear();
 	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
 
-	setPiecesCollisionOn();
-	
-	// Apply impulse on bodies
-	int impulseIndex = 0;
-	//float powerMagnitude = 0.2;//2
-	std::vector<b2Vec2> initialImpulses = {
-		{initPowerMagnitude_,initPowerMagnitude_},
-		{-initPowerMagnitude_,initPowerMagnitude_},
-		{-initPowerMagnitude_,-initPowerMagnitude_},
-		{-initPowerMagnitude_,initPowerMagnitude_}
-	};
-	int numInitialImpulses = initialImpulses.size();
+	//setPiecesCollisionOn();
+	//
+	//// Apply impulse on bodies
+	//int impulseIndex = 0;
+	////float powerMagnitude = 0.2;//2
+	//std::vector<b2Vec2> initialImpulses = {
+	//	{initPowerMagnitude_,initPowerMagnitude_},
+	//	{-initPowerMagnitude_,initPowerMagnitude_},
+	//	{-initPowerMagnitude_,-initPowerMagnitude_},
+	//	{-initPowerMagnitude_,initPowerMagnitude_}
+	//};
+	//int numInitialImpulses = initialImpulses.size();
 
-	for (auto& piece : activePieces_)
-	{
-		auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
-		piece.applyLinearImpulse(power.x, power.y);
-	}
+	//for (auto& piece : activePieces_)
+	//{
+	//	auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
+	//	piece.applyLinearImpulse(power.x, power.y);
+	//}
 
-	piece2BeforeCollisionTransformation_.clear();
-	snapshotPiecesTransformation(piece2BeforeCollisionTransformation_, centerOfBoard);
+	//piece2BeforeCollisionTransformation_.clear();
+	//snapshotPiecesTransformation(piece2BeforeCollisionTransformation_, centerOfBoard);
 
 
 	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
