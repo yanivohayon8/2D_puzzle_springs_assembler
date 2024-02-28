@@ -14,6 +14,12 @@ Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imag
 	}
 
 	imagePath_ = imagePath;
+	boostPolygonArea_ = 0;
+}
+
+void Piece::DestroyBody()
+{
+	refb2Body_->GetWorld()->DestroyBody(refb2Body_);
 }
 
 void Piece::printCoords()
@@ -70,6 +76,12 @@ void Piece::getVeterxGlobalCoords(b2Vec2 &oCoords,int iVertex)
 {
 	oCoords = globalCoordinates_[iVertex];
 }
+
+void Piece::getGlobalCoords(b2Vec2& oCoords,b2Vec2& localCoord)
+{
+	oCoords = refb2Body_->GetWorldPoint(localCoord);
+}
+
 
 void Piece::sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map)
 {
@@ -149,7 +161,6 @@ void Piece::computeBoundingBox()
 			aabb_.upperBound.y = std::max(aabb_.upperBound.y, shapeAABB.upperBound.y);
 		}
 	}
-
 }
 
 float Piece::getBodyBoundingBoxWidth()
@@ -161,3 +172,114 @@ float Piece::getBodyBoundingBoxHeight()
 {
 	return std::abs(aabb_.upperBound.y - aabb_.lowerBound.y);
 }
+
+
+void Piece::initBoostPolygon()
+{
+
+	std::vector<BoostPoint> points;
+
+	for (auto& point:globalCoordinates_)
+	{
+		BoostPoint boostPoint(point.x, point.y);
+		points.push_back(boostPoint);
+	}
+
+	bg::assign_points(boostPolygonGlobalCoords_, points);
+}
+
+float Piece::computeOverlappingArea(const BoostPolygon& otherPolyon)
+{
+	std::vector<BoostPolygon> output;
+	bg::intersection(boostPolygonGlobalCoords_, otherPolyon, output);
+
+	float area = 0.0f;
+	for (const auto& p : output)
+	{
+		area += bg::area(p);
+	}
+
+	return area;
+}
+
+float Piece::computeArea()
+{
+	if (boostPolygonArea_ == 0)
+	{
+		boostPolygonArea_ = bg::area(boostPolygonGlobalCoords_);
+	}
+	return boostPolygonArea_;
+}
+
+void Piece::setCollideOff()
+{
+	b2Filter filter = refb2Body_->GetFixtureList()->GetFilterData();
+	if (filter.groupIndex > 0)
+	{
+		filter.groupIndex = filter.groupIndex * -1;
+	}
+	refb2Body_->GetFixtureList()->SetFilterData(filter);
+}
+
+void Piece::setCollideOn()
+{
+	b2Filter filter = refb2Body_->GetFixtureList()->GetFilterData();
+	if (filter.groupIndex < 0)
+	{
+		filter.groupIndex = filter.groupIndex * -1;
+	}
+	refb2Body_->GetFixtureList()->SetFilterData(filter);
+}
+
+void Piece::switchColide()
+{
+	b2Filter filter = refb2Body_->GetFixtureList()->GetFilterData();
+	filter.groupIndex = filter.groupIndex * -1;
+	refb2Body_->GetFixtureList()->SetFilterData(filter);
+}
+
+void Piece::setLinearDamping(double linearDamping)
+{
+	refb2Body_->SetLinearDamping(linearDamping);
+}
+
+void Piece::setAngularDamping(double angularDamping)
+{
+	refb2Body_->SetAngularDamping(angularDamping);
+}
+
+void Piece::applyLinearImpulse(int powerX,int powerY)
+{
+	b2Vec2 impulse(powerX, powerY);
+	refb2Body_->ApplyLinearImpulseToCenter(impulse, true);
+}
+
+
+
+float Piece::getBodyRotationRadians()
+{
+	return refb2Body_->GetAngle();
+}
+
+void Piece::getBodyPosition(b2Vec2& position)
+{
+	position = refb2Body_->GetWorldCenter();
+}
+
+void Piece::getBodyWorldCenterPosition(b2Vec2& position)
+{
+	auto& localCenter = refb2Body_->GetLocalCenter();
+	position = refb2Body_->GetWorldPoint(localCenter);
+}
+
+void Piece::setIsRotationFixed(bool flag)
+{
+	isRotationFixed = flag;
+}
+
+void Piece::setInitialAngle(float radians)
+{
+	initialAngle = radians;
+}
+
+

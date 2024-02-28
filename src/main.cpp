@@ -1,29 +1,47 @@
+//#include "http_server.h"
+#include "HttpServerCD.h"
+#include "HttpServerRePAIR.h"
 #include <DataLoader.h>
 #include <Piece.h>
-#include <World.h>
+////#include <World.h>
 #include <VertexMating.h>
 #include <ScriptInputParser.h>
+#include <Puzzle.h>
+#include <reconstruction.h>
+#include <TestHandler.h>
+//#include <cpp-httplib/httplib.h>
 
 int main(int argc, char** argv)
 {
-	//std::string puzzleDirectory = "../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0";
-	//std::string puzzleDirectory = "../data/ofir/RePAIR/group_39";
-	std::string puzzleDirectory; 
-	bool isSimulationAuto = true;
-	bool isOfir = true;
-	parseInput(isSimulationAuto,puzzleDirectory,argc,argv);
+	std::map<std::string, std::string> param2Value;
+	parseInput(param2Value,argc,argv);
 
-	DataLoader dataLoader(puzzleDirectory);
-	std::vector<Piece> pieces;
-	dataLoader.loadPieces(pieces, isOfir);
-	//dataLoader.loadExtraInfo(pieces);
-	std::vector<VertexMating> matings;
-	dataLoader.loadVertexMatings(matings);
-	World world(pieces,matings);
-	world.Init();
-	world.Simulation(isSimulationAuto);
-	world.saveFinalTransforms(puzzleDirectory + "/final_transforms.csv");
-	std::cout << "Finish" << std::endl;
+	if (param2Value.count("test") > 0)
+	{
+		//--test VisualTwoReconstructs --puzzleDir "../data/ofir/Pseudo-Sappho_MAN_Napoli_Inv9084/Puzzle1/0"
+		//--test VisualGroundTruth
+		RouteTests(param2Value);
+	} else {
+
+		if (param2Value.count("server") > 0)
+		{
+			if (param2Value.at("server") == "ConvexDrawing")
+			{
+
+				HttpServerCD httpServer;
+				httpServer.run();
+			}
+			else if (param2Value.at("server") == "RePAIR") {
+				HttpServerRePAIR httpServer;
+				httpServer.run();
+			}
+		}
+		else
+		{
+			std::cout << "Please provide the task you want to execute (test\server)" << std::endl;
+		}
+	}
 
 	return 0;
 }
+

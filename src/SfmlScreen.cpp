@@ -8,9 +8,10 @@ SfmlScreen::SfmlScreen(int width,int height, float widthScale,float heightScale)
 	heightScale_ = heightScale;
 }
 
-void SfmlScreen::initDisplay()
+void SfmlScreen::initDisplay(bool isVisible)
 {
 	window_.create(sf::VideoMode(width_, height_), "Physical Optimization");
+	window_.setVisible(isVisible);
 }
 
 bool SfmlScreen::pollEvent(sf::Event& nextEvent)
@@ -21,6 +22,8 @@ bool SfmlScreen::pollEvent(sf::Event& nextEvent)
 void SfmlScreen::closeWindow()
 {
 	window_.close();
+	pieceId2Sprite_.clear();
+	pieceId2texture_.clear();
 }
 
 void SfmlScreen::initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordinates)
@@ -211,7 +214,7 @@ void SfmlScreen::drawCircle(const b2Vec2& center, float radius, sf::Color color)
 	window_.draw(circle);
 }
 
-void SfmlScreen::screenShot(std::string fileName)
+void SfmlScreen::screenShotToFile(std::string fileName)
 {
 	sf::Image image;
 	image = window_.capture();

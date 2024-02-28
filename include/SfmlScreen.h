@@ -7,6 +7,8 @@
 #include "Piece.h"
 #include "Global_Parameters.h"
 
+
+
 class SfmlScreen
 {
 public:
@@ -27,7 +29,7 @@ public:
 	std::map<std::string, sf::CircleShape> pieceId2PolygonCenter_;
 
 
-	void initDisplay();
+	void initDisplay(bool isVisible=true);
 	void initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordinates);
 	void initSprite(Piece& piece);
 	void initPolygon(Piece& piece);
@@ -49,7 +51,6 @@ public:
 	bool pollEvent(sf::Event& event);
 	void closeWindow();
 
-	void screenShot(std::string fileName);
-
+	void screenShotToFile(std::string fileName);
 };
 

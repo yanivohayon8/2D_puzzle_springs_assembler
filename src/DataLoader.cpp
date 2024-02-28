@@ -8,9 +8,24 @@ struct Row {
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, 2, Eigen::RowMajor> MatrixX2D_r;
 
-DataLoader::DataLoader(std::string puzzleDirectoryPath)
+DataLoader::DataLoader()
+{
+
+}
+
+DataLoader::DataLoader(std::string puzzleDirectoryPath) //: puzzleDirectoryPath_(puzzleDirectoryPath)
 {
     puzzleDirectoryPath_ = puzzleDirectoryPath;
+}
+
+DataLoader::~DataLoader() 
+{
+
+}
+
+void DataLoader::setPuzzleDirectory(std::string path) 
+{
+    puzzleDirectoryPath_ = path;
 }
 
 void flipAndCenterPolygon(Eigen::MatrixXd& coords)
@@ -34,10 +49,19 @@ void DataLoader::coordsToEigenCoords(Eigen::MatrixXd& eigenCoords, std::vector<s
 
 std::string DataLoader::getImagePath(std::string pieceId)
 {
-    return puzzleDirectoryPath_ + "/images/" + pieceId + ".png";
+    std::string name = pieceId;
+    
+    // because Ofir saved the ids in floats while the file names in int
+    if (isFloatString(pieceId))
+    {
+        name = std::to_string(int(std::stof(pieceId)));
+    }
+
+    std::string path = puzzleDirectoryPath_ + "/images/" + name + ".png";
+    return path;
 }
 
-void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
+void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir, std::string piecesFile)
 {
     /*
         Loads the computed pieces. The csv headers are the following: piece,x,y.
@@ -45,7 +69,12 @@ void DataLoader::loadPieces(std::vector<Piece>& olstPiece,bool isOfir)
     */
 
     //std::string piecesFile = pieces.csv"; //puzzleDirectoryPath_ + "/pieces.csv"; //"C:\\Users\\97254pieces.csv"; //puzzleDirectoryPath_ + "/pieces.csv"; //"C:\\Users\\97254\\Desktop\\msc\\RePAIR\\projects\\springs_assembler_sfml\\2D_puzzle_springs_assembler\\data\\ofir\\RePAIR\\group_39\\pieces.csv"; //puzzleDirectoryPath_ + "/pieces.csv";// + pieces_file_name;
-    std::string piecesFile = puzzleDirectoryPath_ + "/pieces.csv";// + pieces_file_name;
+    //std::string piecesFile = puzzleDirectoryPath_ + "/pieces.csv";// + pieces_file_name;
+
+    if (piecesFile=="")
+    {
+        piecesFile = puzzleDirectoryPath_ + "/pieces.csv";
+    }
     
     std::ifstream infile(piecesFile);
 
@@ -119,12 +148,12 @@ void DataLoader::loadCoordinates_(std::string fileName, bool isOfir )
 
 }
 
-void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings)
+void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings, std::string fileName)
 {
     /*
         Loads the matings between the edges. The csv headers are piece1,vertex1,piece2,vertex2. All of them are int.
     */
-    std::string piecesFile = puzzleDirectoryPath_ + "/springs_anchors.csv";
+    std::string piecesFile = puzzleDirectoryPath_ + "/" + fileName;
     std::ifstream infile(piecesFile);
 
     if (!infile.is_open()) {
@@ -135,13 +164,13 @@ void DataLoader::loadVertexMatings(std::vector<VertexMating>& olstMatings)
     std::string line;
     //int firstPieceId, secondPieceId, firstPieceVertex, secondPieceVertex;
     int firstPieceVertex, secondPieceVertex;
-    std::string firstPieceVertexStr, secondPieceVertexStr;
-    std::string firstPieceId, secondPieceId;
     char comma;  // represent ',' in file, ignored.
     std::getline(infile, line);//skip the first line because it is a header
 
 
     while (std::getline(infile, line)) {
+        std::string firstPieceVertexStr, secondPieceVertexStr;
+        std::string firstPieceId, secondPieceId;
         std::stringstream ss(line);
         std::getline(ss, firstPieceId, ',');
         std::getline(ss, firstPieceVertexStr, ',');

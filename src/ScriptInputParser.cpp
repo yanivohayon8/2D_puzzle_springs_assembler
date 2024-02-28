@@ -1,21 +1,16 @@
 #include "ScriptInputParser.h"
 
-void parseInput(bool& oIsSimulationAuto, std::string &oPuzzleDirectory, int argc, char** argv)
+void parseInput(std::map<std::string, std::string> &oParam2Value, int argc, char** argv)
 {
+
 	for (int i = 0; i < argc; i++)
 	{
 		std::string token = argv[i];
 
-
-		if (token=="--puzzleDir")
+		if (token.rfind("--",0)==0)
 		{
-			oPuzzleDirectory = argv[i + 1];			
-			continue;
-		}
-
-		if (token == "--ManualSimulation")
-		{
-			oIsSimulationAuto = false;
+			oParam2Value.insert({ token.substr(2,token.size()),argv[i + 1]});
+			++i;
 			continue;
 		}
 
