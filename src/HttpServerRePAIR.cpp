@@ -137,17 +137,17 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
     reconstructor_.Run(imageBeforeCollide, imageAfterCollide);
 
     nlohmann::json output;
-    output["AfterEnableCollision"] = buildSpringsJson(reconstructor_.activeMatings_);
+    //output["AfterEnableCollision"] = buildSpringsJson(reconstructor_.activeMatings_);
     auto piece2FinalCoord = reconstructor_.getPiece2FinalCoords();
     output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);
     std::map<std::string, std::pair<float, b2Vec2>> piece2FinalTransformation;
     reconstructor_.getPiece2FinalTransformation(piece2FinalTransformation);
-    output["piecesFinalTransformations"] = buildPieceTransformationJson(piece2FinalTransformation);
+    //output["piecesFinalTransformations"] = buildPieceTransformationJson(piece2FinalTransformation);
     
     auto piece2CoordBeforeCollision = reconstructor_.getPiece2CoordsBeforeEnableCollision();
     //output["piecesBeforeEnableCollision"] = buildPieceCartesianJson(piece2CoordBeforeCollision);
-    output["piecesBeforeCollisionCoords"] = buildPieceCartesianJson(piece2CoordBeforeCollision);
-    output["piecesBeforeCollisionTransformations"] = buildPieceTransformationJson(reconstructor_.piece2BeforeCollisionTransformation_);
+    //output["piecesBeforeCollisionCoords"] = buildPieceCartesianJson(piece2CoordBeforeCollision);
+    //output["piecesBeforeCollisionTransformations"] = buildPieceTransformationJson(reconstructor_.piece2BeforeCollisionTransformation_);
 
     reconstructor_.closeRun();
     activeMatings_.clear();

@@ -14,7 +14,10 @@ void SilentReconstructor::initScreen()//std::vector<Piece>& pieces
 	for (auto& piece : activePieces_)
 	{
 		screen_->initSprite(piece);
+		screen_->initPolygon(piece);
 	}
+
+	nextPolygonColorIndex_ = 0;
 
 	screen_->clearDisplay();
 	isScreenInitiated_ = true;
@@ -68,6 +71,7 @@ void SilentReconstructor::progress(int numIteration)
 			for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
 			{
 				const b2Transform& transform = pieceIt->refb2Body_->GetTransform();			
+				screen_->drawPolygon(pieceIt->id_, transform);
 				screen_->drawSprite(pieceIt->id_, transform);
 			}
 
@@ -157,7 +161,8 @@ void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 		for (auto& piece : activePieces_)
 		{
-			screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
+			//screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
+			screen_->drawPolygon(piece.id_, piece.refb2Body_->GetTransform());
 		}
 
 		screen_->screenShotToFile(screenshotPathAfterCollide);

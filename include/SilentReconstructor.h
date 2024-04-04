@@ -19,6 +19,7 @@ protected:
 	int iterationToConvergeAfterCollidePerPiece_ = 500;
 	bool isDebugScreenVisible_ = false;
 	sf::Color springColor_ = sf::Color::Red;
+	int nextPolygonColorIndex_ = 0;
 
 public:
 	void Run(std::string screenshotPathBeforeCollide="", std::string screenshotPathAfterCollide="");

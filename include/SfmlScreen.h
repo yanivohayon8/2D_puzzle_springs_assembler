@@ -25,10 +25,11 @@ public:
 	std::map<std::string, sf::Sprite> pieceId2Sprite_;
 	std::map<std::string, sf::Texture> pieceId2texture_;
 	std::map<std::string, sf::ConvexShape> pieceId2Polygon_;
+	std::map<std::string, sf::Color> pieceId2PolygonColor_;
 	std::map<std::string, std::vector<sf::CircleShape>> pieceId2PolygonsCoords_;
 	std::map<std::string, sf::CircleShape> pieceId2PolygonCenter_;
-
-
+	int nextPolygonColorIndex_ = 0;
+	
 	void initDisplay(bool isVisible=true);
 	void initBounds(std::vector<std::vector<b2Vec2>>& boundsBodyCoordinates);
 	void initSprite(Piece& piece);
@@ -52,5 +53,9 @@ public:
 	void closeWindow();
 
 	void screenShotToFile(std::string fileName);
+
+	static const std::vector<sf::Color> sfmlColors;
+	
 };
+
 

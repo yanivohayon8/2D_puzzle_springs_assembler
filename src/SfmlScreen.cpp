@@ -6,6 +6,7 @@ SfmlScreen::SfmlScreen(int width,int height, float widthScale,float heightScale)
 	height_ = height;
 	widthScale_ = widthScale;
 	heightScale_ = heightScale;
+	nextPolygonColorIndex_ = 0;
 }
 
 void SfmlScreen::initDisplay(bool isVisible)
@@ -93,6 +94,16 @@ void SfmlScreen::initPolygon(Piece& piece)
 	convex.setScale(widthScale_, heightScale_);
 
 	pieceId2Polygon_.insert({ piece.id_,convex });
+	nextPolygonColorIndex_ = (nextPolygonColorIndex_ + 1) % SfmlScreen::sfmlColors.size();	
+	auto nextColor = SfmlScreen::sfmlColors[nextPolygonColorIndex_];
+
+	if (nextColor == sf::Color::Black || nextColor == sf::Color::Red)
+	{
+		nextPolygonColorIndex_ = (nextPolygonColorIndex_ + 1) % SfmlScreen::sfmlColors.size();
+		nextColor = SfmlScreen::sfmlColors[nextPolygonColorIndex_];
+	}
+
+	pieceId2PolygonColor_.insert({ piece.id_, nextColor });
 }
 
 
@@ -142,6 +153,7 @@ void SfmlScreen::drawPolygon(std::string pieceId, const b2Transform& trans)
 
 	auto& position = trans.p;
 	convex.setPosition(widthScale_ * position.x, heightScale_ * position.y);
+	convex.setFillColor(pieceId2PolygonColor_.at(pieceId));
 	window_.draw(convex);
 }
 
@@ -220,3 +232,15 @@ void SfmlScreen::screenShotToFile(std::string fileName)
 	image = window_.capture();
 	image.saveToFile(fileName);
 }
+
+
+const std::vector<sf::Color> SfmlScreen::sfmlColors = {
+		sf::Color::Black,
+		sf::Color::White,
+		sf::Color::Red,
+		sf::Color::Green,
+		sf::Color::Blue,
+		sf::Color::Yellow,
+		sf::Color::Magenta,
+		sf::Color::Cyan
+};
