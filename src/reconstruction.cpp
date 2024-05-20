@@ -229,7 +229,10 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 		{
 			initMovingBody(piece, *initialPosIt);
 			//initMovingBody(piece, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-			//initMovingBody(piece, b2Vec2(0, 0));
+			//initMovingBody(piece, b2Vec2(8, 5));
+			//initMovingBody(piece, b2Vec2(8, 8));
+
+			//initMovingBody(piece, b2Vec2(1, 1));
 			++initialPosIt;
 		}
 	}
@@ -297,37 +300,6 @@ void Reconstructor::closeRun()
 }
 
 
-void Reconstructor::saveFinalTransforms(const std::string& filename,const b2Vec2& translateCenter)
-{
-	// Open the CSV file for writing
-	std::ofstream file(filename);
-
-	if (!file.is_open()) {
-		std::cerr << "Failed to open file: " << filename << std::endl;
-		return;
-	}
-
-	// Write the header
-	//file << "piece,t_x,t_y,r_sin,r_cos,r_angle" << std::endl;
-	file << "piece,translate_x,translate_y,rotation_angle" << std::endl;
-
-	// Write each row of the matrix as a separate line in the CSV file
-	for (auto& piece : activePieces_)
-	{
-		auto& trans = piece.refb2Body_->GetTransform();
-		float x = trans.p.x - translateCenter.x;
-		float y = trans.p.y - translateCenter.y;
-		float radians = piece.refb2Body_->GetAngle();
-
-		//file << piece.id_ << "," << trans.p.x << "," << trans.p.y << "," << trans.q.s << "," << trans.q.c<<  << std::endl;
-		file << piece.id_ << "," << x << "," << y << "," << radians << std::endl;
-	}
-
-	// Close the file
-	file.close();
-
-	std::cout << "Matrix data written to CSV file: " << filename << std::endl;
-}
 
 void Reconstructor::disableJointsCollide()
 {

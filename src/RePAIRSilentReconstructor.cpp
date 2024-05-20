@@ -7,6 +7,11 @@ RePAIRSilentReconstructor::RePAIRSilentReconstructor():SilentReconstructor()
 	jointRestLength_ = 0.05;
 }
 
+RePAIRSilentReconstructor::RePAIRSilentReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight):SilentReconstructor(boardWidth,boardHeight,screenWidth,screenHeight)
+{
+
+}
+
 void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , std::string screenshotPathAfterCollide)
 {
 	if (isDebugScreenVisible_ || screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
@@ -23,34 +28,34 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 	piece2CoordsBeforeEnableCollision_.clear();
 	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
 
-	setPiecesCollisionOn();
-	
-	// Apply impulse on bodies
-	int impulseIndex = 0;
-	float powerMagnitude = 0.5;//2
-	std::vector<b2Vec2> initialImpulses = {
-		{powerMagnitude,-powerMagnitude},
-		{powerMagnitude,powerMagnitude},
-		{-powerMagnitude,-powerMagnitude},
-		{-powerMagnitude,powerMagnitude}
-	};
-	int numInitialImpulses = initialImpulses.size();
+	//setPiecesCollisionOn();
+	//
+	//// Apply impulse on bodies
+	//int impulseIndex = 0;
+	//float powerMagnitude = 0.5;//2
+	//std::vector<b2Vec2> initialImpulses = {
+	//	{powerMagnitude,-powerMagnitude},
+	//	{powerMagnitude,powerMagnitude},
+	//	{-powerMagnitude,-powerMagnitude},
+	//	{-powerMagnitude,powerMagnitude}
+	//};
+	//int numInitialImpulses = initialImpulses.size();
 
-	for (auto& piece : activePieces_)
-	{
-		auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
-		piece.applyLinearImpulse(power.x, power.y);
-	}
+	//for (auto& piece : activePieces_)
+	//{
+	//	auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
+	//	piece.applyLinearImpulse(power.x, power.y);
+	//}
 
-	//piece2BeforeCollisionTransformation_.clear();
-	//snapshotPiecesTransformation(piece2BeforeCollisionTransformation_, centerOfBoard);
+	////piece2BeforeCollisionTransformation_.clear();
+	////snapshotPiecesTransformation(piece2BeforeCollisionTransformation_, centerOfBoard);
 
 
-	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
-	progress(iterationToSecondConverage);
+	//int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
+	//progress(iterationToSecondConverage);
 
-	setPiecesCollisionOff();
-	progress(iterationToSecondConverage);
+	//setPiecesCollisionOff();
+	//progress(iterationToSecondConverage);
 
 	piece2FinalCoords_.clear();
 	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);

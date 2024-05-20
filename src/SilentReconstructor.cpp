@@ -1,6 +1,16 @@
 #include "SilentReconstructor.h"
 
 
+SilentReconstructor::SilentReconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_):Reconstructor(boardWidth,boardHeight,screenWidth_,screenHeight_)
+{
+
+}
+
+SilentReconstructor::SilentReconstructor()
+{
+
+}
+
 bool SilentReconstructor::isScreenInitiated()
 {
 	return isScreenInitiated_;
@@ -71,7 +81,7 @@ void SilentReconstructor::progress(int numIteration)
 			for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
 			{
 				const b2Transform& transform = pieceIt->refb2Body_->GetTransform();			
-				screen_->drawPolygon(pieceIt->id_, transform);
+				//screen_->drawPolygon(pieceIt->id_, transform);
 				screen_->drawSprite(pieceIt->id_, transform);
 			}
 

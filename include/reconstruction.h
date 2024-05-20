@@ -20,7 +20,6 @@ private:
 
 protected:
 	void putMatingSprings(VertexMating* &mating);
-	void saveFinalTransforms(const std::string& filename, const b2Vec2& translateCenter);
 	bool isEnableJointsCollide_ = false;
 	float initPowerMagnitude_ = 0.2;
 	float jointRestLength_ = 0.01;

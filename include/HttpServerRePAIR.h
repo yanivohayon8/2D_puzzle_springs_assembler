@@ -6,7 +6,9 @@ class HttpServerRePAIR : public HTTPServer
 {
 
 protected:
-	RePAIRSilentReconstructor reconstructor_;
+	float boardsize = 10;
+	float screenSize = 1380;
+	RePAIRSilentReconstructor reconstructor_;//(boardsize, boardsize,screenSize,screenSize);
 	DataLoader dataLoader_;
 	void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody);
 	void handleReconstruct(const httplib::Request& req, httplib::Response& res);

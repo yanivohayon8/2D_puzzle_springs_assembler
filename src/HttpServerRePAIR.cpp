@@ -5,7 +5,9 @@ HttpServerRePAIR::HttpServerRePAIR(int port) :HTTPServer(port)
 {
 	versionPrefix_ = versionPrefix_ + "/RePAIR";
 	dataLoader_.setPuzzleDirectory("../data/RePAIR");
+    RePAIRSilentReconstructor reconstructor_(10, 10, 1380, 1380);
 }
+
 
 
 

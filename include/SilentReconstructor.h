@@ -22,6 +22,8 @@ protected:
 	int nextPolygonColorIndex_ = 0;
 
 public:
+	SilentReconstructor();
+	SilentReconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_);
 	void Run(std::string screenshotPathBeforeCollide="", std::string screenshotPathAfterCollide="");
 	std::map<std::string, std::vector<b2Vec2>>* getPiece2CoordsBeforeEnableCollision();
 	std::map<std::string, std::vector<b2Vec2>>* getPiece2FinalCoords();
