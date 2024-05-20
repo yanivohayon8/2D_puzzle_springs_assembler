@@ -8,8 +8,6 @@
 #include <ScriptInputParser.h>
 #include <Puzzle.h>
 #include <reconstruction.h>
-//#include <TestHandler.h>
-//#include <cpp-httplib/httplib.h>
 
 int main(int argc, char** argv)
 {
