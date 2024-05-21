@@ -8,7 +8,8 @@ public:
     RePAIRSilentReconstructor();
     RePAIRSilentReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight);
     void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "");
-
-    void RunV2();
+    void RunCollisionOff();
+    void RunCollisionOffThenOn();
+    void RunCollisionOn();
 };
 

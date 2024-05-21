@@ -15,6 +15,11 @@ RePAIRSilentReconstructor::RePAIRSilentReconstructor(float boardWidth, float boa
 
 void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , std::string screenshotPathAfterCollide)
 {
+	
+}
+
+void RePAIRSilentReconstructor::RunCollisionOff()
+{
 	/*
 		Set collision off the entire running
 	*/
@@ -34,10 +39,10 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 
 	piece2FinalCoords_.clear();
 	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
-	
+
 	//piece2FinalTransformation_.clear();
 	//snapshotPiecesTransformation(piece2FinalTransformation_, centerOfBoard);
-	
+
 	for (auto& mating : activeMatings_)
 	{
 		mating->snapshotJointLength();
@@ -50,7 +55,7 @@ void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , st
 	}
 }
 
-void RePAIRSilentReconstructor::RunV2()
+void RePAIRSilentReconstructor::RunCollisionOffThenOn()
 {
 	/*
 		In the beginning, set collisionOff and then set collision on
@@ -100,6 +105,38 @@ void RePAIRSilentReconstructor::RunV2()
 
 	//piece2FinalTransformation_.clear();
 	//snapshotPiecesTransformation(piece2FinalTransformation_, centerOfBoard);
+
+	for (auto& mating : activeMatings_)
+	{
+		mating->snapshotJointLength();
+	}
+
+	if (isDebugScreenVisible_)
+	{
+		screen_->closeWindow();
+		isDebugScreenVisible_ = false;
+	}
+}
+
+void RePAIRSilentReconstructor::RunCollisionOn()
+{
+	/*
+		Set collision on the entire running
+	*/
+	if (isDebugScreenVisible_)
+	{
+		initScreen();
+	}
+
+	setPiecesCollisionOn();
+
+	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
+	progress(iterationToConverge);
+
+	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
+
+	piece2FinalCoords_.clear();
+	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
 
 	for (auto& mating : activeMatings_)
 	{
