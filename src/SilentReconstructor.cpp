@@ -6,7 +6,7 @@ SilentReconstructor::SilentReconstructor(float boardWidth, float boardHeight, in
 
 }
 
-SilentReconstructor::SilentReconstructor()
+SilentReconstructor::SilentReconstructor():Reconstructor(40,40,1380,1380)
 {
 
 }

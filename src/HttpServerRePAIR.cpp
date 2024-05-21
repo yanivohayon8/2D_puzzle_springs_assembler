@@ -1,15 +1,11 @@
 #include "HttpServerRePAIR.h"
 
 
-HttpServerRePAIR::HttpServerRePAIR(int port) :HTTPServer(port)
+HttpServerRePAIR::HttpServerRePAIR(int port):HTTPServer(port), reconstructor_(10.0f, 10.0f, 1380, 1380)
 {
 	versionPrefix_ = versionPrefix_ + "/RePAIR";
 	dataLoader_.setPuzzleDirectory("../data/RePAIR");
-    RePAIRSilentReconstructor reconstructor_(10, 10, 1380, 1380);
 }
-
-
-
 
 void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody)
 {
@@ -73,8 +69,14 @@ void HttpServerRePAIR::handlePuzzleLoading(const httplib::Request& req, httplib:
 
 void HttpServerRePAIR::handleVisualReconstruct(const httplib::Request& req, httplib::Response& res)
 {
+    std::cout << "handleVisualReconstruct is commented" << std::endl;
     std::cout << "Start new reconstruction" << std::endl;
-    VisualReconstructor vsReconstructor;
+    float boardWidth = 10;
+    float boardHeight = 10;
+    int screenWidth = 1380;
+    int screenHeight = 1380; 
+    VisualReconstructor vsReconstructor(boardWidth,boardHeight,screenWidth,screenHeight);
+    //VisualReconstructor vsReconstructor;
     vsReconstructor.init();
     vsReconstructor.enableJointsCollide();
     vsReconstructor.setJointRestLength(0);
@@ -161,7 +163,6 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
 
 void HttpServerRePAIR::run()
 {
-    //silentReconstructor_.init();
     reconstructor_.init();
 
     server_.Get(versionPrefix_ + "/sanity", [&](const httplib::Request& req, httplib::Response& res) {
@@ -173,11 +174,8 @@ void HttpServerRePAIR::run()
 
  
     server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
-
-
         // This is for tests
-        bool isVisualTest= req.has_param("isVisualTest");
- 
+        bool isVisualTest= req.has_param("isVisualTest"); 
 
         // For simplicity of development the scheme is 
         // firstPieceId,firstPieceVertexIndex,secondPieceId,secondPieceVertexIndex;

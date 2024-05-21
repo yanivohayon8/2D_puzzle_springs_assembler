@@ -6,10 +6,12 @@ class HttpServerCD :
 protected:
     DataLoader dataLoader_;
     Puzzle puzzle_;
-    void handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody);//, Json::Value& bodyRequest
+    SilentReconstructor silentReconstructor_;
+    void handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody);
     void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res);
 
 public:
+    void run();
     HttpServerCD(int port = 8888);
 };
 

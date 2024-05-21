@@ -98,3 +98,72 @@ void HttpServerCD::handleReconstruct(const httplib::Request& req, httplib::Respo
     res.set_content(output.dump(), "application/json");
     res.status = 200;
 }
+
+void HttpServerCD::run()
+{
+    silentReconstructor_.init();
+
+    server_.Get(versionPrefix_ + "/sanity", [&](const httplib::Request& req, httplib::Response& res) {
+
+        std::cout << "Received request with params:" << std::endl;
+        for (const auto& param : req.params) {
+            std::cout << param.first << ": " << param.second << std::endl;
+        }
+
+        // Echo the body of the request
+        res.status = 200;
+        res.set_content("Hello World", "text/plain");
+        });
+
+    server_.Get(versionPrefix_ + "/json_test", [&](const httplib::Request& req, httplib::Response& res) {
+
+        std::cout << "Received request with params:" << std::endl;
+        for (const auto& param : req.params) {
+            std::cout << param.first << ": " << param.second << std::endl;
+        }
+
+        // Echo the body of the request
+        res.status = 200;
+        nlohmann::json json;
+
+        json["scaleUsed"] = 0.01;
+        nlohmann::json myarray = nlohmann::json::array();
+
+        std::vector<float> floatValues = { 1,2,3 };
+        for (auto& val : floatValues)
+        {
+            myarray.push_back(nlohmann::json::array({ val,val }));
+        }
+
+        json["array"] = myarray;
+
+        res.set_content(json.dump(), "application/json");
+        });
+
+    server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
+
+        // For simplicity of development the scheme is 
+        // firstPieceId,firstPieceVertexIndex,secondPieceId,secondPieceVertexIndex;
+        std::string strRequestBody;
+
+        content_reader([&](const char* data, size_t dataLength) {
+            strRequestBody.append(data, dataLength);
+            return true;
+            });
+
+        try
+        {
+            handlePuzzleLoading(req, res);
+            handleReconstruct(req, res, strRequestBody);
+        }
+        catch (const std::exception& ex)
+        {
+            std::string mess = ex.what();
+            std::cout << "Error: " << mess << std::endl;
+            throw ex;
+        }
+        });
+
+    std::cout << "HTTP server is listening on port " << port_ << std::endl;
+    server_.listen("localhost", port_);
+}

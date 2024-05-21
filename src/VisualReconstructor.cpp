@@ -1,5 +1,11 @@
 #include "VisualReconstructor.h"
 
+
+
+VisualReconstructor::VisualReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight):Reconstructor(boardWidth,boardHeight,screenWidth,screenHeight)
+{
+}
+
 void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
 {
 	

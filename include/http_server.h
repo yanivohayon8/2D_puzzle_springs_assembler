@@ -19,7 +19,6 @@ protected:
     virtual void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res);
     std::vector<Piece> activePieces_;
     std::vector<VertexMating*> activeMatings_;
-    SilentReconstructor silentReconstructor_;
     httplib::Server server_;
     std::string versionPrefix_ = "/v0";
 

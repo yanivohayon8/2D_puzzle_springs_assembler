@@ -9,7 +9,8 @@ RePAIRSilentReconstructor::RePAIRSilentReconstructor():SilentReconstructor()
 
 RePAIRSilentReconstructor::RePAIRSilentReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight):SilentReconstructor(boardWidth,boardHeight,screenWidth,screenHeight)
 {
-
+	/*isEnableJointsCollide_ = true;
+	jointRestLength_ = 0.05;*/
 }
 
 void RePAIRSilentReconstructor::Run(std::string screenshotPathBeforeCollide , std::string screenshotPathAfterCollide)

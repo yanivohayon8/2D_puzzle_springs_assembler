@@ -1,14 +1,13 @@
 #pragma once
 #include "http_server.h"
 #include "RePAIRSilentReconstructor.h"
+#include "reconstruction.h"
 
 class HttpServerRePAIR : public HTTPServer
 {
 
 protected:
-	float boardsize = 10;
-	float screenSize = 1380;
-	RePAIRSilentReconstructor reconstructor_;//(boardsize, boardsize,screenSize,screenSize);
+	RePAIRSilentReconstructor reconstructor_;
 	DataLoader dataLoader_;
 	void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody);
 	void handleReconstruct(const httplib::Request& req, httplib::Response& res);

@@ -46,11 +46,9 @@ public:
 	double timeStep_ = 1.0 / 60.0F; //1.0F / 60.0F;
 	int velocityIterations_ = 6;
 	int positionIterations_ = 2;
-
 	float piecesOverlappingArea_ = -1;
 
-	//Reconstructor(float boardWidth = 40,float boardHeight=40,int screenWidth_ = 1380, int screenHeight_ = 1380);
-	Reconstructor(float boardWidth = 10,float boardHeight=10,int screenWidth_ = 1380, int screenHeight_ = 1380);
+	Reconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_);
 	void init();
 	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, 
 		int positionSeed = 1, int positionPadding = 5);
