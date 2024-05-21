@@ -343,6 +343,26 @@ void Reconstructor::setPiecesCollisionOff()
 	}
 }
 
+void Reconstructor::applyImpulseOnBodies(float powerMagnitude)
+{
+
+	std::vector<b2Vec2> initialImpulses = {
+		{powerMagnitude,-powerMagnitude},
+		{powerMagnitude,powerMagnitude},
+		{-powerMagnitude,-powerMagnitude},
+		{-powerMagnitude,powerMagnitude}
+	};
+
+	int numInitialImpulses = initialImpulses.size();
+	int impulseIndex = 0;
+
+	for (auto& piece : activePieces_)
+	{
+		auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
+		piece.applyLinearImpulse(power.x, power.y);
+	}
+}
+
 void Reconstructor::setJointRestLength(float length)
 {
 	jointRestLength_ = length;

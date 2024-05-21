@@ -29,15 +29,11 @@ void RePAIRSilentReconstructor::RunCollisionOff()
 	}
 
 	setPiecesCollisionOff();
-
 	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
 	progress(iterationToConverge);
 
-	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
-	piece2CoordsBeforeEnableCollision_.clear();
-	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
-
 	piece2FinalCoords_.clear();
+	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
 	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
 
 	//piece2FinalTransformation_.clear();
@@ -67,40 +63,17 @@ void RePAIRSilentReconstructor::RunCollisionOffThenOn()
 	}
 
 	setPiecesCollisionOff();
-
 	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
 	progress(iterationToConverge);
 
-	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
-	//piece2CoordsBeforeEnableCollision_.clear();
-	//snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
-
 	setPiecesCollisionOn();
-	
-	// Apply impulse on bodies
-	int impulseIndex = 0;
-	float powerMagnitude = 0.5;//2
-	std::vector<b2Vec2> initialImpulses = {
-		{powerMagnitude,-powerMagnitude},
-		{powerMagnitude,powerMagnitude},
-		{-powerMagnitude,-powerMagnitude},
-		{-powerMagnitude,powerMagnitude}
-	};
-	int numInitialImpulses = initialImpulses.size();
-
-	for (auto& piece : activePieces_)
-	{
-		auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
-		piece.applyLinearImpulse(power.x, power.y);
-	}
+	applyImpulseOnBodies(0.5);
 
 	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
 	progress(iterationToSecondConverage);
-
-	//setPiecesCollisionOff();
-	//progress(iterationToSecondConverage);
-
+	
 	piece2FinalCoords_.clear();
+	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
 	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
 
 	//piece2FinalTransformation_.clear();
@@ -129,13 +102,12 @@ void RePAIRSilentReconstructor::RunCollisionOn()
 	}
 
 	setPiecesCollisionOn();
-
+	applyImpulseOnBodies(5);
 	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
 	progress(iterationToConverge);
 
-	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
-
 	piece2FinalCoords_.clear();
+	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
 	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
 
 	for (auto& mating : activeMatings_)

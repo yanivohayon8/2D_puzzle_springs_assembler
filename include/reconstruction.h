@@ -67,5 +67,7 @@ public:
 	void setPiecesAngularDamping(float damping);
 	void setPiecesCollisionOn();
 	void setPiecesCollisionOff();
+
+	void applyImpulseOnBodies(float powerMagnitude);
 };
 
