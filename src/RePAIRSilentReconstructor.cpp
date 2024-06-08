@@ -76,8 +76,8 @@ void RePAIRSilentReconstructor::RunCollisionOffThenOn()
 	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
 	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
 
-	//piece2FinalTransformation_.clear();
-	//snapshotPiecesTransformation(piece2FinalTransformation_, centerOfBoard);
+	piece2FinalTransformation_.clear();
+	snapshotPiecesTransformation(piece2FinalTransformation_, centerOfBoard);
 
 	for (auto& mating : activeMatings_)
 	{

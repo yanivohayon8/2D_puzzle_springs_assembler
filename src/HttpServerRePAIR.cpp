@@ -145,6 +145,10 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
         reconstructor_.RunCollisionOffThenOn();
         auto piece2FinalCoord = reconstructor_.getPiece2FinalCoords();
         output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);
+
+        std::map<std::string, std::pair<float, b2Vec2>> piece2FinalTransformation;
+        reconstructor_.getPiece2FinalTransformation(piece2FinalTransformation);
+        output["piecesFinalTransformations"] = buildPieceTransformationJson(piece2FinalTransformation);
     }
     else
     {
@@ -153,6 +157,10 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
             reconstructor_.RunCollisionOn();
             auto piece2FinalCoord = reconstructor_.getPiece2FinalCoords();
             output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);
+
+            std::map<std::string, std::pair<float, b2Vec2>> piece2FinalTransformation;
+            reconstructor_.getPiece2FinalTransformation(piece2FinalTransformation);
+            output["piecesFinalTransformations"] = buildPieceTransformationJson(piece2FinalTransformation);
         }
         else
         {
@@ -164,7 +172,7 @@ void HttpServerRePAIR::handleReconstruct(const httplib::Request& req, httplib::R
             output["piecesFinalCoords"] = buildPieceCartesianJson(piece2FinalCoord);
             std::map<std::string, std::pair<float, b2Vec2>> piece2FinalTransformation;
             reconstructor_.getPiece2FinalTransformation(piece2FinalTransformation);
-            //output["piecesFinalTransformations"] = buildPieceTransformationJson(piece2FinalTransformation);
+            output["piecesFinalTransformations"] = buildPieceTransformationJson(piece2FinalTransformation);
 
             auto piece2CoordBeforeCollision = reconstructor_.getPiece2CoordsBeforeEnableCollision();
             //output["piecesBeforeEnableCollision"] = buildPieceCartesianJson(piece2CoordBeforeCollision);
