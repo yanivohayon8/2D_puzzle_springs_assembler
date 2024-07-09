@@ -16,11 +16,19 @@ class HTTPServer {
 
 protected:
     virtual void handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody);//, Json::Value& bodyRequest
-    virtual void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res);
+    virtual void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody);
+
+
+    void loadMatings_(float coordinatesScale);
+    void loadPieces_(float coordinatesScale);
+
     std::vector<Piece> activePieces_;
     std::vector<VertexMating*> activeMatings_;
     httplib::Server server_;
-    std::string versionPrefix_ = "/v0";
+    std::string versionPrefix_ = "/v1";
+
+    nlohmann::json currentRequestBody_;
+    httplib::Request currentRequest_;
 
 public:
     int port_=8888;
@@ -30,6 +38,10 @@ public:
     nlohmann::json buildSpringsJson(std::vector<VertexMating*>& matings); //
     nlohmann::json buildPieceCartesianJson(std::map<std::string, std::vector<b2Vec2>>* &pieces2Coords);
     nlohmann::json buildPieceTransformationJson(std::map<std::string, std::pair<float, b2Vec2>>& piece2FinalTransformation);
+
+    void loadPuzzleData(const httplib::Request& req, httplib::Response& res, std::string requestBody);
+    //void initPuzzle();
+    void reconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody);
 };
 
 #endif #HTTP_SERVER_H

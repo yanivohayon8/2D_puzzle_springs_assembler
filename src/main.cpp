@@ -1,6 +1,6 @@
-//#include "http_server.h"
-#include "HttpServerCD.h"
-#include "HttpServerRePAIR.h"
+#include "http_server.h"
+//#include "HttpServerCD.h"
+//#include "HttpServerRePAIR.h"
 #include <DataLoader.h>
 #include <Piece.h>
 ////#include <World.h>
@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 	std::map<std::string, std::string> param2Value;
 	parseInput(param2Value,argc,argv);
 
-	if (param2Value.count("ConvexDrawing"))
+	/*if (param2Value.count("ConvexDrawing"))
 	{
 		HttpServerCD httpServer;
 		httpServer.run();
@@ -24,6 +24,10 @@ int main(int argc, char** argv)
 		HttpServerRePAIR httpServer;
 		httpServer.run();
 	}
+	*/
+
+	HTTPServer httpServer;
+	httpServer.run();
 
 	return 0;
 }

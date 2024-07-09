@@ -3,6 +3,8 @@
 #include <box2d/box2d.h>
 #include <vector>
 #include <algorithm>
+#include <json.hpp>
+
 
 class Piece
 {
@@ -19,6 +21,8 @@ public:
 	b2AABB aabb_;
 
 	Piece(std::string pieceId,Eigen::MatrixX2d coordinates, std::string imagePath);
+	
+	Piece(std::string pieceId, std::vector<b2Vec2>& localCoordsAsVecs, std::string imagePath);
 
 	void DestroyBody();
 

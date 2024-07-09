@@ -5,11 +5,6 @@ HTTPServer::HTTPServer(int port)
 {
 }
 
-void HTTPServer::run()
-{
-}
-
-
 void HTTPServer::payloadToMatings(std::vector<VertexMating*>& oMatings, std::string requestBody)
 {
     size_t pos = 0;
@@ -122,14 +117,119 @@ nlohmann::json HTTPServer::buildPieceTransformationJson(std::map<std::string, st
 }
 
 
+//void load
+
+
+void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody)
+{
+
+}
+
 void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody)
 {
 
 }
 
-void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res)
+
+
+
+void HTTPServer::loadMatings_(float coordinatesScale)
+{
+    activeMatings_.clear();
+    auto& matingsJson = currentRequestBody_["matings"];
+
+    for (auto& matingIt = matingsJson.begin(); matingIt != matingsJson.end(); ++matingIt)
+    {
+        auto& matingJson = matingIt.value();
+
+        std::string firstPieceId = matingJson["firstPiece"];
+        double firstPieceLocalCoordsX = matingJson["firstPieceLocalCoords"].at(0);
+        double firstPieceLocalCoordsY = matingJson["firstPieceLocalCoords"].at(1);
+        b2Vec2 firstPieceLocalCoords(firstPieceLocalCoordsX * coordinatesScale,
+            firstPieceLocalCoordsY * coordinatesScale);
+
+        std::string secondPieceId = matingJson["secondPiece"];
+        double secondPieceLocalCoordsX = matingJson["secondPieceLocalCoords"].at(0);
+        double secondPieceLocalCoordsY = matingJson["secondPieceLocalCoords"].at(1);
+        b2Vec2 secondPieceLocalCoords(secondPieceLocalCoordsX * coordinatesScale,
+            secondPieceLocalCoordsY * coordinatesScale);
+
+        VertexMatingRePAIR* mating = new VertexMatingRePAIR(firstPieceId, firstPieceLocalCoords, secondPieceId, secondPieceLocalCoords);
+        activeMatings_.push_back(mating);
+    }
+}
+
+void HTTPServer::loadPieces_(float coordinatesScale)
+{
+    activePieces_.clear();
+
+    auto& piecesJson = currentRequestBody_["pieces"];
+
+    for (auto& pieceIt = piecesJson.begin(); pieceIt != piecesJson.end(); ++pieceIt)
+    {
+        auto& pieceJson = pieceIt.value();
+        std::vector<b2Vec2> coordinates;
+
+        for (auto& coordIt = pieceJson["polygon"].begin(); coordIt != pieceJson["polygon"].end(); ++coordIt)
+        {
+            float x_ = static_cast<float>(coordIt->at(0)) * coordinatesScale;
+            float y_ = static_cast<float>(coordIt->at(1)) * coordinatesScale;
+            coordinates.push_back(b2Vec2{ x_,y_ });
+        }
+
+        std::string imagePath = "";
+
+        if (pieceJson.contains("imagePath"))
+        {
+            imagePath = pieceJson["imagePath"];
+        }
+
+        Piece piece(pieceJson["id"], coordinates, imagePath);
+
+        activePieces_.push_back(piece);
+    }
+}
+
+void HTTPServer::loadPuzzleData(const httplib::Request& req, httplib::Response& res, std::string requestBody)
+{
+    loadMatings_(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+    loadPieces_(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+}
+
+void HTTPServer::reconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody)
 {
 
 }
 
 
+void HTTPServer::run()
+{
+    server_.Get(versionPrefix_ + "/sanity", [&](const httplib::Request& req, httplib::Response& res) {
+        res.status = 200;
+        res.set_content("Hello World!", "text/plain");
+    });
+
+    server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
+
+        std::string strRequestBody;
+        content_reader([&](const char* data, size_t dataLength) {strRequestBody.append(data, dataLength); return true;});
+        currentRequestBody_ = nlohmann::json::parse(strRequestBody);
+        currentRequest_ = req;
+
+        try
+        {
+            loadPuzzleData(req, res, strRequestBody);
+            reconstruct(req, res, strRequestBody);
+        }
+        catch (const std::exception& ex)
+        {
+            std::string mess = ex.what();
+            std::cout << "Error: " << mess << std::endl;
+            throw ex;
+        }
+
+    });
+
+    std::cout << "HTTP server is listening on port " << port_ << std::endl;
+    server_.listen("localhost", port_);
+}

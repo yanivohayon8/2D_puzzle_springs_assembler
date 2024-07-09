@@ -15,6 +15,13 @@ Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imag
 	imagePath_ = imagePath;
 }
 
+Piece::Piece(std::string pieceId, std::vector<b2Vec2> &localCoordsAsVecs, std::string imagePath)
+{
+	id_ = pieceId;
+	localCoordsAsVecs_ = localCoordsAsVecs;
+	imagePath_ = imagePath;
+}
+
 void Piece::DestroyBody()
 {
 	refb2Body_->GetWorld()->DestroyBody(refb2Body_);
