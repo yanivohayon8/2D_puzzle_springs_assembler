@@ -388,3 +388,15 @@ void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::stri
 		}
 	}
 }
+
+
+void Reconstructor::initMatingsJoints(std::vector<VertexMating*>& activeMatings)
+{
+	activeMatings_.clear();
+
+	for (auto& mating : activeMatings)
+	{
+		activeMatings_.push_back(mating);
+		putMatingSprings(mating);
+	}
+}

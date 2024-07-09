@@ -73,5 +73,6 @@ public:
 	// from here functions of refactor
 
 	void initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions);
+	void initMatingsJoints(std::vector<VertexMating*>& activeMatings);
 };
 

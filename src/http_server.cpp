@@ -207,7 +207,6 @@ void HTTPServer::loadPuzzleData()
 void HTTPServer::initReconstruction()
 {
     silentReconstructor_->activePieces_ = activePieces_;
-    silentReconstructor_->activeMatings_ = activeMatings_;
     
     std::string fixedPieceId = "";
 
@@ -241,6 +240,14 @@ void HTTPServer::initReconstruction()
     }
 
     silentReconstructor_->initPiecesBodies(activePieces_, fixedPieceId, positions);
+
+    silentReconstructor_->disableJointsCollide();
+
+    if (currentRequest_.has_param("enableJointsCollide"))
+    {
+        silentReconstructor_->enableJointsCollide();
+    }
+    silentReconstructor_->initMatingsJoints(activeMatings_);
 }
 
 void HTTPServer::reconstruct()
@@ -270,6 +277,9 @@ void HTTPServer::run()
             loadPuzzleData();
             initReconstruction();
             reconstruct();
+
+            res.status = 200;
+            res.set_content("Hello World!", "text/plain");
         }
         catch (const std::exception& ex)
         {
