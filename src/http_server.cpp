@@ -201,11 +201,46 @@ void HTTPServer::loadPuzzleData()
 {
     loadMatings_(SCALE_IMAGE_COORDINATES_TO_BOX2D);
     loadPieces_(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+
 }
 
 void HTTPServer::initReconstruction()
 {
+    silentReconstructor_->activePieces_ = activePieces_;
+    silentReconstructor_->activeMatings_ = activeMatings_;
+    
+    std::string fixedPieceId = "";
 
+    if (currentRequest_.has_param("fixPiece"))
+    {
+        Piece* fixedPiece_ = silentReconstructor_->getMaxMatingsPiece();
+        fixedPieceId = fixedPiece_->id_;
+    }
+
+    std::vector<b2Vec2> positions;
+
+    if (currentRequest_.has_param("seedInitialPositions"))
+    {
+        int positionPadding = 2;
+        int seedPositions = std::stoi(currentRequest_.get_param_value("seedInitialPositions"));
+
+        generate2DVectors(positions, activePieces_.size(),silentReconstructor_->boardWidth_, silentReconstructor_->boardHeight_, 
+            positionPadding, seedPositions);
+
+        std::sort(positions.begin(), positions.end(),
+            [](const b2Vec2& a, const b2Vec2& b)->bool {
+            return a.y > b.y || (a.y == b.y && a.x > b.x);
+            });
+    }
+    else
+    {
+        for (int i = 0; i < activePieces_.size(); i++)
+        {
+            positions.push_back(b2Vec2(silentReconstructor_->boardWidth_ / 2, silentReconstructor_->boardHeight_ / 2));
+        }
+    }
+
+    silentReconstructor_->initPiecesBodies(activePieces_, fixedPieceId, positions);
 }
 
 void HTTPServer::reconstruct()
@@ -220,6 +255,8 @@ void HTTPServer::run()
         res.status = 200;
         res.set_content("Hello World!", "text/plain");
     });
+
+    silentReconstructor_ = new SilentReconstructor(10, 10, 1380, 1380);
 
     server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
 

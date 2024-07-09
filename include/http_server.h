@@ -11,6 +11,9 @@
 #include "Piece.h"
 #include "Global_Parameters.h"
 #include <json.hpp>
+#include "reconstruction.h"
+#include "RePAIRSilentReconstructor.h"
+#include "SilentReconstructor.h"
 
 class HTTPServer {
 
@@ -29,6 +32,8 @@ protected:
 
     nlohmann::json currentRequestBody_;
     httplib::Request currentRequest_;
+
+    SilentReconstructor* silentReconstructor_;
 
 public:
     int port_=8888;

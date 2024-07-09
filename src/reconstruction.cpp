@@ -237,33 +237,14 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 		}
 	}
 
-	// Apply impulse on bodies
-	int impulseIndex = 0;
-	//float powerMagnitude = 0.2;//2
-	std::vector<b2Vec2> initialImpulses = {
-		{initPowerMagnitude_,initPowerMagnitude_},
-		{-initPowerMagnitude_,initPowerMagnitude_},
-		{-initPowerMagnitude_,-initPowerMagnitude_},
-		{-initPowerMagnitude_,initPowerMagnitude_}
-	};
-	int numInitialImpulses = initialImpulses.size();
-
-	for (auto& piece : activePieces_)
-	{
-		piece.setCollideOff();
-		//piece.setAngularDamping(pieceAngularDamping_);
-		auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
-		piece.applyLinearImpulse(power.x,power.y);
-	}
-
+	setPiecesCollisionOff();
+	applyImpulseOnBodies(initPowerMagnitude_);
 	setPiecesAngularDamping(pieceAngularDamping_);
 
 	for (auto &mating:activeMatings_)
 	{
 		putMatingSprings(mating);
 	}
-
-	piecesOverlappingArea_ = -1;
 }
 
 void Reconstructor::closeRun()
@@ -298,8 +279,6 @@ void Reconstructor::closeRun()
 
 	std::cout << "Run closed" << std::endl;
 }
-
-
 
 void Reconstructor::disableJointsCollide()
 {
@@ -386,4 +365,26 @@ void Reconstructor::setJointFrequency(float herz)
 void Reconstructor::setJointDamping(float ratio)
 {
 	jointDampingRatio_ = ratio;
+}
+
+
+
+
+/// From here new functions of refactor
+void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions)
+{
+	//activePieces_ = activePieces;
+
+	for (int i = 0; i < activePieces_.size(); i++)
+	{
+
+		if (activePieces_[i].id_ == fixedPieceId)
+		{
+			initStaticBody(activePieces_[i], b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+		}
+		else
+		{
+			initMovingBody(activePieces_[i], positions[i]);
+		}
+	}
 }
