@@ -227,8 +227,8 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 	{
 		if (piece.id_ != fixedPiece_->id_)
 		{
-			initMovingBody(piece, *initialPosIt);
-			//initMovingBody(piece, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+			//initMovingBody(piece, *initialPosIt);
+			initMovingBody(piece, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
 			//initMovingBody(piece, b2Vec2(8, 5));
 			//initMovingBody(piece, b2Vec2(8, 8));
 
