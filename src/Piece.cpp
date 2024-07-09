@@ -14,7 +14,6 @@ Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imag
 	}
 
 	imagePath_ = imagePath;
-	boostPolygonArea_ = 0;
 }
 
 void Piece::DestroyBody()
@@ -171,44 +170,6 @@ float Piece::getBodyBoundingBoxWidth()
 float Piece::getBodyBoundingBoxHeight()
 {
 	return std::abs(aabb_.upperBound.y - aabb_.lowerBound.y);
-}
-
-
-void Piece::initBoostPolygon()
-{
-
-	std::vector<BoostPoint> points;
-
-	for (auto& point:globalCoordinates_)
-	{
-		BoostPoint boostPoint(point.x, point.y);
-		points.push_back(boostPoint);
-	}
-
-	bg::assign_points(boostPolygonGlobalCoords_, points);
-}
-
-float Piece::computeOverlappingArea(const BoostPolygon& otherPolyon)
-{
-	std::vector<BoostPolygon> output;
-	bg::intersection(boostPolygonGlobalCoords_, otherPolyon, output);
-
-	float area = 0.0f;
-	for (const auto& p : output)
-	{
-		area += bg::area(p);
-	}
-
-	return area;
-}
-
-float Piece::computeArea()
-{
-	if (boostPolygonArea_ == 0)
-	{
-		boostPolygonArea_ = bg::area(boostPolygonGlobalCoords_);
-	}
-	return boostPolygonArea_;
 }
 
 void Piece::setCollideOff()

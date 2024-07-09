@@ -3,15 +3,6 @@
 #include <box2d/box2d.h>
 #include <vector>
 #include <algorithm>
-#include <boost/geometry.hpp>
-#include <boost/geometry/geometries/point_xy.hpp>
-#include <boost/geometry/geometries/polygon.hpp>
-
-namespace bg = boost::geometry;
-
-typedef bg::model::d2::point_xy<float> BoostPoint;
-typedef bg::model::polygon<BoostPoint> BoostPolygon;
-
 
 class Piece
 {
@@ -28,8 +19,6 @@ public:
 	float initialAngle = 0;
 	std::string imagePath_;
 	b2AABB aabb_;
-	BoostPolygon boostPolygonGlobalCoords_;
-	float boostPolygonArea_;
 
 	Piece(std::string pieceId,Eigen::MatrixX2d coordinates, std::string imagePath);
 
@@ -52,10 +41,6 @@ public:
 	void computeBoundingBox();
 	float getBodyBoundingBoxWidth();
 	float getBodyBoundingBoxHeight();
-
-	void initBoostPolygon();
-	float computeOverlappingArea(const BoostPolygon& otherPolyon);
-	float computeArea();
 
 	void setCollideOff();
 	void setCollideOn();
