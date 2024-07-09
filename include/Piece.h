@@ -9,8 +9,6 @@ class Piece
 public:
 	std::string id_;
 	b2Body* refb2Body_;
-	Eigen::MatrixX2d localCoordinates_;
-	Eigen::MatrixX2d finalCoordinates_;
 	std::vector<b2Vec2> localCoordsAsVecs_;
 	std::vector<b2Vec2> globalCoordinates_;
 	b2Vec2 finalTranslate_;
@@ -24,19 +22,11 @@ public:
 
 	void DestroyBody();
 
-	void printCoords();
-	std::pair<double, double> getVertexCoord(int iVertex);
-	int getNumCoords();
-	void rotate(const b2Rot& rot);
 	void translate();
-	std::pair<int, int> getEdgeVertexIndexes(int iEdge);
-	b2Vec2* getVeterxLocalCoords(int iVertex);
 	void getVeterxGlobalCoords(b2Vec2& oCoords, int iVertex);
 	void getGlobalCoords(b2Vec2& oCoords, b2Vec2& localCoord);
 
 	void sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map);
-	void getGlobalCoordsMoved(Eigen::MatrixX2d &oCoords, b2Vec2 translate);
-	void getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords);
 
 	void computeBoundingBox();
 	float getBodyBoundingBoxWidth();

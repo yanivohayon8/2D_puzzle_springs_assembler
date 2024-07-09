@@ -4,7 +4,6 @@
 Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imagePath)
 {
 	id_ = pieceId;
-	localCoordinates_ = coordinates;
 
 	for (int i = 0; i < coordinates.rows(); i++)
 	{
@@ -21,35 +20,6 @@ void Piece::DestroyBody()
 	refb2Body_->GetWorld()->DestroyBody(refb2Body_);
 }
 
-void Piece::printCoords()
-{
-	for (int ii = 0; ii < localCoordinates_.rows(); ii++)
-	{
-		std::cout << "(" << localCoordinates_.coeff(ii, 0) << "," << localCoordinates_(ii, 1) << ")" << std::endl;
-	}
-}
-
-std::pair<double, double> Piece::getVertexCoord(int iVertex)
-{
-	std::pair<double, double> xy;
-	xy.first = localCoordinates_.coeff(iVertex, 0);
-	xy.second = localCoordinates_.coeff(iVertex, 1);
-	return xy;
-}
-
-int Piece::getNumCoords()
-{
-	return localCoordinates_.rows();
-}
-
-void Piece::rotate(const b2Rot& rot)
-{
-	// This is inspired from pelegs code: check it! (remember in Passover about the traslate method)
-	Eigen::Matrix2d rotationEigen;
-	rotationEigen << rot.c, -rot.s, rot.s, rot.c;
-	localCoordinates_ = localCoordinates_ * rotationEigen.transpose();
-}
-
 
 void Piece::translate()
 {
@@ -57,18 +27,6 @@ void Piece::translate()
 	{
 		globalCoordinates_[i] = refb2Body_->GetWorldPoint(localCoordsAsVecs_.at(i));
 	}
-}
-
-std::pair<int, int> Piece::getEdgeVertexIndexes(int iEdge)
-{
-	int indexFirstVertex = iEdge;
-	int indexSecondVertex = (iEdge + 1) % getNumCoords();
-	return std::pair<int, int>(indexFirstVertex, indexSecondVertex);
-}
-
-b2Vec2* Piece::getVeterxLocalCoords(int iVertex)
-{
-	return &localCoordsAsVecs_[iVertex];
 }
 
 void Piece::getVeterxGlobalCoords(b2Vec2 &oCoords,int iVertex)
@@ -80,7 +38,6 @@ void Piece::getGlobalCoords(b2Vec2& oCoords,b2Vec2& localCoord)
 {
 	oCoords = refb2Body_->GetWorldPoint(localCoord);
 }
-
 
 void Piece::sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map)
 {
@@ -114,28 +71,6 @@ void Piece::sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_ma
 	coords = sorted_coords;
 	index_map = sorted_index_map;
 }
-
-void Piece::getGlobalCoordsMoved(Eigen::MatrixX2d& oCoords, b2Vec2 translate)
-{
-	for (int i = 0; i < oCoords.rows(); i++)
-	{
-		/*oCoords(i, 0) = globalCoordinates_[i].x - translate.x;
-		oCoords(i, 1) = globalCoordinates_[i].y - translate.y;*/
-		oCoords(i, 0) = oCoords(i,0) - translate.x;
-		oCoords(i, 1) = oCoords(i, 1) - translate.y;
-	}
-}
-
-void Piece::getVertexGlobalCoordsAsEigen(Eigen::MatrixX2d& oCoords)
-{
-	oCoords.resizeLike(localCoordinates_);
-	for (int coordIndex = 0; coordIndex < oCoords.rows(); coordIndex++)
-	{
-		oCoords(coordIndex, 0) = globalCoordinates_.at(coordIndex).x;
-		oCoords(coordIndex, 1) = globalCoordinates_.at(coordIndex).y;
-	}
-}
-
 
 
 void Piece::computeBoundingBox()
