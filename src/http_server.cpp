@@ -197,13 +197,18 @@ void HTTPServer::loadPieces_(float coordinatesScale)
     }
 }
 
-void HTTPServer::loadPuzzleData(const httplib::Request& req, httplib::Response& res, std::string requestBody)
+void HTTPServer::loadPuzzleData()
 {
     loadMatings_(SCALE_IMAGE_COORDINATES_TO_BOX2D);
     loadPieces_(SCALE_IMAGE_COORDINATES_TO_BOX2D);
 }
 
-void HTTPServer::reconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody)
+void HTTPServer::initReconstruction()
+{
+
+}
+
+void HTTPServer::reconstruct()
 {
 
 }
@@ -225,8 +230,9 @@ void HTTPServer::run()
 
         try
         {
-            loadPuzzleData(req, res, strRequestBody);
-            reconstruct(req, res, strRequestBody);
+            loadPuzzleData();
+            initReconstruction();
+            reconstruct();
         }
         catch (const std::exception& ex)
         {
