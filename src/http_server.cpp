@@ -184,7 +184,14 @@ void HTTPServer::loadPieces_(float coordinatesScale)
             imagePath = pieceJson["imagePath"];
         }
 
+       
         Piece piece(pieceJson["id"], coordinates, imagePath);
+
+        if (pieceJson.contains("fixedRotationAngle"))
+        {
+            piece.setIsRotationFixed(true);
+            piece.setInitialAngle(pieceJson["fixedRotationAngle"]);
+        }
 
         activePieces_.push_back(piece);
     }
