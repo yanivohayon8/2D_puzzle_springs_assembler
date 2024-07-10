@@ -510,25 +510,7 @@ void Reconstructor::progress(int numIteration)
 		{
 			screen_->clearDisplay();
 
-			for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
-			{
-				const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
-
-				if (isDrawOnlyPolygons)
-				{
-					screen_->drawPolygon(pieceIt->id_, transform);
-				}
-				else
-				{
-					bool isSpriteAvailable = screen_->drawSprite(pieceIt->id_, transform);
-
-					if (!isSpriteAvailable)
-					{
-						screen_->drawPolygon(pieceIt->id_, transform);
-					}
-				}
-			}
-
+			drawPieces();
 			drawJoints();
 
 			screen_->updateDisplay();
@@ -537,12 +519,34 @@ void Reconstructor::progress(int numIteration)
 }
 
 
-void  Reconstructor::drawJoints()
+void Reconstructor::drawJoints()
 {
 	for (auto& mating : activeMatings_)
 	{
 		auto& anchorA = mating->jointRef_->GetAnchorA();
 		auto& anchorB = mating->jointRef_->GetAnchorB();
 		screen_->drawLine(anchorA, anchorB, jointColor_, -1);
+	}
+}
+
+void Reconstructor::drawPieces()
+{
+	for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
+	{
+		const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
+
+		if (isDrawOnlyPolygons)
+		{
+			screen_->drawPolygon(pieceIt->id_, transform);
+		}
+		else
+		{
+			bool isSpriteAvailable = screen_->drawSprite(pieceIt->id_, transform);
+
+			if (!isSpriteAvailable)
+			{
+				screen_->drawPolygon(pieceIt->id_, transform);
+			}
+		}
 	}
 }

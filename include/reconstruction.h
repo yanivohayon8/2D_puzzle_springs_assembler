@@ -103,5 +103,6 @@ public:
 	void progress(int numIteration);
 
 	void drawJoints();
+	void drawPieces();
 };
 
