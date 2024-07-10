@@ -1,5 +1,7 @@
-#pragma once
+//#pragma once
 #include <reconstruction.h>
+#include <json.hpp>
+
 
 class VisualReconstructor: public Reconstructor
 {
@@ -9,5 +11,7 @@ public:
 	bool isDebugDrawPolygons_ = false;
 	bool isDrawSprites_ = true;
 	void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "");
+
+	nlohmann::json reconstruct();
 };
 

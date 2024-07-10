@@ -41,5 +41,7 @@ public:
 	nlohmann::json snapshotPiecesCoords(const b2Vec2& translateCenter, float coordinatesScale);
 	nlohmann::json RunOffCollide(float coordinatesScale);
 	nlohmann::json RunOffOnCollide(float coordinatesScale);
+
+	nlohmann::json reconstruct();
 };
 

@@ -296,3 +296,11 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 }
 
 
+
+
+nlohmann::json VisualReconstructor::reconstruct()
+{
+	nlohmann::json output;
+
+	return output;
+}

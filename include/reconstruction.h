@@ -82,5 +82,7 @@ public:
 
 	void initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions);
 	void initMatingsJoints(std::vector<VertexMating*>& activeMatings);
+
+	virtual nlohmann::json reconstruct()=0;
 };
 

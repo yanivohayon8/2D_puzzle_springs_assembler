@@ -323,31 +323,31 @@ void HTTPServer::initReconstruction()
 
 nlohmann::json HTTPServer::reconstruct(float coordinatesScale)
 {
-    //silentReconstructor_->
+    ////silentReconstructor_->
 
-    silentReconstructor_->setDebugScreenVisibility(false);
+    //silentReconstructor_->setDebugScreenVisibility(false);
 
-    if (currentRequest_.has_param("visibilityOn"))
-    {
-        silentReconstructor_->setDebugScreenVisibility(true);
-        silentReconstructor_->initScreen();
-    }
+    //if (currentRequest_.has_param("visibilityOn"))
+    //{
+    //    silentReconstructor_->setDebugScreenVisibility(true);
+    //    silentReconstructor_->initScreen();
+    //}
 
-    silentReconstructor_->applyImpulseOnBodies(silentReconstructor_->initPowerMagnitude_);
+    //silentReconstructor_->applyImpulseOnBodies(silentReconstructor_->initPowerMagnitude_);
 
     nlohmann::json output;
 
-    if (currentRequest_.has_param("collideOff"))
-    {
-        output = silentReconstructor_->RunOffCollide(coordinatesScale);
-    }
-    else
-    {
-        output = silentReconstructor_->RunOffOnCollide(coordinatesScale);
-    }
+    //if (currentRequest_.has_param("collideOff"))
+    //{
+    //    output = silentReconstructor_->RunOffCollide(coordinatesScale);
+    //}
+    //else
+    //{
+    //    output = silentReconstructor_->RunOffOnCollide(coordinatesScale);
+    //}
 
-    silentReconstructor_->screen_->closeWindow();
-    silentReconstructor_->closeRun();
+    //silentReconstructor_->screen_->closeWindow();
+    //silentReconstructor_->closeRun();
 
     return output;
 }
@@ -360,7 +360,6 @@ void HTTPServer::run()
         res.set_content("Hello World!", "text/plain");
     });
 
-    silentReconstructor_ = new SilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_, 1380, 1380);
 
     server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
 
@@ -369,17 +368,32 @@ void HTTPServer::run()
         currentRequestBody_ = nlohmann::json::parse(strRequestBody);
         currentRequest_ = req;
 
+        
+        if (currentRequest_.has_param("interactiveOn"))
+        {
+            reconstructor_ = new VisualReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
+                                                            defaultScreenLength, defaultScreenLength);
+        }
+        else
+        {
+            reconstructor_ = new SilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
+                                                            defaultScreenLength, defaultScreenLength);
+        }
+
         updateBoardDimensions();
 
         try
         {
             loadPuzzleData(SCALE_IMAGE_COORDINATES_TO_BOX2D);
             initReconstruction();
-            nlohmann::json& output = reconstruct(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+            //nlohmann::json& output = reconstruct(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+            nlohmann::json output = reconstructor_->reconstruct();
+            delete reconstructor_;
 
             res.status = 200;
             res.set_content(output.dump(), "application/json");
             res.status = 200;
+
         }
         catch (const std::exception& ex)
         {

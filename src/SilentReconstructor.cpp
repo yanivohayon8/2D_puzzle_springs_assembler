@@ -366,3 +366,10 @@ nlohmann::json SilentReconstructor::RunOffOnCollide(float coordinatesScale)
 
 	return output;
 }
+
+nlohmann::json SilentReconstructor::reconstruct()
+{
+	nlohmann::json output;
+
+	return output;
+}
