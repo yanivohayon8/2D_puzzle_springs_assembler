@@ -23,6 +23,11 @@ protected:
 
 
     void updateBoardDimensions();
+    std::string currentBoardDimensionsConfig="";
+    float largeBoardSizeLength_ = 80;
+    float mediumBoardSizeLength_ = 40;
+    float smallBoardSizeLength_ = 10;
+
     void loadMatings_(float coordinatesScale);
     void loadPieces_(float coordinatesScale);
 

@@ -122,6 +122,38 @@ nlohmann::json HTTPServer::buildPieceTransformationJson(std::map<std::string, st
 
 void HTTPServer::updateBoardDimensions()
 {
+
+    if (currentRequest_.has_param("boardSize"))
+    {
+        std::string boardSize = currentRequest_.get_param_value("boardSize");
+        
+        if (boardSize == "large" && currentBoardDimensionsConfig !="large")
+        {
+            currentBoardDimensionsConfig = "large";
+            silentReconstructor_->setBoardHeight(largeBoardSizeLength_);
+            silentReconstructor_->setBoardWidth(largeBoardSizeLength_);
+            silentReconstructor_->updateScreen();
+        }
+        
+        if (boardSize == "medium" && currentBoardDimensionsConfig !="medium")
+        {
+            currentBoardDimensionsConfig = "medium";
+            silentReconstructor_->setBoardHeight(mediumBoardSizeLength_);
+            silentReconstructor_->setBoardWidth(mediumBoardSizeLength_);
+            silentReconstructor_->updateScreen();
+        }
+        
+        if (boardSize == "small" && currentBoardDimensionsConfig !="small")
+        {
+            currentBoardDimensionsConfig = "small";
+            silentReconstructor_->setBoardHeight(smallBoardSizeLength_);
+            silentReconstructor_->setBoardWidth(smallBoardSizeLength_);
+            silentReconstructor_->updateScreen();
+        }
+
+        return;
+    }
+
     bool isUpdated = false;
 
     if (currentRequest_.has_param("boardHeight"))
@@ -328,7 +360,7 @@ void HTTPServer::run()
         res.set_content("Hello World!", "text/plain");
     });
 
-    silentReconstructor_ = new SilentReconstructor(10, 10, 1380, 1380);
+    silentReconstructor_ = new SilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_, 1380, 1380);
 
     server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
 
