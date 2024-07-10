@@ -63,10 +63,7 @@ public:
 
 	Reconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_);
 	void initBoundaryWallBodies();
-	/*void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, 
-		int positionSeed = 1, int positionPadding = 5);*/
-	//virtual void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "")=0;
-	void closeRun(); // delete the matings and pieces...
+	void closeRun(); 
 
 	void disableJointsCollide();
 	void enableJointsCollide();

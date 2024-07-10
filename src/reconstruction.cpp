@@ -190,52 +190,6 @@ void Reconstructor::initBoundaryWallBodies()
 	}
 }
 
-//void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, int positionSeed, int positionPadding)
-//{
-//	// Init Bodies
-//	activePieces_ = activePieces;
-//	//activeMatings_ = activeMatings;
-//
-//	for (auto& mating:activeMatings)
-//	{
-//		activeMatings_.push_back(mating);
-//	}
-//
-//	fixedPiece_ = getMaxMatingsPiece();
-//	initStaticBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-//	//initMovingBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-//
-//	std::vector<b2Vec2> positions;
-//	generate2DVectors(positions, activePieces_.size() - 1, boardWidth_, boardHeight_, positionPadding, positionSeed);
-//	std::sort(positions.begin(), positions.end(), [](const b2Vec2& a, const b2Vec2& b)->bool {
-//		return a.y > b.y || (a.y == b.y && a.x > b.x);
-//	});
-//	auto& initialPosIt = positions.begin();
-//
-//	for (auto& piece:activePieces_)
-//	{
-//		if (piece.id_ != fixedPiece_->id_)
-//		{
-//			//initMovingBody(piece, *initialPosIt);
-//			initMovingBody(piece, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-//			//initMovingBody(piece, b2Vec2(8, 5));
-//			//initMovingBody(piece, b2Vec2(8, 8));
-//
-//			//initMovingBody(piece, b2Vec2(1, 1));
-//			++initialPosIt;
-//		}
-//	}
-//
-//	setPiecesCollisionOff();
-//	applyImpulseOnBodies(initPowerMagnitude_);
-//	setPiecesAngularDamping(pieceAngularDamping_);
-//
-//	for (auto &mating:activeMatings_)
-//	{
-//		putMatingSprings(mating);
-//	}
-//}
-
 void Reconstructor::closeRun()
 {
 	for (auto& body: boundsWallBodies_)

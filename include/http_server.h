@@ -15,9 +15,6 @@
 class HTTPServer {
 
 protected:
-    virtual void handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody);//, Json::Value& bodyRequest
-    virtual void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody);
-
 
     void updateBoardDimensions();
     std::string currentBoardDimensionsConfig="";

@@ -18,7 +18,6 @@ public:
 	SilentReconstructor();
 	SilentReconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_);
 	
-	void initScreen();
 	bool isScreenInitiated();
 	void setDebugScreenVisibility(bool isVisible);
 	void setIterToConvAfterCollide(int numIterationPerPiece);

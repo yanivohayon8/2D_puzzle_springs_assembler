@@ -16,23 +16,6 @@ bool SilentReconstructor::isScreenInitiated()
 	return isScreenInitiated_;
 }
 
-void SilentReconstructor::initScreen()//std::vector<Piece>& pieces
-{
-	//bool isScreenVisible = false;
-	screen_->initDisplay(isDebugScreenVisible_);
-
-	for (auto& piece : activePieces_)
-	{
-		//screen_->initSprite(piece);
-		screen_->initPolygon(piece);
-	}
-
-	nextPolygonColorIndex_ = 0;
-
-	screen_->clearDisplay();
-	isScreenInitiated_ = true;
-}
-
 void SilentReconstructor::setIterToConvBeforeCollide(int numIterationPerPiece)
 {
 	iterationToConvergeBeforeCollidePerPiece_ = numIterationPerPiece;

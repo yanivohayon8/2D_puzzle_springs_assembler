@@ -5,17 +5,6 @@ HTTPServer::HTTPServer(int port)
 {
 }
 
-void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody)
-{
-
-}
-
-void HTTPServer::handleReconstruct(const httplib::Request& req, httplib::Response& res, std::string requestBody)
-{
-
-}
-
-
 
 void HTTPServer::updateBoardDimensions()
 {
@@ -82,8 +71,6 @@ void HTTPServer::updateBoardDimensions()
         reconstructor_->updateScreen();
     }
 }
-
-
 
 void HTTPServer::loadMatings_(float coordinatesScale)
 {
@@ -155,7 +142,6 @@ void HTTPServer::loadPuzzleData(float coordinatesScale)
     loadPieces_(coordinatesScale);
 
 }
-
 
 void HTTPServer::run()
 {
