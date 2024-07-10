@@ -22,7 +22,7 @@ private:
 	void initMovingBody(Piece& piece, b2Vec2& initialPosition);
 
 protected:
-	void putMatingSprings(VertexMating* &mating);
+	void putMatingSprings(VertexMatingRePAIR* &mating);
 	bool isEnableJointsCollide_ = false;
 	float jointRestLength_ = 0.01;
 	float jointMinLength_ = 0;
@@ -43,7 +43,7 @@ public:
 	float pieceAngularDamping_ = 0.01;
 	b2World world_ = b2World(b2Vec2(0, 0));
 	std::vector<Piece> activePieces_;
-	std::vector<VertexMating*> activeMatings_;
+	std::vector<VertexMatingRePAIR*> activeMatings_;
 	Piece* fixedPiece_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
 
@@ -63,9 +63,9 @@ public:
 
 	Reconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_);
 	void initBoundaryWallBodies();
-	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, 
-		int positionSeed = 1, int positionPadding = 5);
-	virtual void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "")=0;
+	/*void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, 
+		int positionSeed = 1, int positionPadding = 5);*/
+	//virtual void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "")=0;
 	void closeRun(); // delete the matings and pieces...
 
 	void disableJointsCollide();
@@ -92,13 +92,13 @@ public:
 	void updateScreen();
 
 	void initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions);
-	void initMatingsJoints(std::vector<VertexMating*>& activeMatings);
+	void initMatingsJoints(std::vector<VertexMatingRePAIR*>& activeMatings);
 	virtual nlohmann::json reconstruct(float coordinatesScale)=0;
 	
 	void initScreenNew(bool isScreenVisible);
 
 	virtual void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, 
-		std::vector<VertexMating*> activeMatings);
+		std::vector<VertexMatingRePAIR*> activeMatings);
 
 	void progress(int numIteration);
 

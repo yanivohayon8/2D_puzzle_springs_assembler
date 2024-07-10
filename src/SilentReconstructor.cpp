@@ -76,82 +76,82 @@ void SilentReconstructor::setDebugScreenVisibility(bool isVisible)
 	isDebugScreenVisible_ = isVisible;
 }
 
-void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
-{
-	if (isDebugScreenVisible_ || screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
-	{
-		initScreen();
-	}
-	
-	int iteration = 0;
-	//int iterationToConvergePerPiece = 1000;
-	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
-	progress(iterationToConverge);
-
-	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
-	piece2CoordsBeforeEnableCollision_.clear();
-	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
-
-	//debug
-	for (auto& mating : activeMatings_)
-	{
-		mating->snapshotJointLength();
-	}
-
-	
-	for (auto& piece : activePieces_)
-	{
-		piece.setCollideOn();
-	}
-
-	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
-	progress(iterationToSecondConverage);
-	
-	for (auto& mating: activeMatings_)
-	{
-		mating->snapshotJointLength();
-	}
-
-	piece2FinalCoords_.clear();
-	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
-
-	piece2FinalTransformation_.clear();
-	snapshotPiecesTransformation(piece2FinalTransformation_, centerOfBoard);
-
-	// Debug
-	if (screenshotPathAfterCollide!="")
-	{
-		screen_->clearDisplay();
-		auto redColor = sf::Color::Red;
-
-		for (auto& mating : activeMatings_)
-		{
-			auto& anchorA = mating->jointRef_->GetAnchorA();
-			auto& anchorB = mating->jointRef_->GetAnchorB();
-			screen_->drawLine(anchorA, anchorB, redColor, -1);
-		}
-
-		for (auto& piece : activePieces_)
-		{
-			//screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
-			screen_->drawPolygon(piece.id_, piece.refb2Body_->GetTransform());
-		}
-
-		screen_->screenShotToFile(screenshotPathAfterCollide);
-	}
-
-	
-	if (screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
-	{
-		screen_->closeWindow();		
-	}
-
-	if (isDebugScreenVisible_)
-	{
-		screen_->closeWindow();
-		isDebugScreenVisible_ = false;
-	}
-}
+//void SilentReconstructor::Run(std::string screenshotPathBeforeCollide, std::string screenshotPathAfterCollide)
+//{
+//	if (isDebugScreenVisible_ || screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
+//	{
+//		initScreen();
+//	}
+//	
+//	int iteration = 0;
+//	//int iterationToConvergePerPiece = 1000;
+//	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
+//	progress(iterationToConverge);
+//
+//	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
+//	piece2CoordsBeforeEnableCollision_.clear();
+//	snapshotPiecesCoords(piece2CoordsBeforeEnableCollision_, centerOfBoard);
+//
+//	//debug
+//	for (auto& mating : activeMatings_)
+//	{
+//		mating->snapshotJointLength();
+//	}
+//
+//	
+//	for (auto& piece : activePieces_)
+//	{
+//		piece.setCollideOn();
+//	}
+//
+//	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
+//	progress(iterationToSecondConverage);
+//	
+//	for (auto& mating: activeMatings_)
+//	{
+//		mating->snapshotJointLength();
+//	}
+//
+//	piece2FinalCoords_.clear();
+//	snapshotPiecesCoords(piece2FinalCoords_, centerOfBoard);
+//
+//	piece2FinalTransformation_.clear();
+//	snapshotPiecesTransformation(piece2FinalTransformation_, centerOfBoard);
+//
+//	// Debug
+//	if (screenshotPathAfterCollide!="")
+//	{
+//		screen_->clearDisplay();
+//		auto redColor = sf::Color::Red;
+//
+//		for (auto& mating : activeMatings_)
+//		{
+//			auto& anchorA = mating->jointRef_->GetAnchorA();
+//			auto& anchorB = mating->jointRef_->GetAnchorB();
+//			screen_->drawLine(anchorA, anchorB, redColor, -1);
+//		}
+//
+//		for (auto& piece : activePieces_)
+//		{
+//			//screen_->drawSprite(piece.id_, piece.refb2Body_->GetTransform());
+//			screen_->drawPolygon(piece.id_, piece.refb2Body_->GetTransform());
+//		}
+//
+//		screen_->screenShotToFile(screenshotPathAfterCollide);
+//	}
+//
+//	
+//	if (screenshotPathBeforeCollide != "" || screenshotPathAfterCollide != "")
+//	{
+//		screen_->closeWindow();		
+//	}
+//
+//	if (isDebugScreenVisible_)
+//	{
+//		screen_->closeWindow();
+//		isDebugScreenVisible_ = false;
+//	}
+//}
 
 void SilentReconstructor::snapshotPiecesTransformation(std::map<std::string, std::pair<float, b2Vec2>>& oPiece2Transform, const b2Vec2& translateCenter)
 {
@@ -354,7 +354,7 @@ nlohmann::json SilentReconstructor::reconstruct(float coordinatesScale)
 
 
 void SilentReconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
-	std::vector<VertexMating*> activeMatings)
+	std::vector<VertexMatingRePAIR*> activeMatings)
 {
 	Reconstructor::initRunNew(currentRequest,activePieces,activeMatings);
 

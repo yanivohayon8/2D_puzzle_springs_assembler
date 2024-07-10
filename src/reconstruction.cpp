@@ -63,7 +63,7 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	piece.refb2Body_ = body;
 }
 
-void Reconstructor::putMatingSprings(VertexMating* &mating)
+void Reconstructor::putMatingSprings(VertexMatingRePAIR* &mating)
 {
 	Piece* pieceA;
 	Piece* pieceB;
@@ -86,21 +86,9 @@ void Reconstructor::putMatingSprings(VertexMating* &mating)
 	b2Vec2 vertexGlobalA;
 	b2Vec2 vertexGlobalB;
 
-	VertexMatingRePAIR* matingRepair_ptr = dynamic_cast<VertexMatingRePAIR*>(mating);
-
-	if (matingRepair_ptr!=nullptr)
-	{
-		//REPAIR
-		pieceA->getGlobalCoords(vertexGlobalA, matingRepair_ptr->firstPieceLocalCoords_);//*debug_coord_A);
-		pieceB->getGlobalCoords(vertexGlobalB, matingRepair_ptr->secondPieceLocalCoords_);
-	}
-	else
-	{
-		// Convex Drawing
-		pieceA->getVeterxGlobalCoords(vertexGlobalA, mating->firstPieceVertex_);	
-		pieceB->getVeterxGlobalCoords(vertexGlobalB, mating->secondPieceVertex_);
-	}
-
+	pieceA->getGlobalCoords(vertexGlobalA, mating->firstPieceLocalCoords_);//*debug_coord_A);
+	pieceB->getGlobalCoords(vertexGlobalB, mating->secondPieceLocalCoords_);
+	
 
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, vertexGlobalA, vertexGlobalB);
@@ -202,51 +190,51 @@ void Reconstructor::initBoundaryWallBodies()
 	}
 }
 
-void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, int positionSeed, int positionPadding)
-{
-	// Init Bodies
-	activePieces_ = activePieces;
-	//activeMatings_ = activeMatings;
-
-	for (auto& mating:activeMatings)
-	{
-		activeMatings_.push_back(mating);
-	}
-
-	fixedPiece_ = getMaxMatingsPiece();
-	initStaticBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-	//initMovingBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-
-	std::vector<b2Vec2> positions;
-	generate2DVectors(positions, activePieces_.size() - 1, boardWidth_, boardHeight_, positionPadding, positionSeed);
-	std::sort(positions.begin(), positions.end(), [](const b2Vec2& a, const b2Vec2& b)->bool {
-		return a.y > b.y || (a.y == b.y && a.x > b.x);
-	});
-	auto& initialPosIt = positions.begin();
-
-	for (auto& piece:activePieces_)
-	{
-		if (piece.id_ != fixedPiece_->id_)
-		{
-			//initMovingBody(piece, *initialPosIt);
-			initMovingBody(piece, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-			//initMovingBody(piece, b2Vec2(8, 5));
-			//initMovingBody(piece, b2Vec2(8, 8));
-
-			//initMovingBody(piece, b2Vec2(1, 1));
-			++initialPosIt;
-		}
-	}
-
-	setPiecesCollisionOff();
-	applyImpulseOnBodies(initPowerMagnitude_);
-	setPiecesAngularDamping(pieceAngularDamping_);
-
-	for (auto &mating:activeMatings_)
-	{
-		putMatingSprings(mating);
-	}
-}
+//void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, int positionSeed, int positionPadding)
+//{
+//	// Init Bodies
+//	activePieces_ = activePieces;
+//	//activeMatings_ = activeMatings;
+//
+//	for (auto& mating:activeMatings)
+//	{
+//		activeMatings_.push_back(mating);
+//	}
+//
+//	fixedPiece_ = getMaxMatingsPiece();
+//	initStaticBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+//	//initMovingBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+//
+//	std::vector<b2Vec2> positions;
+//	generate2DVectors(positions, activePieces_.size() - 1, boardWidth_, boardHeight_, positionPadding, positionSeed);
+//	std::sort(positions.begin(), positions.end(), [](const b2Vec2& a, const b2Vec2& b)->bool {
+//		return a.y > b.y || (a.y == b.y && a.x > b.x);
+//	});
+//	auto& initialPosIt = positions.begin();
+//
+//	for (auto& piece:activePieces_)
+//	{
+//		if (piece.id_ != fixedPiece_->id_)
+//		{
+//			//initMovingBody(piece, *initialPosIt);
+//			initMovingBody(piece, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+//			//initMovingBody(piece, b2Vec2(8, 5));
+//			//initMovingBody(piece, b2Vec2(8, 8));
+//
+//			//initMovingBody(piece, b2Vec2(1, 1));
+//			++initialPosIt;
+//		}
+//	}
+//
+//	setPiecesCollisionOff();
+//	applyImpulseOnBodies(initPowerMagnitude_);
+//	setPiecesAngularDamping(pieceAngularDamping_);
+//
+//	for (auto &mating:activeMatings_)
+//	{
+//		putMatingSprings(mating);
+//	}
+//}
 
 void Reconstructor::closeRun()
 {
@@ -404,7 +392,7 @@ void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::stri
 	}
 }
 
-void Reconstructor::initMatingsJoints(std::vector<VertexMating*>& activeMatings)
+void Reconstructor::initMatingsJoints(std::vector<VertexMatingRePAIR*>& activeMatings)
 {
 	activeMatings_.clear();
 
@@ -438,7 +426,7 @@ void Reconstructor::initScreenNew(bool isScreenVisible)
 }
 
 
-void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, std::vector<VertexMating*> activeMatings)
+void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, std::vector<VertexMatingRePAIR*> activeMatings)
 {
 	initBoundaryWallBodies();
 

@@ -9,7 +9,6 @@
 #include "Global_Parameters.h"
 #include <json.hpp>
 #include "reconstruction.h"
-#include "RePAIRSilentReconstructor.h"
 #include "SilentReconstructor.h"
 #include "VisualReconstructor.h"
 
@@ -31,7 +30,7 @@ protected:
     void loadPieces_(float coordinatesScale);
 
     std::vector<Piece> activePieces_;
-    std::vector<VertexMating*> activeMatings_;
+    std::vector<VertexMatingRePAIR*> activeMatings_;
     httplib::Server server_;
     std::string versionPrefix_ = "/v1";
 

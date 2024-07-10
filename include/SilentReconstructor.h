@@ -26,7 +26,7 @@ protected:
 public:
 	SilentReconstructor();
 	SilentReconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_);
-	void Run(std::string screenshotPathBeforeCollide="", std::string screenshotPathAfterCollide="");
+	//void Run(std::string screenshotPathBeforeCollide="", std::string screenshotPathAfterCollide="");
 	std::map<std::string, std::vector<b2Vec2>>* getPiece2CoordsBeforeEnableCollision();
 	std::map<std::string, std::vector<b2Vec2>>* getPiece2FinalCoords();
 	void getPiece2FinalTransformation(std::map<std::string, std::pair<float, b2Vec2>>& piece2FinalTransformation);
@@ -47,7 +47,7 @@ public:
 	nlohmann::json reconstruct(float coordinatesScale);
 
 	void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
-		std::vector<VertexMating*> activeMatings);
+		std::vector<VertexMatingRePAIR*> activeMatings);
 
 	//void progress(int numIteration);
 };
