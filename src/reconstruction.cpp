@@ -198,6 +198,7 @@ void Reconstructor::initBoundaryWallBodies()
 		}
 
 		boundsCoordinates_.push_back(globalCoords);
+		boundsWallBodies_.push_back(body);
 	}
 }
 
@@ -249,6 +250,12 @@ void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<Vertex
 
 void Reconstructor::closeRun()
 {
+	for (auto& body: boundsWallBodies_)
+	{
+		world_.DestroyBody(body);
+	}
+	boundsWallBodies_.clear();
+
 	/*for (auto& joint:joints_)
 	{
 		world_.DestroyJoint(joint);

@@ -35,13 +35,16 @@ public:
 	std::vector<VertexMating*> activeMatings_;
 	Piece* fixedPiece_;
 	std::vector<std::vector<b2Vec2>> boundsCoordinates_;
+
+	std::vector<b2Body*> boundsWallBodies_;
+
 	float boardHeight_;//20; 
 	float boardWidth_;//20;//note also the recommondation of static bodies (no more than 50!)
 
 	SfmlScreen* screen_; // valid also for silent mode for the last image
 	int screenHeight_;
 	int screenWidth_;
-#pragma message("Please convert to double");
+//#pragma message("Please convert to double");
 	//float timeStep_ = 1 / 60; //1.0F / 60.0F;
 	double timeStep_ = 1.0 / 60.0F; //1.0F / 60.0F;
 	int velocityIterations_ = 6;
