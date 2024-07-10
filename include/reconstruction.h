@@ -1,5 +1,8 @@
 #pragma once
 //#include <World.h>
+
+#include <string>
+#include "cpp-httplib/httplib.h"
 #include <Piece.h>
 #include <box2d/box2d.h>
 #include <VertexMating.h>
@@ -86,7 +89,11 @@ public:
 
 	void initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions);
 	void initMatingsJoints(std::vector<VertexMating*>& activeMatings);
-	virtual nlohmann::json reconstruct()=0;
-	void initScreen(bool isScreenVisible);
+	virtual nlohmann::json reconstruct(float coordinatesScale)=0;
+	
+	void initScreenNew(bool isScreenVisible);
+
+	virtual void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, 
+		std::vector<VertexMating*> activeMatings);
 };
 

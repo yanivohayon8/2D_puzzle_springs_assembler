@@ -273,6 +273,12 @@ void Reconstructor::closeRun()
 	activePieces_.clear();
 	
 
+	if (isScreenInitiated_)
+	{
+		screen_->closeWindow();
+		isScreenInitiated_ = false;
+	}
+
 	std::cout << "Run closed" << std::endl;
 }
 
@@ -389,7 +395,7 @@ void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::stri
 		if (activePieces_[i].id_ == fixedPieceId)
 		{
 			initStaticBody(activePieces_[i], b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-			fixedPiece_ = &activePieces_[i];
+			fixedPiece_ = &activePieces_[i]; // useless? 
 		}
 		else
 		{
@@ -410,7 +416,7 @@ void Reconstructor::initMatingsJoints(std::vector<VertexMating*>& activeMatings)
 }
 
 
-void Reconstructor::initScreen(bool isScreenVisible)
+void Reconstructor::initScreenNew(bool isScreenVisible)
 {
 	// The screen is not visible if we want to take a screen shot at the end
 	screen_->initDisplay(isScreenVisible);
@@ -425,4 +431,53 @@ void Reconstructor::initScreen(bool isScreenVisible)
 
 	screen_->clearDisplay();
 	isScreenInitiated_ = true;
+}
+
+
+void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, std::vector<VertexMating*> activeMatings)
+{
+	initBoundaryWallBodies();
+
+	activePieces_ = activePieces;
+	std::string fixedPieceId = "";
+
+	if (currentRequest.has_param("fixPiece"))
+	{
+		Piece* fixedPiece = getMaxMatingsPiece();
+		fixedPieceId = fixedPiece->id_;
+	}
+
+	std::vector<b2Vec2> positions;
+
+	if (currentRequest.has_param("seedInitialPositions"))
+	{
+		int positionPadding = 2;
+		int seedPositions = std::stoi(currentRequest.get_param_value("seedInitialPositions"));
+
+		generate2DVectors(positions, activePieces_.size(), boardWidth_, boardHeight_,
+			positionPadding, seedPositions);
+
+		std::sort(positions.begin(), positions.end(),
+			[](const b2Vec2& a, const b2Vec2& b)->bool {
+				return a.y > b.y || (a.y == b.y && a.x > b.x);
+			});
+	}
+	else
+	{
+		for (int i = 0; i < activePieces_.size(); i++)
+		{
+			positions.push_back(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+		}
+	}
+
+	initPiecesBodies(activePieces_, fixedPieceId, positions);
+
+	disableJointsCollide();
+
+	if (currentRequest.has_param("disableJointsCollide"))
+	{
+		enableJointsCollide();
+	}
+
+	initMatingsJoints(activeMatings_);
 }

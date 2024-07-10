@@ -367,7 +367,6 @@ void HTTPServer::run()
         content_reader([&](const char* data, size_t dataLength) {strRequestBody.append(data, dataLength); return true;});
         currentRequestBody_ = nlohmann::json::parse(strRequestBody);
         currentRequest_ = req;
-
         
         if (currentRequest_.has_param("interactiveOn"))
         {
@@ -376,24 +375,35 @@ void HTTPServer::run()
         }
         else
         {
-            reconstructor_ = new SilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
+            if (currentRequest_.has_param("collideOff"))
+            {
+                reconstructor_ = new OffCollideSilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
                                                             defaultScreenLength, defaultScreenLength);
+            }
+            else
+            {
+                reconstructor_ = new OffOnCollideSilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
+                    defaultScreenLength, defaultScreenLength);
+            }
         }
 
-        updateBoardDimensions();
 
         try
         {
             loadPuzzleData(SCALE_IMAGE_COORDINATES_TO_BOX2D);
-            initReconstruction();
+            updateBoardDimensions();
+            reconstructor_->initRunNew(currentRequest_, activePieces_, activeMatings_);//initReconstruction();
+            
             //nlohmann::json& output = reconstruct(SCALE_IMAGE_COORDINATES_TO_BOX2D);
-            nlohmann::json output = reconstructor_->reconstruct();
-            delete reconstructor_;
+            nlohmann::json output = reconstructor_->reconstruct(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+            reconstructor_->closeRun();
+
 
             res.status = 200;
             res.set_content(output.dump(), "application/json");
             res.status = 200;
-
+            
+            delete reconstructor_;
         }
         catch (const std::exception& ex)
         {

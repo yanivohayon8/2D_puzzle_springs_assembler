@@ -334,6 +334,84 @@ nlohmann::json SilentReconstructor::RunOffCollide(float coordinatesScale)
 {
 	nlohmann::json output;
 	
+	//setPiecesCollisionOff();
+	//int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
+	//progress(iterationToSecondConverage);
+	////output["jointsAfterEnableCollision"] = snapshotSpringsLength(activeMatings_, coordinatesScale);
+	//const b2Vec2& centerOfAssemblyAfter = fixedPiece_->refb2Body_->GetTransform().p;
+	//output["piecesFinalCoords"] = snapshotPiecesCoords(centerOfAssemblyAfter, coordinatesScale);
+	//output["piecesFinalTransformations"] = snapshotTransformations(centerOfAssemblyAfter, coordinatesScale);
+
+	return output;
+}
+
+nlohmann::json SilentReconstructor::RunOffOnCollide(float coordinatesScale)
+{
+	nlohmann::json output;
+
+	//setPiecesCollisionOff();
+	//int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
+	//progress(iterationToConverge);
+	//const b2Vec2& centerOfAssemblyBefore = fixedPiece_->refb2Body_->GetTransform().p;
+	//output["piecesBeforeEnableCollisionCoords"] = snapshotPiecesCoords(centerOfAssemblyBefore, coordinatesScale);
+
+	//applyImpulseOnBodies(0.5);
+	//setPiecesCollisionOn();
+	//int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
+	//progress(iterationToSecondConverage);
+	////output["jointsAfterEnableCollision"] = snapshotSpringsLength(activeMatings_, coordinatesScale);
+	//const b2Vec2& centerOfAssemblyAfter = fixedPiece_->refb2Body_->GetTransform().p;
+	//output["piecesFinalCoords"] = snapshotPiecesCoords(centerOfAssemblyAfter, coordinatesScale);
+	//output["piecesFinalTransformations"] = snapshotTransformations(centerOfAssemblyAfter, coordinatesScale);
+
+	return output;
+}
+
+nlohmann::json SilentReconstructor::reconstruct(float coordinatesScale)
+{
+	nlohmann::json output;
+	//applyImpulseOnBodies(initPowerMagnitude_);
+
+	//if (currentRequest_.has_param("collideOff"))
+	//{
+	//    output = silentReconstructor_->RunOffCollide(coordinatesScale);
+	//}
+	//else
+	//{
+	//    output = silentReconstructor_->RunOffOnCollide(coordinatesScale);
+	//}
+
+	//silentReconstructor_->screen_->closeWindow();
+	//silentReconstructor_->closeRun();
+	return output;
+}
+
+
+
+void SilentReconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
+	std::vector<VertexMating*> activeMatings)
+{
+	Reconstructor::initRunNew(currentRequest,activePieces,activeMatings);
+
+	setDebugScreenVisibility(false);
+
+	if (currentRequest.has_param("visibilityOn"))
+	{
+	    setDebugScreenVisibility(true);
+		initScreenNew(true);
+	}
+}
+
+
+OffCollideSilentReconstructor::OffCollideSilentReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight) :SilentReconstructor(boardWidth, boardHeight, screenWidth, screenHeight)
+{
+}
+
+
+nlohmann::json OffCollideSilentReconstructor::reconstruct(float coordinatesScale)
+{
+	nlohmann::json output;
+
 	setPiecesCollisionOff();
 	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
 	progress(iterationToSecondConverage);
@@ -345,7 +423,11 @@ nlohmann::json SilentReconstructor::RunOffCollide(float coordinatesScale)
 	return output;
 }
 
-nlohmann::json SilentReconstructor::RunOffOnCollide(float coordinatesScale)
+OffOnCollideSilentReconstructor::OffOnCollideSilentReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight) :SilentReconstructor(boardWidth, boardHeight, screenWidth, screenHeight)
+{
+}
+
+nlohmann::json OffOnCollideSilentReconstructor::reconstruct(float coordinatesScale)
 {
 	nlohmann::json output;
 
@@ -363,13 +445,6 @@ nlohmann::json SilentReconstructor::RunOffOnCollide(float coordinatesScale)
 	const b2Vec2& centerOfAssemblyAfter = fixedPiece_->refb2Body_->GetTransform().p;
 	output["piecesFinalCoords"] = snapshotPiecesCoords(centerOfAssemblyAfter, coordinatesScale);
 	output["piecesFinalTransformations"] = snapshotTransformations(centerOfAssemblyAfter, coordinatesScale);
-
-	return output;
-}
-
-nlohmann::json SilentReconstructor::reconstruct()
-{
-	nlohmann::json output;
 
 	return output;
 }

@@ -12,6 +12,8 @@ public:
 	bool isDrawSprites_ = true;
 	void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "");
 
-	nlohmann::json reconstruct();
+	nlohmann::json reconstruct(float coordinatesScale);
+	void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
+		std::vector<VertexMating*> activeMatings);
 };
 

@@ -298,9 +298,16 @@ void VisualReconstructor::Run(std::string screenshotPathBeforeCollide, std::stri
 
 
 
-nlohmann::json VisualReconstructor::reconstruct()
+nlohmann::json VisualReconstructor::reconstruct(float coordinatesScale)
 {
 	nlohmann::json output;
 
 	return output;
+}
+
+void VisualReconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
+	std::vector<VertexMating*> activeMatings)
+{
+	Reconstructor::initRunNew(currentRequest, activePieces, activeMatings);
+	initScreenNew(true);
 }

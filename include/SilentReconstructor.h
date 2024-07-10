@@ -21,6 +21,8 @@ protected:
 	sf::Color springColor_ = sf::Color::Red;
 	int nextPolygonColorIndex_ = 0;
 
+	//std::string runningMode = "";
+
 public:
 	SilentReconstructor();
 	SilentReconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_);
@@ -42,6 +44,23 @@ public:
 	nlohmann::json RunOffCollide(float coordinatesScale);
 	nlohmann::json RunOffOnCollide(float coordinatesScale);
 
-	nlohmann::json reconstruct();
+	nlohmann::json reconstruct(float coordinatesScale);
+
+	void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
+		std::vector<VertexMating*> activeMatings);
 };
 
+
+class OffCollideSilentReconstructor : public SilentReconstructor
+{
+public:
+	OffCollideSilentReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight);
+	nlohmann::json reconstruct(float coordinatesScale);
+};
+
+class OffOnCollideSilentReconstructor : public SilentReconstructor
+{
+public:
+	OffOnCollideSilentReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight);
+	nlohmann::json reconstruct(float coordinatesScale);
+};
