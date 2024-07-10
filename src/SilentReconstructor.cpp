@@ -380,7 +380,7 @@ nlohmann::json OffCollideSilentReconstructor::reconstruct(float coordinatesScale
 	setPiecesCollisionOff();
 	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
 	progress(iterationToSecondConverage);
-	//output["jointsAfterEnableCollision"] = snapshotSpringsLength(activeMatings_, coordinatesScale);
+	output["jointsAfterEnableCollision"] = snapshotSpringsLength(activeMatings_, coordinatesScale);
 	const b2Vec2& centerOfAssemblyAfter = fixedPiece_->refb2Body_->GetTransform().p;
 	output["piecesFinalCoords"] = snapshotPiecesCoords(centerOfAssemblyAfter, coordinatesScale);
 	output["piecesFinalTransformations"] = snapshotTransformations(centerOfAssemblyAfter, coordinatesScale);
@@ -406,7 +406,7 @@ nlohmann::json OffOnCollideSilentReconstructor::reconstruct(float coordinatesSca
 	setPiecesCollisionOn();
 	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
 	progress(iterationToSecondConverage);
-	//output["jointsAfterEnableCollision"] = snapshotSpringsLength(activeMatings_, coordinatesScale);
+	output["jointsAfterEnableCollision"] = snapshotSpringsLength(activeMatings_, coordinatesScale);
 	const b2Vec2& centerOfAssemblyAfter = fixedPiece_->refb2Body_->GetTransform().p;
 	output["piecesFinalCoords"] = snapshotPiecesCoords(centerOfAssemblyAfter, coordinatesScale);
 	output["piecesFinalTransformations"] = snapshotTransformations(centerOfAssemblyAfter, coordinatesScale);
