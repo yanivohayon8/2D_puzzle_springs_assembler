@@ -36,10 +36,11 @@ public:
 	void setIterToConvBeforeCollide(int numIterationPerPiece);
 
 
-
+	nlohmann::json snapshotTransformations(const b2Vec2& translateCenter, float coordinatesScale);
+	nlohmann::json snapshotSpringsLength(std::vector<VertexMatingRePAIR*>& matings, float coordinatesScale);
+	nlohmann::json snapshotPiecesCoords(const b2Vec2& translateCenter, float coordinatesScale);
 	nlohmann::json RunOnCollide();
 	nlohmann::json RunOffCollide();
 	nlohmann::json RunOffOnCollide(float coordinatesScale);
-	nlohmann::json snapshotPiecesCoords(const b2Vec2& translateCenter, float coordinatesScale);
 };
 
