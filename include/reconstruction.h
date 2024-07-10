@@ -74,6 +74,11 @@ public:
 
 
 	// from here functions of refactor
+	void setBoardWidth(float boardWidth);
+	void setBoardHeight(float boardHeight);
+	void setScreenWidth(float screenWidth);
+	void setScreenHeight(float screenHeight);
+	void updateScreen();
 
 	void initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions);
 	void initMatingsJoints(std::vector<VertexMating*>& activeMatings);

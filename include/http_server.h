@@ -22,6 +22,7 @@ protected:
     virtual void handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody);
 
 
+    void updateBoardDimensions();
     void loadMatings_(float coordinatesScale);
     void loadPieces_(float coordinatesScale);
 

@@ -367,7 +367,16 @@ void Reconstructor::setJointDamping(float ratio)
 
 
 /// From here new functions of refactor
+void Reconstructor::setBoardWidth(float boardWidth) { boardWidth_ = boardWidth; }
+void Reconstructor::setBoardHeight(float boardHeight) { boardHeight_ = boardHeight; }
+void Reconstructor::setScreenWidth(float screenWidth) { screenWidth_ = screenWidth; }
+void Reconstructor::setScreenHeight(float screenHeight) { screenHeight_ = screenHeight; }
 
+void Reconstructor::updateScreen()
+{
+	delete screen_;
+	screen_ = new SfmlScreen(screenWidth_, screenHeight_, screenWidth_ / boardWidth_, screenHeight_ / boardHeight_);
+}
 
 void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions)
 {
@@ -388,7 +397,6 @@ void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::stri
 		}
 	}
 }
-
 
 void Reconstructor::initMatingsJoints(std::vector<VertexMating*>& activeMatings)
 {

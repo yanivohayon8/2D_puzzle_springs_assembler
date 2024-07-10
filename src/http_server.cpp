@@ -120,6 +120,43 @@ nlohmann::json HTTPServer::buildPieceTransformationJson(std::map<std::string, st
 //void load
 
 
+void HTTPServer::updateBoardDimensions()
+{
+    bool isUpdated = false;
+
+    if (currentRequest_.has_param("boardHeight"))
+    {
+        silentReconstructor_->setBoardHeight(std::stof(currentRequest_.get_param_value("boardHeight")));
+        isUpdated = true;
+    }
+    
+    if (currentRequest_.has_param("boardWidth"))
+    {
+        silentReconstructor_->setBoardWidth(std::stof(currentRequest_.get_param_value("boardWidth")));
+        isUpdated = true;
+    }
+    
+    if (currentRequest_.has_param("screenHeight"))
+    {
+        silentReconstructor_->setScreenHeight(std::stof(currentRequest_.get_param_value("screenHeight")));
+        isUpdated = true;
+    }
+    
+    if (currentRequest_.has_param("screenWidth"))
+    {
+        silentReconstructor_->setScreenWidth(std::stof(currentRequest_.get_param_value("screenWidth")));
+        isUpdated = true;
+    }
+
+    if (isUpdated)
+    {
+        silentReconstructor_->updateScreen();
+    }
+}
+
+
+
+
 void HTTPServer::handlePuzzleLoading(const httplib::Request& req, httplib::Response& res, std::string requestBody)
 {
 
@@ -299,6 +336,8 @@ void HTTPServer::run()
         content_reader([&](const char* data, size_t dataLength) {strRequestBody.append(data, dataLength); return true;});
         currentRequestBody_ = nlohmann::json::parse(strRequestBody);
         currentRequest_ = req;
+
+        updateBoardDimensions();
 
         try
         {
