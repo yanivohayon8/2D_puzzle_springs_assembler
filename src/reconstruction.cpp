@@ -254,20 +254,16 @@ void Reconstructor::closeRun()
 	{
 		world_.DestroyBody(body);
 	}
-	boundsWallBodies_.clear();
 
-	/*for (auto& joint:joints_)
-	{
-		world_.DestroyJoint(joint);
-	}*/
+	boundsWallBodies_.clear();
 
 	for (auto& mating:activeMatings_)
 	{
 		world_.DestroyJoint(mating->jointRef_);
 		delete mating;
 	}
-
 	
+	activeMatings_.clear();
 
 	for (int i=0;i<activePieces_.size();++i)
 	{
@@ -275,14 +271,7 @@ void Reconstructor::closeRun()
 	}
 
 	activePieces_.clear();
-	//joints_.clear();
 	
-	/*for (auto& mating: activeMatings_)
-	{
-		delete& mating;
-	}*/
-	
-	activeMatings_.clear();
 
 	std::cout << "Run closed" << std::endl;
 }
@@ -378,9 +367,10 @@ void Reconstructor::setJointDamping(float ratio)
 
 
 /// From here new functions of refactor
+
+
 void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions)
 {
-	//activePieces_ = activePieces;
 
 	fixedPiece_ = &activePieces_[0];
 

@@ -206,7 +206,6 @@ void HTTPServer::loadPuzzleData(float coordinatesScale)
 
 void HTTPServer::initReconstruction()
 {
-    //silentReconstructor_->init()
     silentReconstructor_->initBoundaryWallBodies();
 
     silentReconstructor_->activePieces_ = activePieces_;
