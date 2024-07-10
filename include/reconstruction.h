@@ -104,5 +104,7 @@ public:
 
 	void drawJoints();
 	void drawPieces();
+
+	void saveScreenShot(std::string screenshotPath);
 };
 

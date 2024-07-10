@@ -550,3 +550,13 @@ void Reconstructor::drawPieces()
 		}
 	}
 }
+
+void Reconstructor::saveScreenShot(std::string screenshotPath)
+{
+	screen_->clearDisplay();
+
+	drawJoints();
+	drawPieces();
+
+	screen_->screenShotToFile(screenshotPath);
+}
