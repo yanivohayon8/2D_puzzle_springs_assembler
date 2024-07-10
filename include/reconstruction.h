@@ -101,5 +101,7 @@ public:
 		std::vector<VertexMating*> activeMatings);
 
 	void progress(int numIteration);
+
+	void drawJoints();
 };
 

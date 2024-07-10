@@ -336,12 +336,7 @@ nlohmann::json VisualReconstructor::reconstruct(float coordinatesScale)
 
 		}
 
-		for (auto& mating : activeMatings_)
-		{
-			auto& anchorA = mating->jointRef_->GetAnchorA();
-			auto& anchorB = mating->jointRef_->GetAnchorB();
-			screen_->drawLine(anchorA, anchorB, jointColor_, -1);
-		}
+		drawJoints();
 
 		screen_->updateDisplay();
 
