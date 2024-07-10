@@ -44,13 +44,7 @@ public:
     int port_=8888;
     HTTPServer(int port = 8888);
     void run();
-    void payloadToMatings(std::vector<VertexMating*>& oMatings,std::string requestBody);
-    nlohmann::json buildSpringsJson(std::vector<VertexMating*>& matings); //
-    nlohmann::json buildPieceCartesianJson(std::map<std::string, std::vector<b2Vec2>>* &pieces2Coords);
-    nlohmann::json buildPieceTransformationJson(std::map<std::string, std::pair<float, b2Vec2>>& piece2FinalTransformation);
-
-    void loadPuzzleData(float coordinatesScale);
-    //void initPuzzle();
+    void loadPuzzleData(float coordinatesScale);    
     void initReconstruction();
     nlohmann::json reconstruct(float coordinatesScale);
 };
