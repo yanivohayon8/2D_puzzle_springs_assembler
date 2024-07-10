@@ -197,23 +197,25 @@ void HTTPServer::loadPieces_(float coordinatesScale)
     }
 }
 
-void HTTPServer::loadPuzzleData()
+void HTTPServer::loadPuzzleData(float coordinatesScale)
 {
-    loadMatings_(SCALE_IMAGE_COORDINATES_TO_BOX2D);
-    loadPieces_(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+    loadMatings_(coordinatesScale);
+    loadPieces_(coordinatesScale);
 
 }
 
 void HTTPServer::initReconstruction()
 {
+    //silentReconstructor_->init()
+    silentReconstructor_->initBoundaryWallBodies();
+
     silentReconstructor_->activePieces_ = activePieces_;
-    
     std::string fixedPieceId = "";
 
     if (currentRequest_.has_param("fixPiece"))
     {
-        Piece* fixedPiece_ = silentReconstructor_->getMaxMatingsPiece();
-        fixedPieceId = fixedPiece_->id_;
+        Piece* fixedPiece = silentReconstructor_->getMaxMatingsPiece();
+        fixedPieceId = fixedPiece->id_;
     }
 
     std::vector<b2Vec2> positions;
@@ -247,12 +249,31 @@ void HTTPServer::initReconstruction()
     {
         silentReconstructor_->enableJointsCollide();
     }
+
     silentReconstructor_->initMatingsJoints(activeMatings_);
 }
 
-void HTTPServer::reconstruct()
+nlohmann::json HTTPServer::reconstruct(float coordinatesScale)
 {
+    //silentReconstructor_->
 
+    silentReconstructor_->setDebugScreenVisibility(false);
+
+    if (currentRequest_.has_param("visibilityOn"))
+    {
+        silentReconstructor_->setDebugScreenVisibility(true);
+        silentReconstructor_->initScreen();
+    }
+
+    silentReconstructor_->applyImpulseOnBodies(silentReconstructor_->initPowerMagnitude_);
+
+    // TODO: add the IF ELSE on the recipe (OFF,ONN etc) here
+    auto& output = silentReconstructor_->RunOffOnCollide(coordinatesScale);
+
+    silentReconstructor_->screen_->closeWindow();
+    silentReconstructor_->closeRun();
+
+    return output;
 }
 
 
@@ -274,12 +295,13 @@ void HTTPServer::run()
 
         try
         {
-            loadPuzzleData();
+            loadPuzzleData(SCALE_IMAGE_COORDINATES_TO_BOX2D);
             initReconstruction();
-            reconstruct();
+            nlohmann::json& output = reconstruct(SCALE_IMAGE_COORDINATES_TO_BOX2D);
 
             res.status = 200;
-            res.set_content("Hello World!", "text/plain");
+            res.set_content(output.dump(), "application/json");
+            res.status = 200;
         }
         catch (const std::exception& ex)
         {

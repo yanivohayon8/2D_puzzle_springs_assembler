@@ -27,7 +27,7 @@ void SilentReconstructor::initScreen()//std::vector<Piece>& pieces
 
 	for (auto& piece : activePieces_)
 	{
-		screen_->initSprite(piece);
+		//screen_->initSprite(piece);
 		screen_->initPolygon(piece);
 	}
 
@@ -85,8 +85,8 @@ void SilentReconstructor::progress(int numIteration)
 			for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
 			{
 				const b2Transform& transform = pieceIt->refb2Body_->GetTransform();			
-				//screen_->drawPolygon(pieceIt->id_, transform);
-				screen_->drawSprite(pieceIt->id_, transform);
+				screen_->drawPolygon(pieceIt->id_, transform);
+				//screen_->drawSprite(pieceIt->id_, transform);
 			}
 
 			for (auto& mating : activeMatings_)
@@ -232,4 +232,73 @@ void SilentReconstructor::snapshotPiecesTransformation(std::map<std::string, std
 void SilentReconstructor::getPiece2FinalTransformation(std::map<std::string, std::pair<float, b2Vec2>>& piece2FinalTransformation)
 {
 	piece2FinalTransformation = piece2FinalTransformation_;
+}
+
+
+
+
+
+
+//// new functions from here
+
+
+nlohmann::json SilentReconstructor::snapshotPiecesCoords(const b2Vec2& translateCenter,float coordinatesScale)
+{
+	nlohmann::json output = nlohmann::json::array();
+
+	for (auto& pieceIt : activePieces_)
+	{
+		nlohmann::json pieceJson;
+		pieceJson["pieceId"] = pieceIt.id_;
+		nlohmann::json coords = nlohmann::json::array();
+
+		for (auto& coord : pieceIt.globalCoordinates_)
+		{
+			float x = coord.x - translateCenter.x;
+			x = x / coordinatesScale;
+			float y = coord.y - translateCenter.y;
+			y = y / coordinatesScale;
+			coords.push_back(nlohmann::json::array({ x,y }));
+		}
+
+		pieceJson["coordinates"] = coords;
+		output.push_back(pieceJson);
+	}
+
+	return output;
+}
+
+
+
+nlohmann::json SilentReconstructor::RunOnCollide()
+{
+	nlohmann::json output;
+	
+	return output;
+}
+
+nlohmann::json SilentReconstructor::RunOffCollide()
+{
+	nlohmann::json output;
+	
+	return output;
+}
+
+nlohmann::json SilentReconstructor::RunOffOnCollide(float coordinatesScale)
+{
+	nlohmann::json output;
+
+	setPiecesCollisionOff();
+	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
+	progress(iterationToConverge);
+	const b2Vec2& centerOfAssemblyBefore = fixedPiece_->refb2Body_->GetTransform().p;
+	output["piecesBeforeEnableCollision"] = snapshotPiecesCoords(centerOfAssemblyBefore, coordinatesScale);
+
+	setPiecesCollisionOn();
+	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
+	progress(iterationToSecondConverage);
+	const b2Vec2& centerOfAssemblyAfter = fixedPiece_->refb2Body_->GetTransform().p;
+	output["piecesAfterEnableCollision"] = snapshotPiecesCoords(centerOfAssemblyAfter, coordinatesScale);
+
+	return output;
 }

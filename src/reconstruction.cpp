@@ -144,7 +144,7 @@ Piece* Reconstructor::getMaxMatingsPiece()
 	return maxPiece;
 }
 
-void Reconstructor::init()
+void Reconstructor::initBoundaryWallBodies()
 {
 	float wallWidth = 0.1;
 	float padding = wallWidth;
@@ -375,12 +375,15 @@ void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::stri
 {
 	//activePieces_ = activePieces;
 
+	fixedPiece_ = &activePieces_[0];
+
 	for (int i = 0; i < activePieces_.size(); i++)
 	{
 
 		if (activePieces_[i].id_ == fixedPieceId)
 		{
 			initStaticBody(activePieces_[i], b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+			fixedPiece_ = &activePieces_[i];
 		}
 		else
 		{

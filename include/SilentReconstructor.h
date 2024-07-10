@@ -34,5 +34,12 @@ public:
 	void setDebugScreenVisibility(bool isVisible);
 	void setIterToConvAfterCollide(int numIterationPerPiece);
 	void setIterToConvBeforeCollide(int numIterationPerPiece);
+
+
+
+	nlohmann::json RunOnCollide();
+	nlohmann::json RunOffCollide();
+	nlohmann::json RunOffOnCollide(float coordinatesScale);
+	nlohmann::json snapshotPiecesCoords(const b2Vec2& translateCenter, float coordinatesScale);
 };
 

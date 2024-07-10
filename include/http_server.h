@@ -44,10 +44,10 @@ public:
     nlohmann::json buildPieceCartesianJson(std::map<std::string, std::vector<b2Vec2>>* &pieces2Coords);
     nlohmann::json buildPieceTransformationJson(std::map<std::string, std::pair<float, b2Vec2>>& piece2FinalTransformation);
 
-    void loadPuzzleData();
+    void loadPuzzleData(float coordinatesScale);
     //void initPuzzle();
     void initReconstruction();
-    void reconstruct();
+    nlohmann::json reconstruct(float coordinatesScale);
 };
 
 #endif #HTTP_SERVER_H

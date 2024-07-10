@@ -21,13 +21,13 @@ private:
 protected:
 	void putMatingSprings(VertexMating* &mating);
 	bool isEnableJointsCollide_ = false;
-	float initPowerMagnitude_ = 0.2;
 	float jointRestLength_ = 0.01;
 	float jointMinLength_ = 0;
 	float jointFrequencyHertz_ = 1.0f;
 	float jointDampingRatio_ = 0.01;
 
 public:
+	float initPowerMagnitude_ = 0.2;
 	Piece* getMaxMatingsPiece();
 	float pieceAngularDamping_ = 0.01;
 	b2World world_ = b2World(b2Vec2(0, 0));
@@ -48,7 +48,7 @@ public:
 	int positionIterations_ = 2;
 
 	Reconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_);
-	void init();
+	void initBoundaryWallBodies();
 	void initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, 
 		int positionSeed = 1, int positionPadding = 5);
 	virtual void Run(std::string screenshotPathBeforeCollide = "", std::string screenshotPathAfterCollide = "")=0;
