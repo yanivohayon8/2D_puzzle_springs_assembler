@@ -471,6 +471,7 @@ void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piec
 	}
 
 	initPiecesBodies(activePieces_, fixedPieceId, positions);
+	applyImpulseOnBodies(initPowerMagnitude_);
 
 	disableJointsCollide();
 
@@ -479,5 +480,5 @@ void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piec
 		enableJointsCollide();
 	}
 
-	initMatingsJoints(activeMatings_);
+	initMatingsJoints(activeMatings);
 }
