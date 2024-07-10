@@ -485,6 +485,11 @@ void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piec
 	}
 
 	initMatingsJoints(activeMatings);
+
+	if (currentRequest.has_param("isDrawOnlyPolygons"))
+	{
+		isDrawOnlyPolygons = true;
+	}
 }
 
 
@@ -508,8 +513,20 @@ void Reconstructor::progress(int numIteration)
 			for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
 			{
 				const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
-				screen_->drawPolygon(pieceIt->id_, transform);
-				screen_->drawSprite(pieceIt->id_, transform);
+
+				if (isDrawOnlyPolygons)
+				{
+					screen_->drawPolygon(pieceIt->id_, transform);
+				}
+				else
+				{
+					bool isSpriteAvailable = screen_->drawSprite(pieceIt->id_, transform);
+
+					if (!isSpriteAvailable)
+					{
+						screen_->drawPolygon(pieceIt->id_, transform);
+					}
+				}
 			}
 
 			for (auto& mating : activeMatings_)

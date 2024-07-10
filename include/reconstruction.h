@@ -35,6 +35,8 @@ protected:
 	bool isDebugScreenVisible_ = false;
 	sf::Color springColor_ = sf::Color::Red;
 
+	bool isDrawOnlyPolygons = false;
+
 public:
 	float initPowerMagnitude_ = 0.2;
 	Piece* getMaxMatingsPiece();
