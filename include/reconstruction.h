@@ -33,7 +33,7 @@ protected:
 	int nextScreenPolygonColorIndex_ = 0;
 	bool isScreenInitiated_ = false;
 	bool isDebugScreenVisible_ = false;
-	sf::Color springColor_ = sf::Color::Red;
+	sf::Color jointColor_ = sf::Color::Red;
 
 	bool isDrawOnlyPolygons = false;
 

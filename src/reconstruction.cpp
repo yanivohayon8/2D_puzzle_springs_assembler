@@ -533,7 +533,7 @@ void Reconstructor::progress(int numIteration)
 			{
 				auto& anchorA = mating->jointRef_->GetAnchorA();
 				auto& anchorB = mating->jointRef_->GetAnchorB();
-				screen_->drawLine(anchorA, anchorB, springColor_, -1);
+				screen_->drawLine(anchorA, anchorB, jointColor_, -1);
 			}
 
 			screen_->updateDisplay();
