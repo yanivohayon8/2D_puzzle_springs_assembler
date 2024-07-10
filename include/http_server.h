@@ -4,8 +4,6 @@
 #include <string>
 #include "cpp-httplib/httplib.h"
 #include "Utils.h"
-//#include <json/json.h>
-#include "Puzzle.h"
 #include "DataLoader.h"
 #include "VertexMating.h"
 #include "Piece.h"
@@ -14,6 +12,7 @@
 #include "reconstruction.h"
 #include "RePAIRSilentReconstructor.h"
 #include "SilentReconstructor.h"
+#include "VisualReconstructor.h"
 
 class HTTPServer {
 
