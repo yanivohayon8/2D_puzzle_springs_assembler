@@ -130,25 +130,25 @@ void HTTPServer::updateBoardDimensions()
         if (boardSize == "large" && currentBoardDimensionsConfig !="large")
         {
             currentBoardDimensionsConfig = "large";
-            silentReconstructor_->setBoardHeight(largeBoardSizeLength_);
-            silentReconstructor_->setBoardWidth(largeBoardSizeLength_);
-            silentReconstructor_->updateScreen();
+            reconstructor_->setBoardHeight(largeBoardSizeLength_);
+            reconstructor_->setBoardWidth(largeBoardSizeLength_);
+            reconstructor_->updateScreen();
         }
         
         if (boardSize == "medium" && currentBoardDimensionsConfig !="medium")
         {
             currentBoardDimensionsConfig = "medium";
-            silentReconstructor_->setBoardHeight(mediumBoardSizeLength_);
-            silentReconstructor_->setBoardWidth(mediumBoardSizeLength_);
-            silentReconstructor_->updateScreen();
+            reconstructor_->setBoardHeight(mediumBoardSizeLength_);
+            reconstructor_->setBoardWidth(mediumBoardSizeLength_);
+            reconstructor_->updateScreen();
         }
         
         if (boardSize == "small" && currentBoardDimensionsConfig !="small")
         {
             currentBoardDimensionsConfig = "small";
-            silentReconstructor_->setBoardHeight(smallBoardSizeLength_);
-            silentReconstructor_->setBoardWidth(smallBoardSizeLength_);
-            silentReconstructor_->updateScreen();
+            reconstructor_->setBoardHeight(smallBoardSizeLength_);
+            reconstructor_->setBoardWidth(smallBoardSizeLength_);
+            reconstructor_->updateScreen();
         }
 
         return;
@@ -158,31 +158,31 @@ void HTTPServer::updateBoardDimensions()
 
     if (currentRequest_.has_param("boardHeight"))
     {
-        silentReconstructor_->setBoardHeight(std::stof(currentRequest_.get_param_value("boardHeight")));
+        reconstructor_->setBoardHeight(std::stof(currentRequest_.get_param_value("boardHeight")));
         isUpdated = true;
     }
     
     if (currentRequest_.has_param("boardWidth"))
     {
-        silentReconstructor_->setBoardWidth(std::stof(currentRequest_.get_param_value("boardWidth")));
+        reconstructor_->setBoardWidth(std::stof(currentRequest_.get_param_value("boardWidth")));
         isUpdated = true;
     }
     
     if (currentRequest_.has_param("screenHeight"))
     {
-        silentReconstructor_->setScreenHeight(std::stof(currentRequest_.get_param_value("screenHeight")));
+        reconstructor_->setScreenHeight(std::stof(currentRequest_.get_param_value("screenHeight")));
         isUpdated = true;
     }
     
     if (currentRequest_.has_param("screenWidth"))
     {
-        silentReconstructor_->setScreenWidth(std::stof(currentRequest_.get_param_value("screenWidth")));
+        reconstructor_->setScreenWidth(std::stof(currentRequest_.get_param_value("screenWidth")));
         isUpdated = true;
     }
 
     if (isUpdated)
     {
-        silentReconstructor_->updateScreen();
+        reconstructor_->updateScreen();
     }
 }
 
@@ -275,14 +275,14 @@ void HTTPServer::loadPuzzleData(float coordinatesScale)
 
 void HTTPServer::initReconstruction()
 {
-    silentReconstructor_->initBoundaryWallBodies();
+    reconstructor_->initBoundaryWallBodies();
 
-    silentReconstructor_->activePieces_ = activePieces_;
+    reconstructor_->activePieces_ = activePieces_;
     std::string fixedPieceId = "";
 
     if (currentRequest_.has_param("fixPiece"))
     {
-        Piece* fixedPiece = silentReconstructor_->getMaxMatingsPiece();
+        Piece* fixedPiece = reconstructor_->getMaxMatingsPiece();
         fixedPieceId = fixedPiece->id_;
     }
 
@@ -293,7 +293,7 @@ void HTTPServer::initReconstruction()
         int positionPadding = 2;
         int seedPositions = std::stoi(currentRequest_.get_param_value("seedInitialPositions"));
 
-        generate2DVectors(positions, activePieces_.size(),silentReconstructor_->boardWidth_, silentReconstructor_->boardHeight_, 
+        generate2DVectors(positions, activePieces_.size(), reconstructor_->boardWidth_, reconstructor_->boardHeight_,
             positionPadding, seedPositions);
 
         std::sort(positions.begin(), positions.end(),
@@ -305,20 +305,20 @@ void HTTPServer::initReconstruction()
     {
         for (int i = 0; i < activePieces_.size(); i++)
         {
-            positions.push_back(b2Vec2(silentReconstructor_->boardWidth_ / 2, silentReconstructor_->boardHeight_ / 2));
+            positions.push_back(b2Vec2(reconstructor_->boardWidth_ / 2, reconstructor_->boardHeight_ / 2));
         }
     }
 
-    silentReconstructor_->initPiecesBodies(activePieces_, fixedPieceId, positions);
+    reconstructor_->initPiecesBodies(activePieces_, fixedPieceId, positions);
 
-    silentReconstructor_->disableJointsCollide();
+    reconstructor_->disableJointsCollide();
 
     if (currentRequest_.has_param("enableJointsCollide"))
     {
-        silentReconstructor_->enableJointsCollide();
+        reconstructor_->enableJointsCollide();
     }
 
-    silentReconstructor_->initMatingsJoints(activeMatings_);
+    reconstructor_->initMatingsJoints(activeMatings_);
 }
 
 nlohmann::json HTTPServer::reconstruct(float coordinatesScale)

@@ -26,6 +26,10 @@ protected:
 	float jointFrequencyHertz_ = 1.0f;
 	float jointDampingRatio_ = 0.01;
 
+
+	int nextScreenPolygonColorIndex_ = 0;
+	bool isScreenInitiated_ = false;
+
 public:
 	float initPowerMagnitude_ = 0.2;
 	Piece* getMaxMatingsPiece();
@@ -82,7 +86,7 @@ public:
 
 	void initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions);
 	void initMatingsJoints(std::vector<VertexMating*>& activeMatings);
-
 	virtual nlohmann::json reconstruct()=0;
+	void initScreen(bool isScreenVisible);
 };
 

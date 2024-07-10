@@ -408,3 +408,21 @@ void Reconstructor::initMatingsJoints(std::vector<VertexMating*>& activeMatings)
 		putMatingSprings(mating);
 	}
 }
+
+
+void Reconstructor::initScreen(bool isScreenVisible)
+{
+	// The screen is not visible if we want to take a screen shot at the end
+	screen_->initDisplay(isScreenVisible);
+
+	for (auto& piece : activePieces_)
+	{
+		//screen_->initSprite(piece);
+		screen_->initPolygon(piece);
+	}
+
+	nextScreenPolygonColorIndex_ = 0;
+
+	screen_->clearDisplay();
+	isScreenInitiated_ = true;
+}
