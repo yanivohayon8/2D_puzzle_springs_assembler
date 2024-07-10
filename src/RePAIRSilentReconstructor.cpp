@@ -30,7 +30,7 @@ void RePAIRSilentReconstructor::RunCollisionOff()
 
 	setPiecesCollisionOff();
 	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
-	progress(iterationToConverge);
+	//progress(iterationToConverge);
 
 	piece2FinalCoords_.clear();
 	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
@@ -64,13 +64,13 @@ void RePAIRSilentReconstructor::RunCollisionOffThenOn()
 
 	setPiecesCollisionOff();
 	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
-	progress(iterationToConverge);
+	//progress(iterationToConverge);
 
 	setPiecesCollisionOn();
 	applyImpulseOnBodies(0.5);
 
 	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
-	progress(iterationToSecondConverage);
+	//progress(iterationToSecondConverage); // commented for compilation
 	
 	piece2FinalCoords_.clear();
 	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;
@@ -104,7 +104,7 @@ void RePAIRSilentReconstructor::RunCollisionOn()
 	setPiecesCollisionOn();
 	applyImpulseOnBodies(5);
 	int iterationToConverge = activePieces_.size() * iterationToConvergeBeforeCollidePerPiece_;
-	progress(iterationToConverge);
+	//progress(iterationToConverge);
 
 	piece2FinalCoords_.clear();
 	const b2Vec2& centerOfBoard = fixedPiece_->refb2Body_->GetTransform().p;

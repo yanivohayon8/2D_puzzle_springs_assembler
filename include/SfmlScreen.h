@@ -45,7 +45,7 @@ public:
 	void drawPolygon(std::string pieceId, const b2Transform& trans);
 	void drawPolygonDots(std::string pieceId, std::vector<b2Vec2>& coordinates);
 	void drawLine(b2Vec2& point1, b2Vec2& point2, sf::Color& color, float thickness);
-	void drawSprite(std::string pieceId, const b2Transform& trans);
+	bool drawSprite(std::string pieceId, const b2Transform& trans);
 	
 	void drawCircle(const b2Vec2& center, float radius, sf::Color color);
 

@@ -32,6 +32,8 @@ protected:
 
 	int nextScreenPolygonColorIndex_ = 0;
 	bool isScreenInitiated_ = false;
+	bool isDebugScreenVisible_ = false;
+	sf::Color springColor_ = sf::Color::Red;
 
 public:
 	float initPowerMagnitude_ = 0.2;
@@ -95,5 +97,7 @@ public:
 
 	virtual void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, 
 		std::vector<VertexMating*> activeMatings);
+
+	void progress(int numIteration);
 };
 

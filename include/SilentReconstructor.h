@@ -14,11 +14,11 @@ protected:
 	std::map<std::string, std::vector<b2Vec2>> piece2CoordsBeforeEnableCollision_;
 	std::map<std::string, std::vector<b2Vec2>> piece2FinalCoords_;
 	std::map<std::string, std::pair<float, b2Vec2>> piece2FinalTransformation_;
-	bool isScreenInitiated_ = false;
+	//bool isScreenInitiated_ = false;
 	int iterationToConvergeBeforeCollidePerPiece_ = 1000;
 	int iterationToConvergeAfterCollidePerPiece_ = 500;
-	bool isDebugScreenVisible_ = false;
-	sf::Color springColor_ = sf::Color::Red;
+	
+	
 	int nextPolygonColorIndex_ = 0;
 
 	//std::string runningMode = "";
@@ -48,6 +48,8 @@ public:
 
 	void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
 		std::vector<VertexMating*> activeMatings);
+
+	//void progress(int numIteration);
 };
 
 

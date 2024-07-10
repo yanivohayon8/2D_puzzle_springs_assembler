@@ -423,7 +423,11 @@ void Reconstructor::initScreenNew(bool isScreenVisible)
 
 	for (auto& piece : activePieces_)
 	{
-		//screen_->initSprite(piece);
+		if (piece.imagePath_ != "")
+		{
+			screen_->initSprite(piece);
+		}
+
 		screen_->initPolygon(piece);
 	}
 
@@ -481,4 +485,41 @@ void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piec
 	}
 
 	initMatingsJoints(activeMatings);
+}
+
+
+void Reconstructor::progress(int numIteration)
+{
+	int iteration = 0;
+
+	while (++iteration < numIteration)
+	{
+		world_.Step(timeStep_, velocityIterations_, positionIterations_);
+
+		for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
+		{
+			pieceIt->translate();
+		}
+
+		if (isDebugScreenVisible_)
+		{
+			screen_->clearDisplay();
+
+			for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
+			{
+				const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
+				screen_->drawPolygon(pieceIt->id_, transform);
+				screen_->drawSprite(pieceIt->id_, transform);
+			}
+
+			for (auto& mating : activeMatings_)
+			{
+				auto& anchorA = mating->jointRef_->GetAnchorA();
+				auto& anchorB = mating->jointRef_->GetAnchorB();
+				screen_->drawLine(anchorA, anchorB, springColor_, -1);
+			}
+
+			screen_->updateDisplay();
+		}
+	}
 }

@@ -107,8 +107,15 @@ void SfmlScreen::initPolygon(Piece& piece)
 }
 
 
-void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
+bool SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
 {
+
+	// If the piece does not have a sprite
+	if (pieceId2Sprite_.find(pieceId) == pieceId2Sprite_.end() || pieceId2texture_.find(pieceId) == pieceId2texture_.end())
+	{
+		return false;
+	}
+
 	sf::Sprite& sprite = pieceId2Sprite_.at(pieceId);
 	sprite.setTexture(pieceId2texture_.at(pieceId));
 	double rotateRadians = trans.q.GetAngle();
@@ -119,6 +126,8 @@ void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
 	sprite.setPosition(widthScale_ * position.x, heightScale_ * position.y);
 
 	window_.draw(sprite);
+
+	return true;
 }
 
 void SfmlScreen::clearDisplay()
