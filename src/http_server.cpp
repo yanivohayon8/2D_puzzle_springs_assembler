@@ -267,8 +267,16 @@ nlohmann::json HTTPServer::reconstruct(float coordinatesScale)
 
     silentReconstructor_->applyImpulseOnBodies(silentReconstructor_->initPowerMagnitude_);
 
-    // TODO: add the IF ELSE on the recipe (OFF,ONN etc) here
-    auto& output = silentReconstructor_->RunOffOnCollide(coordinatesScale);
+    nlohmann::json output;
+
+    if (currentRequest_.has_param("collideOff"))
+    {
+        output = silentReconstructor_->RunOffCollide(coordinatesScale);
+    }
+    else
+    {
+        output = silentReconstructor_->RunOffOnCollide(coordinatesScale);
+    }
 
     silentReconstructor_->screen_->closeWindow();
     silentReconstructor_->closeRun();

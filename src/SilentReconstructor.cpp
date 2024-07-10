@@ -334,19 +334,18 @@ nlohmann::json SilentReconstructor::snapshotPiecesCoords(const b2Vec2& translate
 	return output;
 }
 
-
-
-nlohmann::json SilentReconstructor::RunOnCollide()
+nlohmann::json SilentReconstructor::RunOffCollide(float coordinatesScale)
 {
 	nlohmann::json output;
 	
-	return output;
-}
+	setPiecesCollisionOff();
+	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
+	progress(iterationToSecondConverage);
+	//output["jointsAfterEnableCollision"] = snapshotSpringsLength(activeMatings_, coordinatesScale);
+	const b2Vec2& centerOfAssemblyAfter = fixedPiece_->refb2Body_->GetTransform().p;
+	output["piecesFinalCoords"] = snapshotPiecesCoords(centerOfAssemblyAfter, coordinatesScale);
+	output["piecesFinalTransformations"] = snapshotTransformations(centerOfAssemblyAfter, coordinatesScale);
 
-nlohmann::json SilentReconstructor::RunOffCollide()
-{
-	nlohmann::json output;
-	
 	return output;
 }
 
@@ -360,6 +359,7 @@ nlohmann::json SilentReconstructor::RunOffOnCollide(float coordinatesScale)
 	const b2Vec2& centerOfAssemblyBefore = fixedPiece_->refb2Body_->GetTransform().p;
 	output["piecesBeforeEnableCollisionCoords"] = snapshotPiecesCoords(centerOfAssemblyBefore, coordinatesScale);
 
+	applyImpulseOnBodies(0.5);
 	setPiecesCollisionOn();
 	int iterationToSecondConverage = activePieces_.size() * iterationToConvergeAfterCollidePerPiece_;
 	progress(iterationToSecondConverage);
