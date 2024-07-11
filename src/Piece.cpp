@@ -1,19 +1,6 @@
 #include "Piece.h"
 #include <iostream>
 
-Piece::Piece(std::string pieceId, Eigen::MatrixX2d coordinates, std::string imagePath)
-{
-	id_ = pieceId;
-
-	for (int i = 0; i < coordinates.rows(); i++)
-	{
-		float x_ = static_cast<float>(coordinates.coeff(i, 0));
-		float y_ = static_cast<float>(coordinates.coeff(i, 1));
-		localCoordsAsVecs_.push_back(b2Vec2{ x_,y_ });
-	}
-
-	imagePath_ = imagePath;
-}
 
 Piece::Piece(std::string pieceId, std::vector<b2Vec2> &localCoordsAsVecs, std::string imagePath)
 {
