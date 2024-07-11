@@ -1,4 +1,4 @@
-#include <Utils.h>
+#include <utils.h>
 
 void generate2DVectors(std::vector<b2Vec2>&vectors,int n,int maxX,int maxY,int padding, int seed)
 {

@@ -1,4 +1,4 @@
-#include "SilentReconstructor.h"
+#include "silentReconstructor.h"
 
 
 SilentReconstructor::SilentReconstructor(float boardWidth, float boardHeight, int screenWidth_, int screenHeight_):Reconstructor(boardWidth,boardHeight,screenWidth_,screenHeight_)

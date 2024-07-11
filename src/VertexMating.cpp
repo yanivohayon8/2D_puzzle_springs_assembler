@@ -1,4 +1,4 @@
-#include "VertexMating.h"
+#include "vertexMating.h"
 
 VertexMating::VertexMating(std::string firstPieceId, b2Vec2 &firstPieceLocalCoords,
 	std::string secondPieceId, b2Vec2 &secondPieceLocalCoords)

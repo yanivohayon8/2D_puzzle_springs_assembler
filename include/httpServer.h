@@ -4,13 +4,13 @@
 #include <string>
 #include "cpp-httplib/httplib.h"
 #include "Utils.h"
-#include "VertexMating.h"
+#include "vertexMating.h"
 #include "Piece.h"
 #include "Global_Parameters.h"
 #include <json.hpp>
 #include "reconstruction.h"
-#include "SilentReconstructor.h"
-#include "VisualReconstructor.h"
+#include "silentReconstructor.h"
+#include "interactiveReconstructor.h"
 
 class HTTPServer {
 

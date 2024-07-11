@@ -1,4 +1,4 @@
-#include "SfmlScreen.h"
+#include "sfmlScreen.h"
 
 SfmlScreen::SfmlScreen(int width,int height, float widthScale,float heightScale)
 {

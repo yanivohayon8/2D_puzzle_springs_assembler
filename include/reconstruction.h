@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
 #include "cpp-httplib/httplib.h"
-#include <Piece.h>
+#include <piece.h>
 #include <box2d/box2d.h>
-#include <VertexMating.h>
-#include "SfmlScreen.h"
+#include <vertexMating.h>
+#include "sfmlScreen.h"
 #include <numeric>
-#include "Utils.h"
+#include "utils.h"
 #include <iostream>
 #include <fstream>
 #include <typeinfo>
