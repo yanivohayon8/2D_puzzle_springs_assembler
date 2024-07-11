@@ -419,11 +419,11 @@ void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piec
 	initPiecesBodies(activePieces_, fixedPieceId, positions);
 	applyImpulseOnBodies(initPowerMagnitude_);
 
-	disableJointsCollide();
+	enableJointsCollide();
 
 	if (currentRequest.has_param("disableJointsCollide"))
 	{
-		enableJointsCollide();
+		disableJointsCollide();
 	}
 
 	initMatingsJoints(activeMatings);
