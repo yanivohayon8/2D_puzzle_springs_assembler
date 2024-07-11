@@ -26,8 +26,8 @@ protected:
     void loadMatings_(float coordinatesScale);
     void loadPieces_(float coordinatesScale);
 
-    std::vector<Piece> activePieces_;
-    std::vector<VertexMatingRePAIR*> activeMatings_;
+    std::vector<Piece> inputtedPieces_;
+    std::vector<VertexMatingRePAIR*> inputtedMatings_;
     httplib::Server server_;
     std::string versionPrefix_ = "/v1";
 

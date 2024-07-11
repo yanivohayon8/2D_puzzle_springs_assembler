@@ -74,7 +74,7 @@ void HTTPServer::updateBoardDimensions()
 
 void HTTPServer::loadMatings_(float coordinatesScale)
 {
-    activeMatings_.clear();
+    inputtedMatings_.clear();
     auto& matingsJson = currentRequestBody_["matings"];
 
     for (auto& matingIt = matingsJson.begin(); matingIt != matingsJson.end(); ++matingIt)
@@ -94,13 +94,13 @@ void HTTPServer::loadMatings_(float coordinatesScale)
             secondPieceLocalCoordsY * coordinatesScale);
 
         VertexMatingRePAIR* mating = new VertexMatingRePAIR(firstPieceId, firstPieceLocalCoords, secondPieceId, secondPieceLocalCoords);
-        activeMatings_.push_back(mating);
+        inputtedMatings_.push_back(mating);
     }
 }
 
 void HTTPServer::loadPieces_(float coordinatesScale)
 {
-    activePieces_.clear();
+    inputtedPieces_.clear();
 
     auto& piecesJson = currentRequestBody_["pieces"];
 
@@ -132,7 +132,7 @@ void HTTPServer::loadPieces_(float coordinatesScale)
             piece.setInitialAngle(pieceJson["fixedRotationAngle"]);
         }
 
-        activePieces_.push_back(piece);
+        inputtedPieces_.push_back(piece);
     }
 }
 
@@ -182,7 +182,7 @@ void HTTPServer::run()
         {
             loadPuzzleData(SCALE_IMAGE_COORDINATES_TO_BOX2D);
             updateBoardDimensions();
-            reconstructor_->initRunNew(currentRequest_, activePieces_, activeMatings_);//initReconstruction();
+            reconstructor_->initRunNew(currentRequest_, inputtedPieces_, inputtedMatings_);//initReconstruction();
             nlohmann::json output = reconstructor_->reconstruct(SCALE_IMAGE_COORDINATES_TO_BOX2D);
 
             if (currentRequest_.has_param("finalScreenShotPath"))
