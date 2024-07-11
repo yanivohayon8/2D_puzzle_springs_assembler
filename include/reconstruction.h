@@ -38,7 +38,7 @@ protected:
 	bool isDrawOnlyPolygons = false;
 
 public:
-	float initPowerMagnitude_ = 0.2;
+	float initPowerMagnitude_ = 2;//0.2;
 	Piece* getMaxMatingsPiece();
 	float pieceAngularDamping_ = 0.01;
 	b2World world_ = b2World(b2Vec2(0, 0));
@@ -56,8 +56,8 @@ public:
 	int screenHeight_;
 	int screenWidth_;
 //#pragma message("Please convert to double");
-	float timeStep_ = 1 / 60; //1.0F / 60.0F;
-	//double timeStep_ = 1.0 / 60.0F; //1.0F / 60.0F;
+	//float timeStep_ = 1 / 60; //1.0F / 60.0F;
+	double timeStep_ = 1.0 / 60.0F; //1.0F / 60.0F;
 	int velocityIterations_ = 6;
 	int positionIterations_ = 2;
 
