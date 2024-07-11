@@ -82,6 +82,11 @@ public:
 
 
 	// from here functions of refactor
+	nlohmann::json snapshotTransformations(const b2Vec2& translateCenter, float coordinatesScale);
+	nlohmann::json snapshotSpringsLength(std::vector<VertexMating*>& matings, float coordinatesScale);
+	nlohmann::json snapshotPiecesCoords(const b2Vec2& translateCenter, float coordinatesScale);
+
+
 	void setBoardWidth(float boardWidth);
 	void setBoardHeight(float boardHeight);
 	void setScreenWidth(float screenWidth);

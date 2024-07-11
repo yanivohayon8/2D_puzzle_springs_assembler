@@ -102,6 +102,11 @@ nlohmann::json VisualReconstructor::reconstruct(float coordinatesScale)
 		}
 	}
 
+	output["joints"] = snapshotSpringsLength(activeMatings_, coordinatesScale);
+	const b2Vec2& centerOfAssemblyAfter = fixedPiece_->refb2Body_->GetTransform().p;
+	output["piecesFinalCoords"] = snapshotPiecesCoords(centerOfAssemblyAfter, coordinatesScale);
+	output["piecesFinalTransformations"] = snapshotTransformations(centerOfAssemblyAfter, coordinatesScale);
+
 
 	return output;
 }
