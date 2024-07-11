@@ -387,7 +387,11 @@ void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piec
 	activePieces_ = activePieces;
 	std::string fixedPieceId = "";
 
-	if (currentRequest.has_param("fixPiece"))
+	if (currentRequest.has_param("unFixingPiece"))
+	{
+		
+	}
+	else
 	{
 		Piece* fixedPiece = getMaxMatingsPiece();
 		fixedPieceId = fixedPiece->id_;
