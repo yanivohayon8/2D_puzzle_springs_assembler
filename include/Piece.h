@@ -1,5 +1,4 @@
 #pragma once
-#include <Eigen/Dense>
 #include <box2d/box2d.h>
 #include <vector>
 #include <algorithm>

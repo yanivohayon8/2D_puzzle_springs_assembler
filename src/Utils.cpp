@@ -40,21 +40,3 @@ int sampleIntUniformly(double max, double min, int seed)
 	return distribution(gen);
 }
 
-bool isFloatString(const std::string str) {
-	try {
-		// Attempt to convert the string to a floating-point value
-		size_t pos;
-		std::stof(str, &pos);
-
-		// Check if the entire string was successfully converted
-		return pos == str.size();
-	}
-	catch (std::invalid_argument&) {
-		// The conversion failed due to invalid argument (not a valid number)
-		return false;
-	}
-	catch (std::out_of_range&) {
-		// The conversion failed because the number is out of range
-		return false;
-	}
-}

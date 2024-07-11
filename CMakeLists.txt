@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 add_subdirectory(box2d)
-#add_subdirectory(earcut.hpp)
-find_package(Eigen3 REQUIRED)
 
 # Add the 'include' directory to the list of directories searched for header files
 include_directories(include)
@@ -53,7 +51,6 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     box2d 
-    Eigen3::Eigen
     ${SFML_GRAPHICS_LIBRARY} ${SFML_WINDOW_LIBRARY} ${SFML_NETWORK_LIBRARY} ${SFML_SYSTEM_LIBRARY} ${SFML_AUDIO_LIBRARY}
     ${Boost_LIBRARIES} 
 )
