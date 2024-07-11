@@ -13,6 +13,6 @@ public:
 
 	nlohmann::json reconstruct(float coordinatesScale);
 	void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
-		std::vector<VertexMatingRePAIR*> activeMatings);
+		std::vector<VertexMating*> activeMatings);
 };
 

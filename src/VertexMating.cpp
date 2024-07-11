@@ -1,6 +1,6 @@
 #include "VertexMating.h"
 
-VertexMatingRePAIR::VertexMatingRePAIR(std::string firstPieceId, b2Vec2 &firstPieceLocalCoords,
+VertexMating::VertexMating(std::string firstPieceId, b2Vec2 &firstPieceLocalCoords,
 	std::string secondPieceId, b2Vec2 &secondPieceLocalCoords)
 {
 	firstPieceId_ = firstPieceId;
@@ -9,7 +9,7 @@ VertexMatingRePAIR::VertexMatingRePAIR(std::string firstPieceId, b2Vec2 &firstPi
 	secondPieceLocalCoords_ = secondPieceLocalCoords; 
 }
 
-bool VertexMatingRePAIR::operator==(const VertexMatingRePAIR& other) const {
+bool VertexMating::operator==(const VertexMating& other) const {
 	return (firstPieceId_ == other.firstPieceId_ &&
 		firstPieceLocalCoords_ == other.firstPieceLocalCoords_ &&
 		secondPieceId_ == other.secondPieceId_ &&

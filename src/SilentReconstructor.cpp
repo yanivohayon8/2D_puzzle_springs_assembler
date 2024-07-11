@@ -71,7 +71,7 @@ nlohmann::json SilentReconstructor::snapshotTransformations(const b2Vec2& transl
 
 
 
-nlohmann::json SilentReconstructor::snapshotSpringsLength(std::vector<VertexMatingRePAIR*> &matings, 
+nlohmann::json SilentReconstructor::snapshotSpringsLength(std::vector<VertexMating*> &matings, 
 															float coordinatesScale)
 {
 	nlohmann::json matingsJson = nlohmann::json::array();
@@ -136,26 +136,13 @@ nlohmann::json SilentReconstructor::snapshotPiecesCoords(const b2Vec2& translate
 nlohmann::json SilentReconstructor::reconstruct(float coordinatesScale)
 {
 	nlohmann::json output;
-	//applyImpulseOnBodies(initPowerMagnitude_);
-
-	//if (currentRequest_.has_param("collideOff"))
-	//{
-	//    output = silentReconstructor_->RunOffCollide(coordinatesScale);
-	//}
-	//else
-	//{
-	//    output = silentReconstructor_->RunOffOnCollide(coordinatesScale);
-	//}
-
-	//silentReconstructor_->screen_->closeWindow();
-	//silentReconstructor_->closeRun();
 	return output;
 }
 
 
 
 void SilentReconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
-	std::vector<VertexMatingRePAIR*> activeMatings)
+	std::vector<VertexMating*> activeMatings)
 {
 	Reconstructor::initRunNew(currentRequest,activePieces,activeMatings);
 

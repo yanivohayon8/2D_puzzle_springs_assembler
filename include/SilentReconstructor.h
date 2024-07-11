@@ -25,14 +25,14 @@ public:
 
 
 	nlohmann::json snapshotTransformations(const b2Vec2& translateCenter, float coordinatesScale);
-	nlohmann::json snapshotSpringsLength(std::vector<VertexMatingRePAIR*>& matings, float coordinatesScale);
+	nlohmann::json snapshotSpringsLength(std::vector<VertexMating*>& matings, float coordinatesScale);
 	nlohmann::json snapshotPiecesCoords(const b2Vec2& translateCenter, float coordinatesScale);
 	
 
 	nlohmann::json reconstruct(float coordinatesScale);
 
 	void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
-		std::vector<VertexMatingRePAIR*> activeMatings);
+		std::vector<VertexMating*> activeMatings);
 };
 
 

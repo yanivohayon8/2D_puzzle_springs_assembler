@@ -5,7 +5,7 @@
 #include <json.hpp>
 #include "Global_Parameters.h"
 
-class VertexMatingRePAIR
+class VertexMating
 {
 public:
 	std::string firstPieceId_; // The id of the first piece in the mating
@@ -14,9 +14,9 @@ public:
 	b2Vec2 secondPieceLocalCoords_; // the id of the edge of the second piece
 	b2DistanceJoint* jointRef_;
 
-	VertexMatingRePAIR(std::string firstPieceId,b2Vec2 &firstPieceLocalCoords,
+	VertexMating(std::string firstPieceId,b2Vec2 &firstPieceLocalCoords,
 		std::string secondPieceId, b2Vec2 &secondPieceLocalCoords);
 
-	bool operator==(const VertexMatingRePAIR& other) const;
+	bool operator==(const VertexMating& other) const;
 };
 

@@ -93,7 +93,7 @@ void HTTPServer::loadMatings_(float coordinatesScale)
         b2Vec2 secondPieceLocalCoords(secondPieceLocalCoordsX * coordinatesScale,
             secondPieceLocalCoordsY * coordinatesScale);
 
-        VertexMatingRePAIR* mating = new VertexMatingRePAIR(firstPieceId, firstPieceLocalCoords, secondPieceId, secondPieceLocalCoords);
+        VertexMating* mating = new VertexMating(firstPieceId, firstPieceLocalCoords, secondPieceId, secondPieceLocalCoords);
         inputtedMatings_.push_back(mating);
     }
 }

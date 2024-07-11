@@ -63,7 +63,7 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	piece.refb2Body_ = body;
 }
 
-void Reconstructor::putMatingSprings(VertexMatingRePAIR* &mating)
+void Reconstructor::putMatingSprings(VertexMating* &mating)
 {
 	Piece* pieceA;
 	Piece* pieceB;
@@ -346,7 +346,7 @@ void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::stri
 	}
 }
 
-void Reconstructor::initMatingsJoints(std::vector<VertexMatingRePAIR*>& activeMatings)
+void Reconstructor::initMatingsJoints(std::vector<VertexMating*>& activeMatings)
 {
 	activeMatings_.clear();
 
@@ -380,7 +380,7 @@ void Reconstructor::initScreenNew(bool isScreenVisible)
 }
 
 
-void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, std::vector<VertexMatingRePAIR*> activeMatings)
+void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, std::vector<VertexMating*> activeMatings)
 {
 	initBoundaryWallBodies();
 

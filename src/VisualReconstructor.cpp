@@ -107,7 +107,7 @@ nlohmann::json VisualReconstructor::reconstruct(float coordinatesScale)
 }
 
 void VisualReconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
-	std::vector<VertexMatingRePAIR*> activeMatings)
+	std::vector<VertexMating*> activeMatings)
 {
 	Reconstructor::initRunNew(currentRequest, activePieces, activeMatings);
 	initScreenNew(true);
