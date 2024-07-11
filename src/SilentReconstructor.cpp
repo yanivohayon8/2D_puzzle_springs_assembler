@@ -59,7 +59,7 @@ void SilentReconstructor::initRun(httplib::Request currentRequest, std::vector<P
 	if (currentRequest.has_param("visibilityOn"))
 	{
 	    setDebugScreenVisibility(true);
-		initScreenNew(true);
+		initScreen(true);
 	}
 }
 

@@ -111,5 +111,5 @@ void InteractiveReconstructor::initRun(httplib::Request currentRequest, std::vec
 	std::vector<VertexMating*> activeMatings)
 {
 	Reconstructor::initRun(currentRequest, activePieces, activeMatings);
-	initScreenNew(true);
+	initScreen(true);
 }

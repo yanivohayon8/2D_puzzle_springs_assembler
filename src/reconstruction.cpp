@@ -353,7 +353,7 @@ void Reconstructor::initMatingsJoints(std::vector<VertexMating*>& activeMatings)
 }
 
 
-void Reconstructor::initScreenNew(bool isScreenVisible)
+void Reconstructor::initScreen(bool isScreenVisible)
 {
 	// The screen is not visible if we want to take a screen shot at the end
 	screen_->initDisplay(isScreenVisible);
