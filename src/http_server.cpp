@@ -160,7 +160,7 @@ void HTTPServer::run()
         
         if (currentRequest_.has_param("interactiveOn"))
         {
-            reconstructor_ = new VisualReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
+            reconstructor_ = new InteractiveReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
                                                             defaultScreenLength, defaultScreenLength);
         }
         else

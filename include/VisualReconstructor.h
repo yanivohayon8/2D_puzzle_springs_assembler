@@ -3,11 +3,11 @@
 #include <json.hpp>
 
 
-class VisualReconstructor: public Reconstructor
+class InteractiveReconstructor : public Reconstructor
 {
 
 public:
-	VisualReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight);
+	InteractiveReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight);
 	bool isDebugDrawPolygons_ = true;
 	bool isDrawSprites_ = true;
 

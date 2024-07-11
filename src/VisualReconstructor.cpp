@@ -2,11 +2,11 @@
 
 
 
-VisualReconstructor::VisualReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight):Reconstructor(boardWidth,boardHeight,screenWidth,screenHeight)
+InteractiveReconstructor::InteractiveReconstructor(float boardWidth, float boardHeight, int screenWidth, int screenHeight):Reconstructor(boardWidth,boardHeight,screenWidth,screenHeight)
 {
 }
 
-nlohmann::json VisualReconstructor::reconstruct(float coordinatesScale)
+nlohmann::json InteractiveReconstructor::reconstruct(float coordinatesScale)
 {
 	nlohmann::json output;
 
@@ -111,7 +111,7 @@ nlohmann::json VisualReconstructor::reconstruct(float coordinatesScale)
 	return output;
 }
 
-void VisualReconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
+void InteractiveReconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
 	std::vector<VertexMating*> activeMatings)
 {
 	Reconstructor::initRunNew(currentRequest, activePieces, activeMatings);
