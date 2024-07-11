@@ -20,7 +20,6 @@ public:
 	b2AABB aabb_;
 	
 	Piece(std::string pieceId, std::vector<b2Vec2>& localCoordsAsVecs, std::string imagePath);
-
 	void DestroyBody();
 
 	void translate();
@@ -40,10 +39,8 @@ public:
 
 	float getBodyRotationRadians();
 	void getBodyPosition(b2Vec2& position);
-
-	void setIsRotationFixed(bool flag);// effective only before reconstructor.init()...
+	void setIsRotationFixed(bool flag);
 	void setInitialAngle(float radians);
-
 	void getBodyWorldCenterPosition(b2Vec2& position);
 };
 

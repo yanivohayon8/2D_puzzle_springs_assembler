@@ -182,7 +182,7 @@ void HTTPServer::run()
         {
             loadPuzzleData(SCALE_IMAGE_COORDINATES_TO_BOX2D);
             updateBoardDimensions();
-            reconstructor_->initRunNew(currentRequest_, inputtedPieces_, inputtedMatings_);//initReconstruction();
+            reconstructor_->initRunNew(currentRequest_, inputtedPieces_, inputtedMatings_);
             nlohmann::json output = reconstructor_->reconstruct(SCALE_IMAGE_COORDINATES_TO_BOX2D);
 
             if (currentRequest_.has_param("finalScreenShotPath"))

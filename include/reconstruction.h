@@ -1,6 +1,4 @@
 #pragma once
-//#include <World.h>
-
 #include <string>
 #include "cpp-httplib/httplib.h"
 #include <Piece.h>
@@ -49,8 +47,8 @@ public:
 
 	std::vector<b2Body*> boundsWallBodies_;
 
-	float boardHeight_;//20; 
-	float boardWidth_;//20;//note also the recommondation of static bodies (no more than 50!)
+	float boardHeight_; 
+	float boardWidth_;//note also the recommondation of static bodies (no more than 50!)
 
 	SfmlScreen* screen_; 
 	int screenHeight_;
@@ -80,12 +78,9 @@ public:
 
 	void applyImpulseOnBodies(float powerMagnitude);
 
-
-	// from here functions of refactor
 	nlohmann::json snapshotTransformations(const b2Vec2& translateCenter, float coordinatesScale);
 	nlohmann::json snapshotSpringsLength(std::vector<VertexMating*>& matings, float coordinatesScale);
 	nlohmann::json snapshotPiecesCoords(const b2Vec2& translateCenter, float coordinatesScale);
-
 
 	void setBoardWidth(float boardWidth);
 	void setBoardHeight(float boardHeight);
@@ -96,17 +91,12 @@ public:
 	void initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions);
 	void initMatingsJoints(std::vector<VertexMating*>& activeMatings);
 	virtual nlohmann::json reconstruct(float coordinatesScale)=0;
-	
 	void initScreenNew(bool isScreenVisible);
-
 	virtual void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, 
 		std::vector<VertexMating*> activeMatings);
-
 	void progress(int numIteration);
-
 	void drawJoints();
 	void drawPieces();
-
 	void saveScreenShot(std::string screenshotPath);
 };
 

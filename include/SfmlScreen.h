@@ -48,14 +48,10 @@ public:
 	bool drawSprite(std::string pieceId, const b2Transform& trans);
 	
 	void drawCircle(const b2Vec2& center, float radius, sf::Color color);
-
 	bool pollEvent(sf::Event& event);
 	void closeWindow();
-
 	void screenShotToFile(std::string fileName);
-
 	static const std::vector<sf::Color> sfmlColors;
-	
 };
 
 

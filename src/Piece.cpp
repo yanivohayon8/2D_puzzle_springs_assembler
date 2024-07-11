@@ -110,8 +110,6 @@ void Piece::applyLinearImpulse(int powerX,int powerY)
 	refb2Body_->ApplyLinearImpulseToCenter(impulse, true);
 }
 
-
-
 float Piece::getBodyRotationRadians()
 {
 	return refb2Body_->GetAngle();

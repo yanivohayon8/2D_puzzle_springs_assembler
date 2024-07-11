@@ -32,7 +32,7 @@ void Reconstructor::initStaticBody(Piece& piece, b2Vec2 &position)
 {
 	b2BodyDef fixedPieceBodyDef;
 	fixedPieceBodyDef.type = b2_staticBody;
-	fixedPieceBodyDef.position = position;//b2Vec2(boardWidth_ / 2, boardHeight_ / 2);
+	fixedPieceBodyDef.position = position;
 	fixedPieceBodyDef.angle = piece.initialAngle;
 
 	b2FixtureDef fixedPieceFixture;
@@ -51,7 +51,7 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position = initialPosition;
-	bodyDef.fixedRotation = piece.isRotationFixed; // = false;
+	bodyDef.fixedRotation = piece.isRotationFixed;
 	bodyDef.angle = piece.initialAngle;
 
 	b2FixtureDef fixture;
@@ -232,7 +232,6 @@ void Reconstructor::disableJointsCollide()
 void Reconstructor::enableJointsCollide()
 {
 	isEnableJointsCollide_ = true;
-
 }
 
 void Reconstructor::setPiecesLinearDamping(float damping)
@@ -312,9 +311,6 @@ void Reconstructor::setJointDamping(float ratio)
 }
 
 
-
-
-/// From here new functions of refactor
 void Reconstructor::setBoardWidth(float boardWidth) { boardWidth_ = boardWidth; }
 void Reconstructor::setBoardHeight(float boardHeight) { boardHeight_ = boardHeight; }
 void Reconstructor::setScreenWidth(float screenWidth) { screenWidth_ = screenWidth; }
@@ -328,7 +324,6 @@ void Reconstructor::updateScreen()
 
 void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions)
 {
-
 	fixedPiece_ = &activePieces_[0];
 
 	for (int i = 0; i < activePieces_.size(); i++)

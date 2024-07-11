@@ -168,10 +168,7 @@ void SfmlScreen::drawPolygon(std::string pieceId, const b2Transform& trans)
 
 void SfmlScreen::initPolygonCoordsDots(Piece& piece, float radius, sf::Color& color)
 {
-
 	std::vector<sf::CircleShape> dots;
-
-	// set the shape color to green
 
 	for (auto& cord : piece.globalCoordinates_)
 	{

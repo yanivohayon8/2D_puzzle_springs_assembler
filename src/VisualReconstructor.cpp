@@ -21,18 +21,14 @@ nlohmann::json InteractiveReconstructor::reconstruct(float coordinatesScale)
 		for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
 		{
 			pieceIt->translate();
-
 			const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
 
-			//// FOR DEBUG
 			if (isDebugDrawPolygons_)
 			{
 				screen_->drawPolygon(pieceIt->id_, transform);
 				//screen_->drawPolygonDots(pieceIt->id_, pieceIt->globalCoordinates_);
-
 				/*auto& world_center_debug = pieceIt->refb2Body_->GetWorldCenter();
 				std::cout << "World center: " << world_center_debug.x << "," << world_center_debug.y << std::endl;*/
-
 				screen_->drawCircle(pieceIt->refb2Body_->GetWorldCenter(), 0.05, sf::Color(0, 0, 255));
 				screen_->drawCircle(transform.p, 0.05, sf::Color(255, 0, 255));
 			}
