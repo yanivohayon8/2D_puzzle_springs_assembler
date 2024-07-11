@@ -33,21 +33,16 @@ void SilentReconstructor::setDebugScreenVisibility(bool isVisible)
 
 
 
-//// new functions from here
 void SilentReconstructor::progress(int numIteration)
 {
 	Reconstructor::progress(numIteration);
 }
-
-
 
 nlohmann::json SilentReconstructor::reconstruct(float coordinatesScale)
 {
 	nlohmann::json output;
 	return output;
 }
-
-
 
 void SilentReconstructor::initRun(httplib::Request currentRequest, std::vector<Piece> activePieces,
 	std::vector<VertexMating*> activeMatings)
