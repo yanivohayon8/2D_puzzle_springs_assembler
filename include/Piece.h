@@ -30,8 +30,6 @@ public:
 	void getVeterxGlobalCoords(b2Vec2& oCoords, int iVertex);
 	void getGlobalCoords(b2Vec2& oCoords, b2Vec2& localCoord);
 
-	void sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map);
-
 	void computeBoundingBox();
 	float getBodyBoundingBoxWidth();
 	float getBodyBoundingBoxHeight();

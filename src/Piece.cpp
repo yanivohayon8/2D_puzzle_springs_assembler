@@ -46,40 +46,6 @@ void Piece::getGlobalCoords(b2Vec2& oCoords,b2Vec2& localCoord)
 	oCoords = refb2Body_->GetWorldPoint(localCoord);
 }
 
-void Piece::sortVerticesCCW(Eigen::MatrixX2d& coords, std::vector<int>& index_map)
-{
-	// Compute centroid
-	Eigen::Vector2d centroid(0, 0);
-	for (int i = 0; i < coords.rows(); i++) {
-		centroid += coords.row(i);
-	}
-	centroid /= coords.rows();
-
-	// Compute angles with respect to centroid
-	std::vector<std::pair<double, int>> angles;
-	for (int i = 0; i < coords.rows(); i++) {
-		double x = coords(i, 0) - centroid(0);
-		double y = coords(i, 1) - centroid(1);
-		double angle = atan2(y, x);
-		angles.push_back(std::make_pair(angle, i));
-	}
-
-	// Sort angles
-	std::sort(angles.begin(), angles.end());
-
-	// Reorder coordinates and index map
-	Eigen::MatrixX2d sorted_coords(coords.rows(), coords.cols());
-	std::vector<int> sorted_index_map(coords.rows());
-	for (int i = 0; i < coords.rows(); i++) {
-		sorted_coords.row(i) = coords.row(angles[i].second);
-		sorted_index_map[angles[i].second] = i;
-	}
-
-	coords = sorted_coords;
-	index_map = sorted_index_map;
-}
-
-
 void Piece::computeBoundingBox()
 {
 	const b2Fixture* fixture = refb2Body_->GetFixtureList();
