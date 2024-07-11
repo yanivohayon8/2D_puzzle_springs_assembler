@@ -92,7 +92,7 @@ public:
 	void initMatingsJoints(std::vector<VertexMating*>& activeMatings);
 	virtual nlohmann::json reconstruct(float coordinatesScale)=0;
 	void initScreenNew(bool isScreenVisible);
-	virtual void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, 
+	virtual void initRun(httplib::Request currentRequest, std::vector<Piece> activePieces, 
 		std::vector<VertexMating*> activeMatings);
 	void progress(int numIteration);
 	void drawJoints();

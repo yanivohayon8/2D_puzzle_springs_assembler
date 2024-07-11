@@ -375,7 +375,7 @@ void Reconstructor::initScreenNew(bool isScreenVisible)
 }
 
 
-void Reconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces, std::vector<VertexMating*> activeMatings)
+void Reconstructor::initRun(httplib::Request currentRequest, std::vector<Piece> activePieces, std::vector<VertexMating*> activeMatings)
 {
 	initBoundaryWallBodies();
 

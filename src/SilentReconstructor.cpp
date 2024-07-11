@@ -49,10 +49,10 @@ nlohmann::json SilentReconstructor::reconstruct(float coordinatesScale)
 
 
 
-void SilentReconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
+void SilentReconstructor::initRun(httplib::Request currentRequest, std::vector<Piece> activePieces,
 	std::vector<VertexMating*> activeMatings)
 {
-	Reconstructor::initRunNew(currentRequest,activePieces,activeMatings);
+	Reconstructor::initRun(currentRequest,activePieces,activeMatings);
 
 	setDebugScreenVisibility(false);
 

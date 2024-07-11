@@ -107,9 +107,9 @@ nlohmann::json InteractiveReconstructor::reconstruct(float coordinatesScale)
 	return output;
 }
 
-void InteractiveReconstructor::initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
+void InteractiveReconstructor::initRun(httplib::Request currentRequest, std::vector<Piece> activePieces,
 	std::vector<VertexMating*> activeMatings)
 {
-	Reconstructor::initRunNew(currentRequest, activePieces, activeMatings);
+	Reconstructor::initRun(currentRequest, activePieces, activeMatings);
 	initScreenNew(true);
 }

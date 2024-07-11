@@ -23,7 +23,7 @@ public:
 	void setIterToConvBeforeCollide(int numIterationPerPiece);
 	nlohmann::json reconstruct(float coordinatesScale);
 
-	void initRunNew(httplib::Request currentRequest, std::vector<Piece> activePieces,
+	void initRun(httplib::Request currentRequest, std::vector<Piece> activePieces,
 		std::vector<VertexMating*> activeMatings);
 };
 
