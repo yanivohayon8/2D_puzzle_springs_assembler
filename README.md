@@ -98,7 +98,83 @@ This endpoint performs a reconstruction for the given pieces using the given pai
 
 | Parameter		| Type	| Required	| Default Value | Description	|
 |---------------|-------|-----------|---------------|---------------|
-|InteractiveOn|Boolean|No|False|If specified, true is set|
+|InteractiveOn|Boolean|No|false|Execute the reconstruction in interative mode| <!--If specified, true is set-->
+|visibilityOn|Boolean|No|false|If the parameter InteractiveOn is not specified, a window visualalizing the is opened|
+|collideOff|Boolean|No|false|If the parameter InteractiveOn is not specified, the overlapping between between the pieces during the reconstruction is enabled|
+|boardSize|string|No|small|Specifies the board size in which the reconstruction lives. Allowed values are small,medium, and large|
+|boardHeight|Int|No|None|If the parameter boardSize is not specified, this parameter specifies custom height of the board. Recommended values are between 10 to 80. Please refer for Box2d documentation for more details on allowed size of the bodies.|
+|boardWidth|Int|No|No|If the parameter boardSize is not specified, this parameter specifies custom width of the board. Recommended values are between 10 to 80. Please refer for Box2d documentation for more details on allowed size of the bodies.|
+|screenHeight|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, specified the screen height which visualizes the reconstruction|
+|screenWidth|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, specified the screen Width which visualizes the reconstruction|
+|unFixingPiece|Boolean|No|false|Specifying this parameter makes all the pieces moving pieces. Otherwise, one piece is seleceted to be fixed (nailed) at the center of the board|
+|seedInitialPositions|Int|No|None|Specifies the seed number for generating the random positions. Otherwise, all the pieces are positioned at the board center|
+<!--|disableJointsCollide|Boolean||||-->
+<!--|isDrawOnlyPolygons|||||-->
+<!--|finalScreenShotPath|||||-->
+<!--||||||-->
+
+
+#### Request Body
+The request body contains the description of the pieces and the springs connecting between them. Every spring connects between two vertices of two different pieces. The request body should be a JSON object containing the following fields:
+```json
+{
+    "pieces": [
+        {
+            "id": "string",
+            "polygon": [[number, number], ...],
+            "fixedRotationAngle": number
+        },
+        ...
+    ],
+    "matings": [
+        {
+            "firstPiece": "string",
+            "firstPieceLocalCoords": [number, number],
+            "secondPiece": "string",
+            "secondPieceLocalCoords": [number, number]
+        },
+        ...
+    ]
+}
+
+```
+
+#### Fields
+
+##### `pieces`
+- **Type:** Array of Objects
+- **Description:** List of pieces with their respective properties.
+  
+  Each object in the `pieces` array has the following structure:
+  
+  - `id`
+    - **Type:** String
+    - **Description:** Unique identifier for the piece.
+  - `polygon`
+    - **Type:** Array of [number, number]
+    - **Description:** Coordinates defining the shape of the piece.
+  - `fixedRotationAngle` (optional)
+    - **Type:** Number
+    - **Description:** Fixed rotation angle of the piece. Optional field.
+
+##### `matings`
+- **Type:** Array of Objects
+- **Description:** List of mating relationships between pieces. Each spring buckles two vertices of two different pieces.
+  
+  Each object in the `matings` array has the following structure:
+  
+  - `firstPiece`
+    - **Type:** String
+    - **Description:** Identifier of the first piece in the mating.
+  - `firstPieceLocalCoords`
+    - **Type:** [number, number]
+    - **Description:** Local coordinates of the spring mount on the first piece.
+  - `secondPiece`
+    - **Type:** String
+    - **Description:** Identifier of the second piece in the mating.
+  - `secondPieceLocalCoords`
+    - **Type:** [number, number]
+    - **Description:** Local coordinates of the spring mount on the second piece.
 
 
 
