@@ -6,6 +6,9 @@ TODO: describe here it is for simple polygons, having vertices...
 
 multiple running modes: interactive, silent, visual,... Offon, Off...
 
+![Demo springs](https://github.com/user-attachments/assets/34ae33eb-1e41-467d-b963-4418a0968270)
+
+
 ## Table of Contents
 
 - [Installing](#installing)
