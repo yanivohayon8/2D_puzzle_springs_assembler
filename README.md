@@ -178,7 +178,7 @@ The request body contains the description of the pieces and the springs connecti
 
 
 #### Example Request
-```curl
+```shell
 	curl --location 'http://localhost:8888/v1/reconstructions?visibilityOn=1' \
 	--header 'Content-Type: application/json' \
 	--data '{
