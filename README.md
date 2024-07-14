@@ -98,6 +98,9 @@ This endpoint performs a reconstruction for the given pieces using the given pai
 
 | Parameter		| Type	| Required	| Default Value | Description	|
 |---------------|-------|-----------|---------------|---------------|
+|InteractiveOn|Boolean|No|False|If specified, true is set|
+
+
 
 
 #### Example Request
