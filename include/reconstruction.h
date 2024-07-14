@@ -36,7 +36,7 @@ protected:
 	bool isDrawOnlyPolygons = false;
 
 public:
-	float initPowerMagnitude_ = 2;//0.2;
+	float initPowerMagnitude_ = 0.2;//0.2;
 	Piece* getMaxMatingsPiece();
 	float pieceAngularDamping_ = 0.01;
 	b2World world_ = b2World(b2Vec2(0, 0));

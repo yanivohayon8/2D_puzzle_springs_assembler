@@ -54,6 +54,7 @@ springs_assembler_sfml --port <PORT_NUMBER>
 ```
 
 Where port is an optional parameter, which its default value is ``8888``.
+Once the server is up http requests are sent to it. For quick start you can use curl or postman using http request described below. 
 
 ## THE REST API Endpoints
 
@@ -462,9 +463,10 @@ The request body contains the description of the pieces and the springs connecti
 }
 ```
 
+<!--
 ## Quick Start
 
-<!--For an automatic run of the program with the provided example, open your terminal or command line and navigate to the project directory, then enter the following command:
+For an automatic run of the program with the provided example, open your terminal or command line and navigate to the project directory, then enter the following command:
 
 ```shell
 ./build/2D_puzzle_springs_assembler --puzzleDir data/example/group_39
@@ -472,6 +474,7 @@ The request body contains the description of the pieces and the springs connecti
 
 This command will run the project using the puzzle files located in the data/example/group_39 directory.
 -->
+
 
 ## Help
 
