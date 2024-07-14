@@ -139,8 +139,6 @@ The request body contains the description of the pieces and the springs connecti
 
 ```
 
-#### Fields
-
 ##### `pieces`
 - **Type:** Array of Objects
 - **Description:** List of pieces with their respective properties.
@@ -214,8 +212,127 @@ The request body contains the description of the pieces and the springs connecti
 	'
 ```
 
-#### Example Response
+#### Response 
+```json
+{
+    "jointsAfterEnableCollision": {
+        "springs": [
+            {
+                "firstPieceId": "string",
+                "firstPieceLocalCoords": [number, number],
+                "jointLength": number,
+                "secondPieceId": "string",
+                "secondPieceLocalCoords": [number, number]
+            },
+            ...
+        ],
+        "sumSpringsLength": number
+    },
+    "piecesBeforeEnableCollisionCoords": [
+        {
+            "coordinates": [[number, number], ...],
+            "pieceId": "string"
+        },
+        ...
+    ],
+    "piecesFinalCoords": [
+        {
+            "coordinates": [[number, number], ...],
+            "pieceId": "string"
+        },
+        ...
+    ],
+    "piecesFinalTransformations": [
+        {
+            "pieceId": "string",
+            "rotationRadians": number,
+            "translateVectorX": number,
+            "translateVectorY": number
+        },
+        ...
+    ]
+}
 ```
+
+##### `jointsAfterEnableCollision`
+- **Type:** Object
+- **Description:** Contains details about the joints after enabling collision.
+  
+  - `springs`
+    - **Type:** Array of Objects
+    - **Description:** List of spring connections between pieces.
+      
+      Each object in the `springs` array has the following structure:
+      
+      - `firstPieceId`
+        - **Type:** String
+        - **Description:** Identifier of the first piece.
+      - `firstPieceLocalCoords`
+        - **Type:** Array of [number, number]
+        - **Description:** Local coordinates on the first piece.
+      - `jointLength`
+        - **Type:** Number
+        - **Description:** Length of the joint.
+      - `secondPieceId`
+        - **Type:** String
+        - **Description:** Identifier of the second piece.
+      - `secondPieceLocalCoords`
+        - **Type:** Array of [number, number]
+        - **Description:** Local coordinates on the second piece.
+  
+  - `sumSpringsLength`
+    - **Type:** Number
+    - **Description:** Total length of all springs.
+
+##### `piecesBeforeEnableCollisionCoords`
+- **Type:** Array of Objects
+- **Description:** Coordinates of pieces before enabling collision.
+  
+  Each object in the `piecesBeforeEnableCollisionCoords` array has the following structure:
+  
+  - `coordinates`
+    - **Type:** Array of [number, number]
+    - **Description:** Coordinates defining the shape of the piece.
+  - `pieceId`
+    - **Type:** String
+    - **Description:** Identifier of the piece.
+
+##### `piecesFinalCoords`
+- **Type:** Array of Objects
+- **Description:** Final coordinates of pieces at the end of the reconstruction.
+  
+  Each object in the `piecesFinalCoords` array has the following structure:
+  
+  - `coordinates`
+    - **Type:** Array of [number, number]
+    - **Description:** Coordinates defining the shape of the piece.
+  - `pieceId`
+    - **Type:** String
+    - **Description:** Identifier of the piece.
+
+##### `piecesFinalTransformations`
+- **Type:** Array of Objects
+- **Description:** Final transformations applied to each piece at the end of the reconstruction.
+  
+  Each object in the `piecesFinalTransformations` array has the following structure:
+  
+  - `pieceId`
+    - **Type:** String
+    - **Description:** Identifier of the piece.
+  - `rotationRadians`
+    - **Type:** Number
+    - **Description:** Rotation angle in radians.
+  - `translateVectorX`
+    - **Type:** Number
+    - **Description:** Translation vector on the X-axis.
+  - `translateVectorY`
+    - **Type:** Number
+    - **Description:** Translation vector on the Y-axis.
+
+
+
+#### Example Response
+```json
 	{
     "jointsAfterEnableCollision": {
         "springs": [
