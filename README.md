@@ -185,36 +185,68 @@ The request body contains the description of the pieces and the springs connecti
 
 
 #### Example Request
-```shell
-	curl --location 'http://localhost:8888/v1/reconstructions?visibilityOn=1' \
-	--header 'Content-Type: application/json' \
-	--data '{
-		"pieces":[
-			{
-				"id": "square",
-				"polygon":[[500,500],[-500,500],[-500,-500],[500,-500]],
-				"fixedRotationAngle":-1.398445025086403
-			},
-			{
-				"id": "triangle",
-				"polygon":[[500,500],[-500,500],[-500,-500]]
-			}
-		],
-		"matings":[
-			{
-				"firstPiece":"square",
-				"firstPieceLocalCoords": [-500,500],
-				"secondPiece":"triangle",
-				"secondPieceLocalCoords": [500,500]
-			}
-			,{
-				"firstPiece":"square",
-				"firstPieceLocalCoords": [500,500], 
-				"secondPiece":"triangle",
-				"secondPieceLocalCoords": [-500,500] 
-			}
-		]
-	}
+```cURL
+	curl --location 'http://localhost:8888/v1/reconstructions?unFixingPiece=1&visibilityOn=1&collideOff=1&boardSize=small' \
+--header 'Content-Type: application/json' \
+--data '{
+    "pieces":[
+        {
+            "id": "triangle1",
+            "polygon":[[0,0],[1000,1500],[1500,-500]],
+            "fixedRotationAngle":-1.398445025086403
+        },
+        {
+            "id": "triangle2",
+            "polygon":[[0,0],[1000,1500],[-2500,-500]]
+        },
+        {
+            "id": "triangle3",
+            "polygon":[[0,0],[1500,-500],[-2500,-500]]
+        }
+        
+    ],
+    "matings":[
+        {
+            "firstPiece":"triangle1",
+            "firstPieceLocalCoords": [0,0],
+            "secondPiece":"triangle2",
+            "secondPieceLocalCoords": [0,0]
+        },
+        {
+            "firstPiece":"triangle1",
+            "firstPieceLocalCoords": [1000,1500],
+            "secondPiece":"triangle2",
+            "secondPieceLocalCoords": [1000,1500]
+        },
+        {
+            "firstPiece":"triangle2",
+            "firstPieceLocalCoords": [0,0],
+            "secondPiece":"triangle3",
+            "secondPieceLocalCoords": [0,0]
+        },
+        {
+            "firstPiece":"triangle2",
+            "firstPieceLocalCoords": [-2500,-500],
+            "secondPiece":"triangle3",
+            "secondPieceLocalCoords": [-2500,-500]
+        },
+        {
+            "firstPiece":"triangle1",
+            "firstPieceLocalCoords": [0,0],
+            "secondPiece":"triangle3",
+            "secondPieceLocalCoords": [0,0]
+        },
+        {
+            "firstPiece":"triangle1",
+            "firstPieceLocalCoords": [1500,-500],
+            "secondPiece":"triangle3",
+            "secondPieceLocalCoords": [1500,-500]
+        }
+        
+    ]
+}
+
+'
 	
 	'
 ```
@@ -225,38 +257,211 @@ The request body contains the description of the pieces and the springs connecti
     "jointsAfterEnableCollision": {
         "springs": [
             {
-                "firstPieceId": "string",
-                "firstPieceLocalCoords": [number, number],
-                "jointLength": number,
-                "secondPieceId": "string",
-                "secondPieceLocalCoords": [number, number]
+                "firstPieceId": "triangle1",
+                "firstPieceLocalCoords": [
+                    0.0,
+                    0.0
+                ],
+                "jointLength": 0.01890582963824272,
+                "secondPieceId": "triangle2",
+                "secondPieceLocalCoords": [
+                    0.0,
+                    0.0
+                ]
             },
-            ...
+            {
+                "firstPieceId": "triangle1",
+                "firstPieceLocalCoords": [
+                    999.9999389648438,
+                    1500.0
+                ],
+                "jointLength": 0.018003148958086967,
+                "secondPieceId": "triangle2",
+                "secondPieceLocalCoords": [
+                    999.9999389648438,
+                    1500.0
+                ]
+            },
+            {
+                "firstPieceId": "triangle2",
+                "firstPieceLocalCoords": [
+                    0.0,
+                    0.0
+                ],
+                "jointLength": 0.026041222736239433,
+                "secondPieceId": "triangle3",
+                "secondPieceLocalCoords": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "firstPieceId": "triangle2",
+                "firstPieceLocalCoords": [
+                    -2500.0,
+                    -499.9999694824219
+                ],
+                "jointLength": 0.01999364234507084,
+                "secondPieceId": "triangle3",
+                "secondPieceLocalCoords": [
+                    -2500.0,
+                    -499.9999694824219
+                ]
+            },
+            {
+                "firstPieceId": "triangle1",
+                "firstPieceLocalCoords": [
+                    0.0,
+                    0.0
+                ],
+                "jointLength": 0.015546763315796852,
+                "secondPieceId": "triangle3",
+                "secondPieceLocalCoords": [
+                    0.0,
+                    0.0
+                ]
+            },
+            {
+                "firstPieceId": "triangle1",
+                "firstPieceLocalCoords": [
+                    1500.0,
+                    -499.9999694824219
+                ],
+                "jointLength": 0.020058179274201393,
+                "secondPieceId": "triangle3",
+                "secondPieceLocalCoords": [
+                    1500.0,
+                    -499.9999694824219
+                ]
+            }
         ],
-        "sumSpringsLength": number
+        "sumSpringsLength": 0.11854878067970276
     },
     "piecesBeforeEnableCollisionCoords": [
         {
-            "coordinates": [[number, number], ...],
-            "pieceId": "string"
+            "coordinates": [
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    1649.2757568359375,
+                    -727.935302734375
+                ],
+                [
+                    -235.3429718017578,
+                    -1563.526123046875
+                ]
+            ],
+            "pieceId": "triangle1"
         },
-        ...
+        {
+            "coordinates": [
+                [
+                    -0.41866299510002136,
+                    9.743690490722656
+                ],
+                [
+                    1641.6376953125,
+                    -734.33349609375
+                ],
+                [
+                    -898.3973999023438,
+                    2395.877685546875
+                ]
+            ],
+            "pieceId": "triangle2"
+        },
+        {
+            "coordinates": [
+                [
+                    8.678913116455078,
+                    4.904747009277344
+                ],
+                [
+                    -241.9295196533203,
+                    -1556.2471923828125
+                ],
+                [
+                    -889.3909301757813,
+                    2391.00390625
+                ]
+            ],
+            "pieceId": "triangle3"
+        }
     ],
     "piecesFinalCoords": [
         {
-            "coordinates": [[number, number], ...],
-            "pieceId": "string"
+            "coordinates": [
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    1649.2757568359375,
+                    -727.935302734375
+                ],
+                [
+                    -235.3429718017578,
+                    -1563.526123046875
+                ]
+            ],
+            "pieceId": "triangle1"
         },
-        ...
+        {
+            "coordinates": [
+                [
+                    8.512496948242188,
+                    16.88098907470703
+                ],
+                [
+                    1657.4229736328125,
+                    -711.881103515625
+                ],
+                [
+                    -911.6358032226563,
+                    2394.553466796875
+                ]
+            ],
+            "pieceId": "triangle2"
+        },
+        {
+            "coordinates": [
+                [
+                    -14.6965970993042,
+                    5.070685863494873
+                ],
+                [
+                    -254.55711364746094,
+                    -1557.768798828125
+                ],
+                [
+                    -929.1633911132813,
+                    2384.934326171875
+                ]
+            ],
+            "pieceId": "triangle3"
+        }
     ],
     "piecesFinalTransformations": [
         {
-            "pieceId": "string",
-            "rotationRadians": number,
-            "translateVectorX": number,
-            "translateVectorY": number
+            "pieceId": "triangle1",
+            "rotationRadians": -1.3984450101852417,
+            "translateVectorX": 0.0,
+            "translateVectorY": 0.0
         },
-        ...
+        {
+            "pieceId": "triangle2",
+            "rotationRadians": -1.3989464044570923,
+            "translateVectorX": 251.43336486816406,
+            "translateVectorY": 566.517822265625
+        },
+        {
+            "pieceId": "triangle3",
+            "rotationRadians": -1.4013348817825317,
+            "translateVectorX": -399.47222900390625,
+            "translateVectorY": 277.41192626953125
+        }
     ]
 }
 ```
