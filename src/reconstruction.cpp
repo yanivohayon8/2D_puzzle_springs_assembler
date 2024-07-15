@@ -32,7 +32,7 @@ void Reconstructor::initStaticBody(Piece& piece, b2Vec2 &position)
 {
 	b2BodyDef fixedPieceBodyDef;
 	fixedPieceBodyDef.type = b2_staticBody;
-	fixedPieceBodyDef.position = position;//b2Vec2(boardWidth_ / 2, boardHeight_ / 2);
+	fixedPieceBodyDef.position = position;
 	fixedPieceBodyDef.angle = piece.initialAngle;
 
 	b2FixtureDef fixedPieceFixture;
@@ -51,7 +51,7 @@ void Reconstructor::initMovingBody(Piece& piece, b2Vec2 &initialPosition)
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position = initialPosition;
-	bodyDef.fixedRotation = piece.isRotationFixed; // = false;
+	bodyDef.fixedRotation = piece.isRotationFixed;
 	bodyDef.angle = piece.initialAngle;
 
 	b2FixtureDef fixture;
@@ -86,21 +86,9 @@ void Reconstructor::putMatingSprings(VertexMating* &mating)
 	b2Vec2 vertexGlobalA;
 	b2Vec2 vertexGlobalB;
 
-	VertexMatingRePAIR* matingRepair_ptr = dynamic_cast<VertexMatingRePAIR*>(mating);
-
-	if (matingRepair_ptr!=nullptr)
-	{
-		//REPAIR
-		pieceA->getGlobalCoords(vertexGlobalA, matingRepair_ptr->firstPieceLocalCoords_);//*debug_coord_A);
-		pieceB->getGlobalCoords(vertexGlobalB, matingRepair_ptr->secondPieceLocalCoords_);
-	}
-	else
-	{
-		// Convex Drawing
-		pieceA->getVeterxGlobalCoords(vertexGlobalA, mating->firstPieceVertex_);	
-		pieceB->getVeterxGlobalCoords(vertexGlobalB, mating->secondPieceVertex_);
-	}
-
+	pieceA->getGlobalCoords(vertexGlobalA, mating->firstPieceLocalCoords_);//*debug_coord_A);
+	pieceB->getGlobalCoords(vertexGlobalB, mating->secondPieceLocalCoords_);
+	
 
 	b2DistanceJointDef jointDef;
 	jointDef.Initialize(bodyA, bodyB, vertexGlobalA, vertexGlobalB);
@@ -144,7 +132,7 @@ Piece* Reconstructor::getMaxMatingsPiece()
 	return maxPiece;
 }
 
-void Reconstructor::init()
+void Reconstructor::initBoundaryWallBodies()
 {
 	float wallWidth = 0.1;
 	float padding = wallWidth;
@@ -198,83 +186,26 @@ void Reconstructor::init()
 		}
 
 		boundsCoordinates_.push_back(globalCoords);
+		boundsWallBodies_.push_back(body);
 	}
-}
-
-void Reconstructor::initRun(std::vector<Piece>& activePieces, std::vector<VertexMating*>& activeMatings, int positionSeed, int positionPadding)
-{
-	// Init Bodies
-	activePieces_ = activePieces;
-	//activeMatings_ = activeMatings;
-
-	for (auto& mating:activeMatings)
-	{
-		activeMatings_.push_back(mating);
-	}
-
-	fixedPiece_ = getMaxMatingsPiece();
-	initStaticBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-	//initMovingBody(*fixedPiece_, b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
-
-	std::vector<b2Vec2> positions;
-	generate2DVectors(positions, activePieces_.size() - 1, boardWidth_, boardHeight_, positionPadding, positionSeed);
-	std::sort(positions.begin(), positions.end(), [](const b2Vec2& a, const b2Vec2& b)->bool {
-		return a.y > b.y || (a.y == b.y && a.x > b.x);
-	});
-	auto& initialPosIt = positions.begin();
-
-	for (auto& piece:activePieces_)
-	{
-		if (piece.id_ != fixedPiece_->id_)
-		{
-			initMovingBody(piece, *initialPosIt);
-			++initialPosIt;
-		}
-	}
-
-	// Apply impulse on bodies
-	int impulseIndex = 0;
-	//float powerMagnitude = 0.2;//2
-	std::vector<b2Vec2> initialImpulses = {
-		{initPowerMagnitude_,initPowerMagnitude_},
-		{-initPowerMagnitude_,initPowerMagnitude_},
-		{-initPowerMagnitude_,-initPowerMagnitude_},
-		{-initPowerMagnitude_,initPowerMagnitude_}
-	};
-	int numInitialImpulses = initialImpulses.size();
-
-	for (auto& piece : activePieces_)
-	{
-		piece.setCollideOff();
-		//piece.setAngularDamping(pieceAngularDamping_);
-		auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
-		piece.applyLinearImpulse(power.x,power.y);
-	}
-
-	setPiecesAngularDamping(pieceAngularDamping_);
-
-	for (auto &mating:activeMatings_)
-	{
-		putMatingSprings(mating);
-	}
-
-	piecesOverlappingArea_ = -1;
 }
 
 void Reconstructor::closeRun()
 {
-	/*for (auto& joint:joints_)
+	for (auto& body: boundsWallBodies_)
 	{
-		world_.DestroyJoint(joint);
-	}*/
+		world_.DestroyBody(body);
+	}
+
+	boundsWallBodies_.clear();
 
 	for (auto& mating:activeMatings_)
 	{
 		world_.DestroyJoint(mating->jointRef_);
 		delete mating;
 	}
-
 	
+	activeMatings_.clear();
 
 	for (int i=0;i<activePieces_.size();++i)
 	{
@@ -282,49 +213,15 @@ void Reconstructor::closeRun()
 	}
 
 	activePieces_.clear();
-	//joints_.clear();
 	
-	/*for (auto& mating: activeMatings_)
+
+	if (isScreenInitiated_)
 	{
-		delete& mating;
-	}*/
-	
-	activeMatings_.clear();
+		screen_->closeWindow();
+		isScreenInitiated_ = false;
+	}
 
 	std::cout << "Run closed" << std::endl;
-}
-
-
-void Reconstructor::saveFinalTransforms(const std::string& filename,const b2Vec2& translateCenter)
-{
-	// Open the CSV file for writing
-	std::ofstream file(filename);
-
-	if (!file.is_open()) {
-		std::cerr << "Failed to open file: " << filename << std::endl;
-		return;
-	}
-
-	// Write the header
-	//file << "piece,t_x,t_y,r_sin,r_cos,r_angle" << std::endl;
-	file << "piece,translate_x,translate_y,rotation_angle" << std::endl;
-
-	// Write each row of the matrix as a separate line in the CSV file
-	for (auto& piece : activePieces_)
-	{
-		auto& trans = piece.refb2Body_->GetTransform();
-		float x = trans.p.x - translateCenter.x;
-		float y = trans.p.y - translateCenter.y;
-		float radians = piece.refb2Body_->GetAngle();
-
-		//file << piece.id_ << "," << trans.p.x << "," << trans.p.y << "," << trans.q.s << "," << trans.q.c<<  << std::endl;
-		file << piece.id_ << "," << x << "," << y << "," << radians << std::endl;
-	}
-
-	// Close the file
-	file.close();
-
-	std::cout << "Matrix data written to CSV file: " << filename << std::endl;
 }
 
 void Reconstructor::disableJointsCollide()
@@ -335,7 +232,6 @@ void Reconstructor::disableJointsCollide()
 void Reconstructor::enableJointsCollide()
 {
 	isEnableJointsCollide_ = true;
-
 }
 
 void Reconstructor::setPiecesLinearDamping(float damping)
@@ -369,6 +265,26 @@ void Reconstructor::setPiecesCollisionOff()
 	}
 }
 
+void Reconstructor::applyImpulseOnBodies(float powerMagnitude)
+{
+
+	std::vector<b2Vec2> initialImpulses = {
+		{powerMagnitude,-powerMagnitude},
+		{powerMagnitude,powerMagnitude},
+		{-powerMagnitude,-powerMagnitude},
+		{-powerMagnitude,powerMagnitude}
+	};
+
+	int numInitialImpulses = initialImpulses.size();
+	int impulseIndex = 0;
+
+	for (auto& piece : activePieces_)
+	{
+		auto& power = initialImpulses[++impulseIndex % numInitialImpulses];
+		piece.applyLinearImpulse(power.x, power.y);
+	}
+}
+
 void Reconstructor::setJointRestLength(float length)
 {
 	jointRestLength_ = length;
@@ -392,4 +308,290 @@ void Reconstructor::setJointFrequency(float herz)
 void Reconstructor::setJointDamping(float ratio)
 {
 	jointDampingRatio_ = ratio;
+}
+
+
+void Reconstructor::setBoardWidth(float boardWidth) { boardWidth_ = boardWidth; }
+void Reconstructor::setBoardHeight(float boardHeight) { boardHeight_ = boardHeight; }
+void Reconstructor::setScreenWidth(float screenWidth) { screenWidth_ = screenWidth; }
+void Reconstructor::setScreenHeight(float screenHeight) { screenHeight_ = screenHeight; }
+
+void Reconstructor::updateScreen()
+{
+	delete screen_;
+	screen_ = new SfmlScreen(screenWidth_, screenHeight_, screenWidth_ / boardWidth_, screenHeight_ / boardHeight_);
+}
+
+void Reconstructor::initPiecesBodies(std::vector<Piece>& activePieces, std::string fixedPieceId, std::vector<b2Vec2>& positions)
+{
+	fixedPiece_ = &activePieces_[0];
+
+	for (int i = 0; i < activePieces_.size(); i++)
+	{
+
+		if (activePieces_[i].id_ == fixedPieceId)
+		{
+			initStaticBody(activePieces_[i], b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+			fixedPiece_ = &activePieces_[i]; // useless? 
+		}
+		else
+		{
+			initMovingBody(activePieces_[i], positions[i]);
+		}
+	}
+}
+
+void Reconstructor::initMatingsJoints(std::vector<VertexMating*>& activeMatings)
+{
+	activeMatings_.clear();
+
+	for (auto& mating : activeMatings)
+	{
+		activeMatings_.push_back(mating);
+		putMatingSprings(mating);
+	}
+}
+
+
+void Reconstructor::initScreen(bool isScreenVisible)
+{
+	// The screen is not visible if we want to take a screen shot at the end
+	screen_->initDisplay(isScreenVisible);
+
+	for (auto& piece : activePieces_)
+	{
+		if (piece.imagePath_ != "")
+		{
+			screen_->initSprite(piece);
+		}
+
+		screen_->initPolygon(piece);
+	}
+
+	nextScreenPolygonColorIndex_ = 0;
+
+	screen_->clearDisplay();
+	isScreenInitiated_ = true;
+}
+
+
+void Reconstructor::initRun(httplib::Request currentRequest, std::vector<Piece> activePieces, std::vector<VertexMating*> activeMatings)
+{
+	initBoundaryWallBodies();
+
+	activePieces_ = activePieces;
+	std::string fixedPieceId = "";
+
+	if (currentRequest.has_param("unFixingPiece"))
+	{
+		
+	}
+	else
+	{
+		Piece* fixedPiece = getMaxMatingsPiece();
+		fixedPieceId = fixedPiece->id_;
+	}
+
+	std::vector<b2Vec2> positions;
+
+	if (currentRequest.has_param("seedInitialPositions"))
+	{
+		int positionPadding = 2;
+		int seedPositions = std::stoi(currentRequest.get_param_value("seedInitialPositions"));
+
+		generate2DVectors(positions, activePieces_.size(), boardWidth_, boardHeight_,
+			positionPadding, seedPositions);
+
+		std::sort(positions.begin(), positions.end(),
+			[](const b2Vec2& a, const b2Vec2& b)->bool {
+				return a.y > b.y || (a.y == b.y && a.x > b.x);
+			});
+	}
+	else
+	{
+		for (int i = 0; i < activePieces_.size(); i++)
+		{
+			positions.push_back(b2Vec2(boardWidth_ / 2, boardHeight_ / 2));
+		}
+	}
+
+	initPiecesBodies(activePieces_, fixedPieceId, positions);
+	applyImpulseOnBodies(initPowerMagnitude_);
+
+	enableJointsCollide();
+
+	if (currentRequest.has_param("disableJointsCollide"))
+	{
+		disableJointsCollide();
+	}
+
+	initMatingsJoints(activeMatings);
+
+	if (currentRequest.has_param("isDrawOnlyPolygons"))
+	{
+		isDrawOnlyPolygons = true;
+	}
+}
+
+
+void Reconstructor::progress(int numIteration)
+{
+	int iteration = 0;
+
+	while (++iteration < numIteration)
+	{
+		world_.Step(timeStep_, velocityIterations_, positionIterations_);
+
+		for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
+		{
+			pieceIt->translate();
+		}
+
+		if (isDebugScreenVisible_)
+		{
+			screen_->clearDisplay();
+
+			drawPieces();
+			drawJoints();
+
+			screen_->updateDisplay();
+		}
+	}
+}
+
+
+void Reconstructor::drawJoints()
+{
+	for (auto& mating : activeMatings_)
+	{
+		auto& anchorA = mating->jointRef_->GetAnchorA();
+		auto& anchorB = mating->jointRef_->GetAnchorB();
+		screen_->drawLine(anchorA, anchorB, jointColor_, -1);
+	}
+}
+
+void Reconstructor::drawPieces()
+{
+	for (auto pieceIt = activePieces_.begin(); pieceIt != activePieces_.end(); pieceIt++)
+	{
+		const b2Transform& transform = pieceIt->refb2Body_->GetTransform();
+
+		if (isDrawOnlyPolygons)
+		{
+			screen_->drawPolygon(pieceIt->id_, transform);
+		}
+		else
+		{
+			bool isSpriteAvailable = screen_->drawSprite(pieceIt->id_, transform);
+
+			if (!isSpriteAvailable)
+			{
+				screen_->drawPolygon(pieceIt->id_, transform);
+			}
+		}
+	}
+}
+
+void Reconstructor::saveScreenShot(std::string screenshotPath)
+{
+	screen_->clearDisplay();
+
+	drawJoints();
+	drawPieces();
+
+	screen_->screenShotToFile(screenshotPath);
+}
+
+
+nlohmann::json Reconstructor::snapshotTransformations(const b2Vec2& translateCenter, float coordinatesScale)
+{
+	nlohmann::json output = nlohmann::json::array();
+
+	for (auto& piece : activePieces_)
+	{
+		b2Vec2 position;
+		//piece.getBodyPosition(position);
+		//position = piece.refb2Body_->GetTransform().p;
+		////auto& position = transform.p;
+		//position = piece.refb2Body_->GetPosition();
+		piece.getBodyWorldCenterPosition(position);
+
+		float x = position.x - translateCenter.x;
+		x /= coordinatesScale;
+		float y = position.y - translateCenter.y;
+		y /= coordinatesScale;
+		auto angle = piece.getBodyRotationRadians();
+
+		nlohmann::json pieceJson;
+		pieceJson["pieceId"] = piece.id_;
+		pieceJson["translateVectorX"] = x;
+		pieceJson["translateVectorY"] = y;
+		pieceJson["rotationRadians"] = angle;
+		output.push_back(pieceJson);
+	}
+
+	return output;
+}
+
+
+
+nlohmann::json Reconstructor::snapshotSpringsLength(std::vector<VertexMating*>& matings,
+	float coordinatesScale)
+{
+	nlohmann::json matingsJson = nlohmann::json::array();
+	float sumLengths = 0;
+
+	for (auto& mating : matings)
+	{
+		nlohmann::json matingJson;
+
+		matingJson["firstPieceId"] = mating->firstPieceId_;
+		double firstXscaled = mating->firstPieceLocalCoords_.x / coordinatesScale;
+		double firstYscaled = mating->firstPieceLocalCoords_.y / coordinatesScale;
+		matingJson["firstPieceLocalCoords"] = nlohmann::json::array({ firstXscaled,firstYscaled });
+
+		matingJson["secondPieceId"] = mating->secondPieceId_;
+		double secondXscaled = mating->secondPieceLocalCoords_.x / coordinatesScale;
+		double secondYscaled = mating->secondPieceLocalCoords_.y / coordinatesScale;
+		matingJson["secondPieceLocalCoords"] = nlohmann::json::array({ secondXscaled,secondYscaled });
+
+		auto length = mating->jointRef_->GetCurrentLength();
+		matingJson["jointLength"] = length;
+		sumLengths += length;
+
+		matingsJson.push_back(matingJson);
+	}
+
+	nlohmann::json output;
+	output["springs"] = matingsJson;
+	output["sumSpringsLength"] = sumLengths;
+
+	return output;
+}
+
+
+nlohmann::json Reconstructor::snapshotPiecesCoords(const b2Vec2& translateCenter, float coordinatesScale)
+{
+	nlohmann::json output = nlohmann::json::array();
+
+	for (auto& pieceIt : activePieces_)
+	{
+		nlohmann::json pieceJson;
+		pieceJson["pieceId"] = pieceIt.id_;
+		nlohmann::json coords = nlohmann::json::array();
+
+		for (auto& coord : pieceIt.globalCoordinates_)
+		{
+			float x = coord.x - translateCenter.x;
+			x = x / coordinatesScale;
+			float y = coord.y - translateCenter.y;
+			y = y / coordinatesScale;
+			coords.push_back(nlohmann::json::array({ x,y }));
+		}
+
+		pieceJson["coordinates"] = coords;
+		output.push_back(pieceJson);
+	}
+
+	return output;
 }

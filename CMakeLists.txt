@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 add_subdirectory(box2d)
-#add_subdirectory(earcut.hpp)
-find_package(Eigen3 REQUIRED)
 
 # Add the 'include' directory to the list of directories searched for header files
 include_directories(include)
@@ -26,35 +24,8 @@ find_library(SFML_NETWORK_LIBRARY NAMES sfml-network PATHS "C:/src/vcpkg/install
 find_library(SFML_SYSTEM_LIBRARY NAMES sfml-system PATHS "C:/src/vcpkg/installed/x64-windows/lib")
 find_library(SFML_AUDIO_LIBRARY NAMES sfml-audio PATHS "C:/src/vcpkg/installed/x64-windows/lib")
 
-# Set the path to the Boost directory
-set(BOOST_ROOT "C:/Program Files/boost/boost_1_82_0")
-
-# Find the Boost libraries
-find_package(Boost 1.82.0 REQUIRED)
-
-if (Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-else()
-    message(FATAL_ERROR "Boost library not found")
-endif()
-
-#set(HTTPLIB_ROOT "${CMAKE_SOURCE_DIR}/cpp-httplib")
-#include_directories(${HTTPLIB_ROOT})
-#add_library(httplib INTERFACE)
-#target_include_directories(httplib INTERFACE ${HTTPLIB_ROOT})
-
-#set(JSONCPP_DIR "C:/src/vcpkg/installed/x86-windows/share/jsoncpp")
-#find_library(JSONCPP NAMES jsoncpp PATHS "C:/src/vcpkg/installed/x86-windows/lib")
-##target_include_directories(${PROJECT_NAME} PRIVATE "C:/src/vcpkg/installed/x86-windows/include")
-#include_directories("C:/src/vcpkg/installed/x86-windows/include")
-
-#set(JSONCPP_DIR "C:/src/vcpkg/installed/x86-windows/share/jsoncpp")
-#add_library(JSONCPP SHARED)
-
 target_link_libraries(${PROJECT_NAME} PRIVATE
     box2d 
-    Eigen3::Eigen
     ${SFML_GRAPHICS_LIBRARY} ${SFML_WINDOW_LIBRARY} ${SFML_NETWORK_LIBRARY} ${SFML_SYSTEM_LIBRARY} ${SFML_AUDIO_LIBRARY}
-    ${Boost_LIBRARIES} 
 )
 

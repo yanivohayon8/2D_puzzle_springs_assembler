@@ -1,4 +1,4 @@
-#include "SfmlScreen.h"
+#include "sfmlScreen.h"
 
 SfmlScreen::SfmlScreen(int width,int height, float widthScale,float heightScale)
 {
@@ -6,6 +6,7 @@ SfmlScreen::SfmlScreen(int width,int height, float widthScale,float heightScale)
 	height_ = height;
 	widthScale_ = widthScale;
 	heightScale_ = heightScale;
+	nextPolygonColorIndex_ = 0;
 }
 
 void SfmlScreen::initDisplay(bool isVisible)
@@ -93,11 +94,28 @@ void SfmlScreen::initPolygon(Piece& piece)
 	convex.setScale(widthScale_, heightScale_);
 
 	pieceId2Polygon_.insert({ piece.id_,convex });
+	nextPolygonColorIndex_ = (nextPolygonColorIndex_ + 1) % SfmlScreen::sfmlColors.size();	
+	auto nextColor = SfmlScreen::sfmlColors[nextPolygonColorIndex_];
+
+	if (nextColor == sf::Color::Black || nextColor == sf::Color::Red)
+	{
+		nextPolygonColorIndex_ = (nextPolygonColorIndex_ + 1) % SfmlScreen::sfmlColors.size();
+		nextColor = SfmlScreen::sfmlColors[nextPolygonColorIndex_];
+	}
+
+	pieceId2PolygonColor_.insert({ piece.id_, nextColor });
 }
 
 
-void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
+bool SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
 {
+
+	// If the piece does not have a sprite
+	if (pieceId2Sprite_.find(pieceId) == pieceId2Sprite_.end() || pieceId2texture_.find(pieceId) == pieceId2texture_.end())
+	{
+		return false;
+	}
+
 	sf::Sprite& sprite = pieceId2Sprite_.at(pieceId);
 	sprite.setTexture(pieceId2texture_.at(pieceId));
 	double rotateRadians = trans.q.GetAngle();
@@ -108,6 +126,8 @@ void SfmlScreen::drawSprite(std::string pieceId, const b2Transform& trans)
 	sprite.setPosition(widthScale_ * position.x, heightScale_ * position.y);
 
 	window_.draw(sprite);
+
+	return true;
 }
 
 void SfmlScreen::clearDisplay()
@@ -142,15 +162,13 @@ void SfmlScreen::drawPolygon(std::string pieceId, const b2Transform& trans)
 
 	auto& position = trans.p;
 	convex.setPosition(widthScale_ * position.x, heightScale_ * position.y);
+	convex.setFillColor(pieceId2PolygonColor_.at(pieceId));
 	window_.draw(convex);
 }
 
 void SfmlScreen::initPolygonCoordsDots(Piece& piece, float radius, sf::Color& color)
 {
-
 	std::vector<sf::CircleShape> dots;
-
-	// set the shape color to green
 
 	for (auto& cord : piece.globalCoordinates_)
 	{
@@ -220,3 +238,15 @@ void SfmlScreen::screenShotToFile(std::string fileName)
 	image = window_.capture();
 	image.saveToFile(fileName);
 }
+
+
+const std::vector<sf::Color> SfmlScreen::sfmlColors = {
+		sf::Color::Black,
+		sf::Color::White,
+		sf::Color::Red,
+		sf::Color::Green,
+		sf::Color::Blue,
+		sf::Color::Yellow,
+		sf::Color::Magenta,
+		sf::Color::Cyan
+};

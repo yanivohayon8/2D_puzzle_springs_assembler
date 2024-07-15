@@ -1,4 +1,4 @@
-#include "ScriptInputParser.h"
+#include "scriptInputParser.h"
 
 void parseInput(std::map<std::string, std::string> &oParam2Value, int argc, char** argv)
 {
@@ -14,5 +14,10 @@ void parseInput(std::map<std::string, std::string> &oParam2Value, int argc, char
 			continue;
 		}
 
+		if (token.rfind("-",0) == 0)
+		{
+			oParam2Value.insert({ token.substr(1,token.size()) ,"" });
+			continue;
+		}
 	}
 }

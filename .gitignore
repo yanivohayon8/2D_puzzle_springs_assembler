@@ -1,6 +1,5 @@
 box2d/
-eigen-3.4.0/
 build/
 data/*
-!data/example/* 
-include/cpp-httplib/
+# include/cpp-httplib/
+#
