@@ -1,10 +1,17 @@
 # 2D Puzzle Springs Assembler
 
+This project is a tool for reconstructing 2D jigsaw puzzles made of polygonal shapes. Each puzzle piece is treated as a rigid body, and the project simulates springs connecting pairs of pieces. A pair of mounting anchors is called a "mating," and the complete set of matings is provided as input. The system aims to minimize elastic energy to achieve convergence, ultimately outputting the final positions of the pieces. To facilitate integration with various third parties, the simulator interfaces via HTTP requests and responses. Reconstructions can be executed in silent mode, visual mode (for debugging), and interactive mode.
+
+
+<!--The input is the polygonal representation of the shapes, and pairs of vertices to be tighten. 
+
+It simulates each puzzle piece as a rigid body, and for a given input, it mounts springs between vertices of different pieces 
+
 This is a C++ project to solve 2D puzzles for convex and concave polygons. It acts as a physical simulation, with each piece considered a rigid body. Springs are connected between them to create an assembly. To ease the integration to multiple third parties, the simulator runs as an HTTP server, responding in the reconstruction information and optionally visual demonstartion of it. 
 
 TODO: describe here it is for simple polygons, having vertices... 
 
-multiple running modes: interactive, silent, visual,... Offon, Off...
+multiple running modes: interactive, silent, visual,... Offon, Off...-->
 
 <!--![Demo springs](https://github.com/user-attachments/assets/34ae33eb-1e41-467d-b963-4418a0968270)-->
 
