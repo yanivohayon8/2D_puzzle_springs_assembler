@@ -60,14 +60,14 @@ For more detailed instructions, please refer to the official documentation of ea
 
 ## Runnig the server
 
-Since the executed program is an HTTP server, interfacing with is done via HTTP request. To run the HTTP server, run the executable under the ``build`` directory with the name ``springs_assembler_sfml`` (it depends on the Release version, try under RelWithDebInfo). For example in Windows you can run:
+Since the executed program is an HTTP server, interfacing with is done via HTTP requests and responses. To run the HTTP server, run the executable under the ``build`` directory with the name ``springs_assembler_sfml`` (it depends on the Release version, try under RelWithDebInfo). For example in Windows you can run:
 
 ```
 springs_assembler_sfml --port <PORT_NUMBER>
 ```
 
-Where port is an optional parameter, which its default value is ``8888``.
-Once the server is up http requests are sent to it. For quick start you can use curl or postman using http request described below. 
+Where port is an optional parameter, having a default value of ``8888``.
+Once the server is up, http requests are sent to it. For *quick start* you can use cURL or postman to send the http request described below. 
 
 ## THE REST API Endpoints
 
@@ -76,7 +76,7 @@ The following two endpoints are available:
 ### `/v1/sanity`
 
 #### Description
-This endpoint allows to perform a sanity check, it make sure the REST API is reachable. 
+This endpoint allows to perform a sanity check, making sure the REST API is reachable. 
 
 #### HTTP Method
 `GET`
@@ -97,7 +97,7 @@ Hello World!
 ### `/v1/reconstructions`
 
 #### Description
-This endpoint performs a reconstruction for the given pieces using the given pairs of vertices matching. The http request parameters determine the reconstruction parameters while the request body describe the matching pieces.
+This endpoint performs a reconstruction for the given pieces and matings. The http request parameters depicts the reconstruction parameters while the request body provide the information about the pieces and the matings.
 
 #### HTTP Method
 `POST`
@@ -113,8 +113,8 @@ This endpoint performs a reconstruction for the given pieces using the given pai
 | Parameter		| Type	| Required	| Default Value | Description	|
 |---------------|-------|-----------|---------------|---------------|
 |InteractiveOn|Boolean|No|false|Execute the reconstruction in interative mode| <!--If specified, true is set-->
-|visibilityOn|Boolean|No|false|If the parameter InteractiveOn is not specified, a window visualalizing the is opened|
-|collideOff|Boolean|No|false|If the parameter InteractiveOn is not specified, the overlapping between between the pieces during the reconstruction is enabled|
+|visibilityOn|Boolean|No|false|If the parameter InteractiveOn is not specified, a window visualalizing the reconstruction is opened|
+|collideOff|Boolean|No|false|If the parameter InteractiveOn is not specified, the overlapping between the pieces throughout the reconstruction is enabled. Otherwise, it is enable for limited time, and then it is disabled.|
 |boardSize|string|No|small|Specifies the board size in which the reconstruction lives. Allowed values are small,medium, and large|
 |boardHeight|Int|No|None|If the parameter boardSize is not specified, this parameter specifies custom height of the board. Recommended values are between 10 to 80. Please refer for Box2d documentation for more details on allowed size of the bodies.|
 |boardWidth|Int|No|No|If the parameter boardSize is not specified, this parameter specifies custom width of the board. Recommended values are between 10 to 80. Please refer for Box2d documentation for more details on allowed size of the bodies.|
