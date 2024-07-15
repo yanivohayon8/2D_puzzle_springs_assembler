@@ -136,6 +136,7 @@ The request body contains the description of the pieces and the springs connecti
         {
             "id": "string",
             "polygon": [[number, number], ...],
+			"imagePath": "string",
             "fixedRotationAngle": number
         },
         ...
@@ -165,9 +166,13 @@ The request body contains the description of the pieces and the springs connecti
   - `polygon`
     - **Type:** Array of [number, number]
     - **Description:** Coordinates defining the shape of the piece.
+  - `imagePath` (optional)
+    - **Type:** String
+    - **Description:** The path to the image represnting the piece.
   - `fixedRotationAngle` (optional)
     - **Type:** Number
     - **Description:** Fixed rotation angle of the piece. Optional field.
+	
 
 ##### `matings`
 - **Type:** Array of Objects
@@ -189,7 +194,7 @@ The request body contains the description of the pieces and the springs connecti
     - **Description:** Local coordinates of the spring mount on the second piece.
 
 
-***important:*** Usually, the coordinates of pieces are drawn from images with width and height of hundrand or thousand of pixels. Although, Box2d accept bodies having length of roughly 0.1 to 10. To bridge the gap, the pieces coordinates are heuristically scaled by a factor of 0.001.
+***important:*** Usually, the coordinates of pieces are drawn from images with width and height of hundrand or thousand of pixels. Although, Box2d accept bodies having length of roughly 0.1 to 10. To bridge the gap, the pieces coordinates are heuristically scaled by a 	factor of 0.001.
 
 #### Example Request
 ```shell
