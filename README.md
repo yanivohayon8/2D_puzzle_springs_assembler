@@ -9,7 +9,7 @@ multiple running modes: interactive, silent, visual,... Offon, Off...
 <!--![Demo springs](https://github.com/user-attachments/assets/34ae33eb-1e41-467d-b963-4418a0968270)-->
 
 <p align="center">
-	<img src="https://github.com/user-attachments/assets/34ae33eb-1e41-467d-b963-4418a0968270" alt="Demo springs" style="transform: rotate(90deg);">
+	<img src="https://github.com/user-attachments/assets/07bafee3-0d37-4cec-abea-644f06b61b42" alt="Demo springs" style="transform: rotate(90deg);">
 </p>	
 
 ## Table of Contents
