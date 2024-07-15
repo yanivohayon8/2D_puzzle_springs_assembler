@@ -136,7 +136,7 @@ The request body contains the description of the pieces and the springs connecti
         {
             "id": "string",
             "polygon": [[number, number], ...],
-"imagePath": "string",
+			"imagePath": "string",
             "fixedRotationAngle": number
         },
         ...
