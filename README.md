@@ -112,16 +112,16 @@ This endpoint performs a reconstruction for the given pieces and matings. The ht
 
 | Parameter		| Type	| Required	| Default Value | Description	|
 |---------------|-------|-----------|---------------|---------------|
-|InteractiveOn|Boolean|No|false|Execute the reconstruction in interative mode| <!--If specified, true is set-->
-|visibilityOn|Boolean|No|false|If the parameter InteractiveOn is not specified, a window visualalizing the reconstruction is opened|
+|InteractiveOn|Boolean|No|false|Execute the reconstruction in interative mode.| <!--If specified, true is set-->
+|visibilityOn|Boolean|No|false|If the parameter InteractiveOn is not specified, a window visualalizing the reconstruction is opened.|
 |collideOff|Boolean|No|false|If the parameter InteractiveOn is not specified, the overlapping between the pieces throughout the reconstruction is enabled. Otherwise, it is enable for limited time, and then it is disabled.|
-|boardSize|string|No|small|Specifies the board size in which the reconstruction lives. Allowed values are small,medium, and large|
+|boardSize|string|No|small|Specifies the board size in which the reconstruction lives. Allowed values are small,medium, and large.|
 |boardHeight|Int|No|None|If the parameter boardSize is not specified, this parameter specifies custom height of the board. Recommended values are between 10 to 80. Please refer for Box2d documentation for more details on allowed size of the bodies.|
 |boardWidth|Int|No|No|If the parameter boardSize is not specified, this parameter specifies custom width of the board. Recommended values are between 10 to 80. Please refer for Box2d documentation for more details on allowed size of the bodies.|
-|screenHeight|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, screenHeight specifies the screen height which visualizes the reconstruction|
-|screenWidth|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, screenWidth specifies the screen Width which visualizes the reconstruction|
-|unFixingPiece|Boolean|No|false|Specifying this parameter makes all the pieces moving pieces. Otherwise, one piece is seleceted to be fixed (nailed) at the center of the board|
-|seedInitialPositions|Int|No|None|Specifies the seed number for generating the random positions. Otherwise, all the pieces are positioned at the board center|
+|screenHeight|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, screenHeight specifies the screen height which visualizes the reconstruction.|
+|screenWidth|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, screenWidth specifies the screen width which visualizes the reconstruction.|
+|unFixingPiece|Boolean|No|false|Specifying this parameter makes all the pieces moving pieces. Otherwise, one piece is seleceted to be fixed (nailed) at the center of the board.|
+|seedInitialPositions|Int|No|None|Specifies the seed number for generating the random positions. Otherwise, all the pieces are positioned at the board center.|
 <!--|disableJointsCollide|Boolean||||-->
 <!--|isDrawOnlyPolygons|||||-->
 <!--|finalScreenShotPath|||||-->
