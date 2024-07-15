@@ -185,7 +185,7 @@ The request body contains the description of the pieces and the springs connecti
 
 
 #### Example Request
-```cURL
+```shell
 	curl --location 'http://localhost:8888/v1/reconstructions?unFixingPiece=1&visibilityOn=1&collideOff=1&boardSize=small' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -254,6 +254,125 @@ The request body contains the description of the pieces and the springs connecti
 #### Response 
 ```json
 {
+    "jointsAfterEnableCollision": {
+        "springs": [
+            {
+                "firstPieceId": "string",
+                "firstPieceLocalCoords": [number, number],
+                "jointLength": number,
+                "secondPieceId": "string",
+                "secondPieceLocalCoords": [number, number]
+            },
+            ...
+        ],
+        "sumSpringsLength": number
+    },
+    "piecesBeforeEnableCollisionCoords": [
+        {
+            "coordinates": [[number, number], ...],
+            "pieceId": "string"
+        },
+        ...
+    ],
+    "piecesFinalCoords": [
+        {
+            "coordinates": [[number, number], ...],
+            "pieceId": "string"
+        },
+        ...
+    ],
+    "piecesFinalTransformations": [
+        {
+            "pieceId": "string",
+            "rotationRadians": number,
+            "translateVectorX": number,
+            "translateVectorY": number
+        },
+        ...
+    ]
+}
+```
+
+##### `jointsAfterEnableCollision`
+- **Type:** Object
+- **Description:** Contains details about the joints after enabling collision.
+  
+  - `springs`
+    - **Type:** Array of Objects
+    - **Description:** List of spring connections between pieces.
+      
+      Each object in the `springs` array has the following structure:
+      
+      - `firstPieceId`
+        - **Type:** String
+        - **Description:** Identifier of the first piece.
+      - `firstPieceLocalCoords`
+        - **Type:** Array of [number, number]
+        - **Description:** Local coordinates on the first piece.
+      - `jointLength`
+        - **Type:** Number
+        - **Description:** Length of the joint.
+      - `secondPieceId`
+        - **Type:** String
+        - **Description:** Identifier of the second piece.
+      - `secondPieceLocalCoords`
+        - **Type:** Array of [number, number]
+        - **Description:** Local coordinates on the second piece.
+  
+  - `sumSpringsLength`
+    - **Type:** Number
+    - **Description:** Total length of all springs.
+
+##### `piecesBeforeEnableCollisionCoords`
+- **Type:** Array of Objects
+- **Description:** Coordinates of pieces before enabling collision.
+  
+  Each object in the `piecesBeforeEnableCollisionCoords` array has the following structure:
+  
+  - `coordinates`
+    - **Type:** Array of [number, number]
+    - **Description:** Coordinates defining the shape of the piece.
+  - `pieceId`
+    - **Type:** String
+    - **Description:** Identifier of the piece.
+
+##### `piecesFinalCoords`
+- **Type:** Array of Objects
+- **Description:** Final coordinates of pieces at the end of the reconstruction.
+  
+  Each object in the `piecesFinalCoords` array has the following structure:
+  
+  - `coordinates`
+    - **Type:** Array of [number, number]
+    - **Description:** Coordinates defining the shape of the piece.
+  - `pieceId`
+    - **Type:** String
+    - **Description:** Identifier of the piece.
+
+##### `piecesFinalTransformations`
+- **Type:** Array of Objects
+- **Description:** Final transformations applied to each piece at the end of the reconstruction.
+  
+  Each object in the `piecesFinalTransformations` array has the following structure:
+  
+  - `pieceId`
+    - **Type:** String
+    - **Description:** Identifier of the piece.
+  - `rotationRadians`
+    - **Type:** Number
+    - **Description:** Rotation angle in radians.
+  - `translateVectorX`
+    - **Type:** Number
+    - **Description:** Translation vector on the X-axis.
+  - `translateVectorY`
+    - **Type:** Number
+    - **Description:** Translation vector on the Y-axis.
+
+
+
+#### Example Response
+```json
+	{
     "jointsAfterEnableCollision": {
         "springs": [
             {
@@ -461,214 +580,6 @@ The request body contains the description of the pieces and the springs connecti
             "rotationRadians": -1.4013348817825317,
             "translateVectorX": -399.47222900390625,
             "translateVectorY": 277.41192626953125
-        }
-    ]
-}
-```
-
-##### `jointsAfterEnableCollision`
-- **Type:** Object
-- **Description:** Contains details about the joints after enabling collision.
-  
-  - `springs`
-    - **Type:** Array of Objects
-    - **Description:** List of spring connections between pieces.
-      
-      Each object in the `springs` array has the following structure:
-      
-      - `firstPieceId`
-        - **Type:** String
-        - **Description:** Identifier of the first piece.
-      - `firstPieceLocalCoords`
-        - **Type:** Array of [number, number]
-        - **Description:** Local coordinates on the first piece.
-      - `jointLength`
-        - **Type:** Number
-        - **Description:** Length of the joint.
-      - `secondPieceId`
-        - **Type:** String
-        - **Description:** Identifier of the second piece.
-      - `secondPieceLocalCoords`
-        - **Type:** Array of [number, number]
-        - **Description:** Local coordinates on the second piece.
-  
-  - `sumSpringsLength`
-    - **Type:** Number
-    - **Description:** Total length of all springs.
-
-##### `piecesBeforeEnableCollisionCoords`
-- **Type:** Array of Objects
-- **Description:** Coordinates of pieces before enabling collision.
-  
-  Each object in the `piecesBeforeEnableCollisionCoords` array has the following structure:
-  
-  - `coordinates`
-    - **Type:** Array of [number, number]
-    - **Description:** Coordinates defining the shape of the piece.
-  - `pieceId`
-    - **Type:** String
-    - **Description:** Identifier of the piece.
-
-##### `piecesFinalCoords`
-- **Type:** Array of Objects
-- **Description:** Final coordinates of pieces at the end of the reconstruction.
-  
-  Each object in the `piecesFinalCoords` array has the following structure:
-  
-  - `coordinates`
-    - **Type:** Array of [number, number]
-    - **Description:** Coordinates defining the shape of the piece.
-  - `pieceId`
-    - **Type:** String
-    - **Description:** Identifier of the piece.
-
-##### `piecesFinalTransformations`
-- **Type:** Array of Objects
-- **Description:** Final transformations applied to each piece at the end of the reconstruction.
-  
-  Each object in the `piecesFinalTransformations` array has the following structure:
-  
-  - `pieceId`
-    - **Type:** String
-    - **Description:** Identifier of the piece.
-  - `rotationRadians`
-    - **Type:** Number
-    - **Description:** Rotation angle in radians.
-  - `translateVectorX`
-    - **Type:** Number
-    - **Description:** Translation vector on the X-axis.
-  - `translateVectorY`
-    - **Type:** Number
-    - **Description:** Translation vector on the Y-axis.
-
-
-
-#### Example Response
-```json
-	{
-    "jointsAfterEnableCollision": {
-        "springs": [
-            {
-                "firstPieceId": "square",
-                "firstPieceLocalCoords": [
-                    -499.9999694824219,
-                    499.9999694824219
-                ],
-                "jointLength": 0.01549101248383522,
-                "secondPieceId": "triangle",
-                "secondPieceLocalCoords": [
-                    499.9999694824219,
-                    499.9999694824219
-                ]
-            },
-            {
-                "firstPieceId": "square",
-                "firstPieceLocalCoords": [
-                    499.9999694824219,
-                    499.9999694824219
-                ],
-                "jointLength": 0.015522761270403862,
-                "secondPieceId": "triangle",
-                "secondPieceLocalCoords": [
-                    -499.9999694824219,
-                    499.9999694824219
-                ]
-            }
-        ],
-        "sumSpringsLength": 0.031013773754239082
-    },
-    "piecesBeforeEnableCollisionCoords": [
-        {
-            "coordinates": [
-                [
-                    578.3419189453125,
-                    -406.84222412109375
-                ],
-                [
-                    406.84222412109375,
-                    578.3419189453125
-                ],
-                [
-                    -578.3419189453125,
-                    406.84222412109375
-                ],
-                [
-                    -406.84222412109375,
-                    -578.3419189453125
-                ]
-            ],
-            "pieceId": "square"
-        },
-        {
-            "coordinates": [
-                [
-                    415.2707824707031,
-                    583.6858520507813
-                ],
-                [
-                    587.7718505859375,
-                    -401.32330322265625
-                ],
-                [
-                    1572.781494140625,
-                    -228.82269287109375
-                ]
-            ],
-            "pieceId": "triangle"
-        }
-    ],
-    "piecesFinalCoords": [
-        {
-            "coordinates": [
-                [
-                    578.3419189453125,
-                    -406.84222412109375
-                ],
-                [
-                    406.84222412109375,
-                    578.3419189453125
-                ],
-                [
-                    -578.3419189453125,
-                    406.84222412109375
-                ],
-                [
-                    -406.84222412109375,
-                    -578.3419189453125
-                ]
-            ],
-            "pieceId": "square"
-        },
-        {
-            "coordinates": [
-                [
-                    420.83642578125,
-                    584.9852294921875
-                ],
-                [
-                    592.3685913085938,
-                    -400.1932067871094
-                ],
-                [
-                    1577.5469970703125,
-                    -228.6610565185547
-                ]
-            ],
-            "pieceId": "triangle"
-        }
-    ],
-    "piecesFinalTransformations": [
-        {
-            "pieceId": "square",
-            "rotationRadians": -1.3984450101852417,
-            "translateVectorX": 0.0,
-            "translateVectorY": 0.0
-        },
-        {
-            "pieceId": "triangle",
-            "rotationRadians": 1.7431811094284058,
-            "translateVectorX": 863.583984375,
-            "translateVectorY": -14.623164176940918
         }
     ]
 }
