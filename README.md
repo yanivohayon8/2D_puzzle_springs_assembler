@@ -247,8 +247,6 @@ The request body contains the description of the pieces and the springs connecti
 }
 
 '
-	
-	'
 ```
 
 #### Response 
