@@ -118,8 +118,8 @@ This endpoint performs a reconstruction for the given pieces and matings. The ht
 |boardSize|string|No|small|Specifies the board size in which the reconstruction lives. Allowed values are small,medium, and large|
 |boardHeight|Int|No|None|If the parameter boardSize is not specified, this parameter specifies custom height of the board. Recommended values are between 10 to 80. Please refer for Box2d documentation for more details on allowed size of the bodies.|
 |boardWidth|Int|No|No|If the parameter boardSize is not specified, this parameter specifies custom width of the board. Recommended values are between 10 to 80. Please refer for Box2d documentation for more details on allowed size of the bodies.|
-|screenHeight|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, specified the screen height which visualizes the reconstruction|
-|screenWidth|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, specified the screen Width which visualizes the reconstruction|
+|screenHeight|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, screenHeight specifies the screen height which visualizes the reconstruction|
+|screenWidth|Int|No|1380|If the parameteres InteractiveOn or visibilityOn are specified, screenWidth specifies the screen Width which visualizes the reconstruction|
 |unFixingPiece|Boolean|No|false|Specifying this parameter makes all the pieces moving pieces. Otherwise, one piece is seleceted to be fixed (nailed) at the center of the board|
 |seedInitialPositions|Int|No|None|Specifies the seed number for generating the random positions. Otherwise, all the pieces are positioned at the board center|
 <!--|disableJointsCollide|Boolean||||-->
