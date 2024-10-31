@@ -153,33 +153,35 @@ void HTTPServer::run()
 
     server_.Post(versionPrefix_ + "/reconstructions", [&](const httplib::Request& req, httplib::Response& res, const httplib::ContentReader& content_reader) {
 
-        std::string strRequestBody;
-        content_reader([&](const char* data, size_t dataLength) {strRequestBody.append(data, dataLength); return true;});
-        currentRequestBody_ = nlohmann::json::parse(strRequestBody);
-        currentRequest_ = req;
+        try
+        {
+
+            std::string strRequestBody;
+            content_reader([&](const char* data, size_t dataLength) {strRequestBody.append(data, dataLength); return true;});
+            currentRequestBody_ = nlohmann::json::parse(strRequestBody);
+            currentRequest_ = req;
         
-        if (currentRequest_.has_param("interactiveOn"))
-        {
-            reconstructor_ = new InteractiveReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
-                                                            defaultScreenLength, defaultScreenLength);
-        }
-        else
-        {
-            if (currentRequest_.has_param("collideOff"))
+            if (currentRequest_.has_param("interactiveOn"))
             {
-                reconstructor_ = new OffCollideSilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
-                                                            defaultScreenLength, defaultScreenLength);
+                reconstructor_ = new InteractiveReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
+                                                                defaultScreenLength, defaultScreenLength);
             }
             else
             {
-                reconstructor_ = new OffOnCollideSilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
-                    defaultScreenLength, defaultScreenLength);
+                if (currentRequest_.has_param("collideOff"))
+                {
+                    reconstructor_ = new OffCollideSilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
+                                                                defaultScreenLength, defaultScreenLength);
+                }
+                else
+                {
+                    reconstructor_ = new OffOnCollideSilentReconstructor(smallBoardSizeLength_, smallBoardSizeLength_,
+                        defaultScreenLength, defaultScreenLength);
+                }
             }
-        }
 
 
-        try
-        {
+        
             loadPuzzleData(SCALE_IMAGE_COORDINATES_TO_BOX2D);
             updateBoardDimensions();
             reconstructor_->initRun(currentRequest_, inputtedPieces_, inputtedMatings_);
