@@ -21,8 +21,8 @@ private:
 
 protected:
 	void putMatingSprings(VertexMating* &mating);
-	bool isEnableJointsCollide_ = false;
-	float jointRestLength_ = 0.01;
+	bool isEnableJointsCollide_ = true;//false;
+	float jointRestLength_ = 0;//0.01;
 	float jointMinLength_ = 0;
 	float jointFrequencyHertz_ = 1.0f;
 	float jointDampingRatio_ = 0.01;
