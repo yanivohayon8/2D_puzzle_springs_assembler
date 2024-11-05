@@ -510,11 +510,8 @@ nlohmann::json Reconstructor::snapshotTransformations(const b2Vec2& translateCen
 	for (auto& piece : activePieces_)
 	{
 		b2Vec2 position;
-		//piece.getBodyPosition(position);
-		//position = piece.refb2Body_->GetTransform().p;
-		////auto& position = transform.p;
-		//position = piece.refb2Body_->GetPosition();
-		piece.getBodyWorldCenterPosition(position);
+		//piece.getBodyWorldCenterPosition(position);
+		piece.getBodyCenterOfMass(position);
 
 		float x = position.x - translateCenter.x;
 		x /= coordinatesScale;

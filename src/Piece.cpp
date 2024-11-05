@@ -126,6 +126,24 @@ void Piece::getBodyWorldCenterPosition(b2Vec2& position)
 	position = refb2Body_->GetWorldPoint(localCenter);
 }
 
+void Piece::getBodyCenterOfMass(b2Vec2& position)
+{
+	float sumX = 0.0;
+	float sumY = 0.0;
+
+	for (int i = 0; i < globalCoordinates_.size(); i++)
+	{
+		auto& curr = refb2Body_->GetWorldPoint(localCoordsAsVecs_.at(i));
+		auto& next = refb2Body_->GetWorldPoint(localCoordsAsVecs_.at((i + 1) % globalCoordinates_.size()));
+
+		sumX += (curr.x + next.x) / 2;
+		sumY += (curr.y + next.y) / 2;
+	}
+
+	position.x = sumX / globalCoordinates_.size();
+	position.y = sumY / globalCoordinates_.size();
+}
+
 void Piece::setIsRotationFixed(bool flag)
 {
 	isRotationFixed = flag;

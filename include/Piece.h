@@ -42,5 +42,6 @@ public:
 	void setIsRotationFixed(bool flag);
 	void setInitialAngle(float radians);
 	void getBodyWorldCenterPosition(b2Vec2& position);
+	void getBodyCenterOfMass(b2Vec2& position);
 };
 
