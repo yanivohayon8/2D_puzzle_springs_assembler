@@ -5,6 +5,47 @@ HTTPServer::HTTPServer(int port)
 {
 }
 
+float HTTPServer::findLongestPieceEdgeLength_()
+{
+    auto& piecesJson = currentRequestBody_["pieces"];
+    float maxLength = 0;
+
+    for (auto& pieceIt = piecesJson.begin(); pieceIt != piecesJson.end(); ++pieceIt)
+    {
+        auto& pieceJson = pieceIt.value();
+        std::vector<b2Vec2> coordinates;
+
+        auto& prevCoord = pieceJson["polygon"].back();
+        float prevX = static_cast<float>(prevCoord.at(0));
+        float prevY = static_cast<float>(prevCoord.at(1));
+        float length;
+
+        for (auto& coordIt = pieceJson["polygon"].begin(); coordIt != pieceJson["polygon"].end(); ++coordIt)
+        {
+            float x_ = static_cast<float>(coordIt->at(0));
+            float y_ = static_cast<float>(coordIt->at(1));
+            length = sqrt((prevX - x_) * (prevX - x_) + (prevY - y_) * (prevY - y_));
+
+            if (maxLength < length)
+            {
+                maxLength = length;
+            }
+        }
+    }
+
+    return maxLength;
+}
+
+
+float HTTPServer::findPieceScale_()
+{
+    float longestEdge = findLongestPieceEdgeLength_();
+    float ratioLongest2BoardSize = 1.0 / 4;
+    float boardHeight = reconstructor_->boardHeight_;
+    float scale = boardHeight / longestEdge * ratioLongest2BoardSize;
+
+    return scale;
+}
 
 void HTTPServer::updateBoardDimensions()
 {
@@ -182,10 +223,12 @@ void HTTPServer::run()
 
 
         
-            loadPuzzleData(SCALE_IMAGE_COORDINATES_TO_BOX2D);
             updateBoardDimensions();
+            float pieceScale = findPieceScale_();
+
+            loadPuzzleData(pieceScale);//SCALE_IMAGE_COORDINATES_TO_BOX2D);
             reconstructor_->initRun(currentRequest_, inputtedPieces_, inputtedMatings_);
-            nlohmann::json output = reconstructor_->reconstruct(SCALE_IMAGE_COORDINATES_TO_BOX2D);
+            nlohmann::json output = reconstructor_->reconstruct(pieceScale);//SCALE_IMAGE_COORDINATES_TO_BOX2D);
 
             if (currentRequest_.has_param("finalScreenShotPath"))
             {

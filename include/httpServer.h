@@ -15,7 +15,8 @@
 class HTTPServer {
 
 protected:
-
+    float findLongestPieceEdgeLength_();
+    float findPieceScale_();
     void updateBoardDimensions();
     std::string currentBoardDimensionsConfig="";
     float largeBoardSizeLength_ = 80;
